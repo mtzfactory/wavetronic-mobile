@@ -1,0 +1,36 @@
+{
+  "name": "test",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest"
+  },
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "native-base": "^2.3.3",
+    "react": "16.0.0",
+    "react-native": "0.50.1",
+    "react-native-action-button": "^2.8.1",
+    "react-native-elements": "^0.18.2",
+    "react-native-slider": "^0.11.0",
+    "react-native-vector-icons": "^4.4.2",
+    "react-native-video": "^2.0.0",
+    "react-navigation": "^1.0.0-beta.19",
+    "uuid": "^3.1.0"
+  },
+  "devDependencies": {
+    "babel-jest": "21.2.0",
+    "babel-preset-react-native": "4.0.0",
+    "jest": "21.2.1",
+    "react-test-renderer": "16.0.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "rnpm": {
+    "assets": [
+      "./assets/fonts/"
+    ]
+  }
+}
