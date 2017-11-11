@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { StyleSheet, AsyncStorage, ActivityIndicator, View, Text, ImageBackground } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 
+import apiAuthorization from '../../services/ApiAuthorization' 
+
 export default class SplashScreen extends Component {    
     _navigate(page, params) {
         // Route with disabled back functionality
@@ -25,12 +27,22 @@ export default class SplashScreen extends Component {
         AsyncStorage.getItem('@mtzfactory:token')
             .then(token => {
                 if (token) {
-                    this._navigate('Songs', { token })
+                    console.log('Splash token:', token)
+                    apiAuthorization.amIAuthorized(token)
+                        .then( () => {
+                            console.log('Splash -> Songs')
+                            this._navigate('Songs', { token })
+                        })
+                        .catch( error => {
+                            console.log('Splash -> Login:', error.message)
+                            this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
+                        })
                 }
                 else {
                     this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                 }
             })
+            .catch( () => this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' }))
     }
 
     render() {

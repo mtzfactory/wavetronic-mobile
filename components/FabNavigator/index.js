@@ -5,7 +5,7 @@ import { Icon } from 'native-base'
 import ActionButton from 'react-native-action-button'
 import uuidv4 from 'uuid/v4'
 
-import { PRIMARY_COLOR } from '../Constants'
+import { PRIMARY_COLOR } from '../../constants'
 // rgba(231,76,60,1)
 
 const buttonItems = [

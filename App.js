@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, Platform, StatusBar, View, Text } from 'react-native'
 //import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 
-import { DARK_PRIMARY_COLOR } from './components/Constants'
+import { DARK_PRIMARY_COLOR } from './constants'
 import RootNavigation from './components/RootNavigation'
 import Player from './components/Player'
 

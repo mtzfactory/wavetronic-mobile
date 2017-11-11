@@ -11,14 +11,15 @@ const API_URL_BASE = `${SRV_URL_BASE}/api/v1`
 
 export const API_URL_REGISTER = `${SRV_URL_BASE}/auth/register`
 export const API_URL_LOGIN = `${SRV_URL_BASE}/auth/login`
+export const API_URL_LOGOUT = `${SRV_URL_BASE}/auth/logout`
+export const API_URL_WELCOME = `${API_URL_BASE}`
 
 export const API_URL_TRACKS = `${API_URL_BASE}/tracks`
 export const API_URL_ALBUMS = `${API_URL_BASE}/albums`
 export const API_URL_PLAYLISTS = `${API_URL_BASE}/playlists`
+export const API_URL_FRIENDS = 'https://randomuser.me/api/?results=20'
 
 export const API_PAGE_LIMIT = 15
-
-export const API_URL_FRIENDS = 'https://randomuser.me/api/?results=20'
 
 // APP
 export const STATUSBAR_HEIGHT = 24

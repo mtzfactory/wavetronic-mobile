@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, ActivityIndicator, TextInput } from 'react-
 import { List } from 'native-base'
 import { SearchBar } from 'react-native-elements'
 
-import { API_PAGE_LIMIT } from '../Constants'
+import { API_PAGE_LIMIT } from '../../constants'
 
 export default class InfiniteList extends Component {
     constructor() {

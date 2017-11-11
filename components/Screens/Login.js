@@ -4,7 +4,8 @@ import { View, TouchableOpacity, Text, TextInput, Image, ImageBackground, Alert,
 import { Item, Input, Icon } from 'native-base'
 import { NavigationActions } from 'react-navigation'
 
-import { API_URL_LOGIN } from '../Constants'
+//import { API_URL_LOGIN } from '../../constants'
+import apiAuthorization from '../../services/ApiAuthorization' 
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 
@@ -53,47 +54,85 @@ export default class LoginScreen extends Component {
 
         const data = { username, password }
 
-        if (params.type === 'Sign up') 
+        if (params.type === 'Sign up') {
             data.email = email
-
-        fetch(API_URL_LOGIN, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data)
-        })
-        .then(res => {
-            console.log(res.status)
-            if (res.status !== 200) {
-                this.setState({
-                    error: `Server error or Unauthorized (${res.status})`,
-                    requesting: false
-                })
-                return null
-            }
-
-            return res.json()
-        })
-        .then(res => {
-            if (res) {
-                AsyncStorage.setItem('@mtzfactory:token', res.data)
-                    .then(() => this._navigate('Songs', { token: res.data }))
-                    .catch( error => {
-                        this.setState({
-                            error: error.message,
-                            requesting: false
-                        })
+            apiAuthorization.doRegister(data)
+                .then( () => {
+                    this.setState({
+                        error: `${username} registered successfully`,
+                        requesting: false
                     })
-            }
-        })
-        .catch(error => {
-            this.setState({
-                error: error.message,
-                requesting: false
-            })
-        })
+                })
+                .catch( error => {
+                    this.setState({
+                        error: error.message,
+                        requesting: false
+                    })
+                })
+        }
+        else {
+            apiAuthorization.doLogin(data)
+                .then( token => {
+                    this.setState({
+                        error: `${username} login successfully`,
+                        requesting: false
+                    }, () => {
+                        AsyncStorage.setItem('@mtzfactory:token', token)
+                            .then( () => this._navigate('Songs', { token }))
+                            .catch( error => {
+                                this.setState({
+                                    error: error.message,
+                                    requesting: false
+                                })
+                            })
+                    })
+                })
+                .catch( error => {
+                    this.setState({
+                        error: error.message,
+                        requesting: false
+                    })
+                })
+        }
+
+        // fetch(API_URL_LOGIN, {
+        //     method: 'POST',
+        //     headers: {
+        //         'Accept': 'application/json',
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(data)
+        // })
+        // .then(res => {
+        //     console.log(res.status)
+        //     if (res.status !== 200) {
+        //         this.setState({
+        //             error: `Server error or Unauthorized (${res.status})`,
+        //             requesting: false
+        //         })
+        //         return null
+        //     }
+
+        //     return res.json()
+        // })
+        // .then(res => {
+        //     if (res) {
+        //         AsyncStorage.setItem('@mtzfactory:token', res.data)
+        //             .then(() => this._navigate('Songs', { token: res.data }))
+        //             .catch( error => {
+        //                 this.setState({
+        //                     error: error.message,
+        //                     requesting: false
+        //                 })
+        //             })
+        //     }
+        // })
+        // .catch(error => {
+        //     this.setState({
+        //         error: error.message,
+        //         requesting: false
+        //     })
+        // })
     }
 
     _changeScreen() {

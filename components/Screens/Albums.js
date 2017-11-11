@@ -3,7 +3,7 @@ import { StyleSheet, Alert } from 'react-native'
 import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
 import ActionButton from 'react-native-action-button'
 
-import { API_URL_ALBUMS } from '../Constants'
+import { API_URL_ALBUMS } from '../../constants'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 

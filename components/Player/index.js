@@ -5,7 +5,7 @@ import Video from 'react-native-video'
 import Slider from 'react-native-slider'
 import _ from 'lodash'
 
-import { PRIMARY_COLOR, STATUSBAR_HEIGHT, HEADER_HEIGHT, PLAYER_HEIGHT } from '../Constants'
+import { PRIMARY_COLOR, STATUSBAR_HEIGHT, HEADER_HEIGHT, PLAYER_HEIGHT } from '../../constants'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 

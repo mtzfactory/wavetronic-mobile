@@ -5,7 +5,7 @@ import { SearchBar } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 import uuidv4 from 'uuid/v4'
 
-import { API_URL_FRIENDS } from '../Constants'
+import { API_URL_FRIENDS } from '../../constants'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 

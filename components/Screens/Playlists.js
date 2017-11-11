@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native'
 import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
 import ActionButton from 'react-native-action-button'
 
-import { API_URL_PLAYLISTS } from '../Constants'
+import { API_URL_PLAYLISTS } from '../../constants'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 
