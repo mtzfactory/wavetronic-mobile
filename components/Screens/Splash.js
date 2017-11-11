@@ -27,14 +27,14 @@ export default class SplashScreen extends Component {
         AsyncStorage.getItem('@mtzfactory:token')
             .then(token => {
                 if (token) {
-                    console.log('Splash token:', token)
+                    //console.log('Splash token:', token)
                     apiAuthorization.amIAuthorized(token)
                         .then( () => {
-                            console.log('Splash -> Songs')
+                            //console.log('Splash -> Songs')
                             this._navigate('Songs', { token })
                         })
                         .catch( error => {
-                            console.log('Splash -> Login:', error.message)
+                            //console.log('Splash -> Login:', error.message)
                             this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                         })
                 }

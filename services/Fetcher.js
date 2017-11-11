@@ -1,4 +1,5 @@
 function checkStatus(res) {
+    //console.log('checkStatus:', res)
     if (res.status >= 200 && res.status < 300) {
         return res
     }
@@ -12,6 +13,7 @@ function checkStatus(res) {
 }
 
 function parseJSON(res) {
+    //console.log('parseJSON:', res)
     return res.json()
 }
 
@@ -49,6 +51,7 @@ class Fetcher {
     }
 
     __get(url) {
+        //console.log('__get' urll, 'HEADERS:', this.HEADERS)
         return fetch(url, {
                 method: 'GET',
                 headers: this.HEADERS,

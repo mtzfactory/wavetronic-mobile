@@ -38,6 +38,7 @@ export default class ContactsScreen extends Component {
     componentDidMount() {
         this._requestData()
     }
+    
     async _doTheFetch() {
         try {
             let response = await fetch(`${API_URL_FRIENDS}&page=${this.state.page}&seed=${this.state.seed}`, {
@@ -195,7 +196,7 @@ export default class ContactsScreen extends Component {
                         removeClippedSubviews={ true }
                     />
                 </List>
-                <FabNavigator current={ SCREEN } navigate={ navigate } token={params.token} isPlayerVisible={ isPlayerVisible } />
+                <FabNavigator current={ SCREEN } navigate={ navigate } isPlayerVisible={ isPlayerVisible } />
             </View>
         )
     }

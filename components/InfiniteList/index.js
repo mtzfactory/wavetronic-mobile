@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { StyleSheet, View, FlatList, ActivityIndicator, TextInput } from 'react-native'
 import { List } from 'native-base'
 import { SearchBar } from 'react-native-elements'
 
-import { API_PAGE_LIMIT } from '../../constants'
+//import { API_PAGE_LIMIT } from '../../constants'
 
 export default class InfiniteList extends Component {
     constructor() {
@@ -18,96 +19,43 @@ export default class InfiniteList extends Component {
             search: null
         }
 
-        this.results_count = 0
-        this.results_fullcount = 0
-        this.limit = API_PAGE_LIMIT
-
         this._requestData.bind(this)
-        this._doTheFetch.bind(this)
     }
 
-    componentDidMount() {
+    componentWillMount() {
+        this.results_count = 0
+        this.results_fullcount = 0
         this._requestData()
     }
 
-    async _doTheFetch() {
-        try {
-            let response = await fetch(`${this.props.url}?offset=${this.state.offset}&limit=${this.limit}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${this.props.token}`
-                }
-            })
-
-            let body = await response.json()
-
-            //console.log('fetch', this.state.offset, body.headers.results_count, body.results[0].id, body.results[body.results.length-1].id)
-
-            this.results_count = body.headers.results_count
-            this.results_fullcount = body.headers.results_fullcount
-
-            return body
-        }
-        catch (error) {
-            throw new Error(error.name + ' ' + error.message)
-        }
-    }
-
-    async _requestData() {
-        const { offset } = this.state
-
-        if (this.state.loading) return null
-
+    _requestData() {
+        if (this.state.loading)
+            return null
+        
         this.setState({ loading: true })
 
-        try {
-            res = await this._doTheFetch()
+        this.props.getData(this.state.offset, this.props.limit)
+            .then( res => {
 
-            this.setState(prevState => {
-                return {
-                    data: prevState.offset === 0 ? res.results : [ ...prevState.data, ...res.results ],
-                    error: res.error_message || null,
-                    offset: prevState.offset + this.results_count - 1,
-                    loading: false,
-                    refreshing: false,
-                    error: null
-                }
+                console.log('_requestData:', res)
+
+                this.results_count = res.headers.results_count
+                this.results_fullcount = res.headers.results_fullcount
+
+                this.setState(prevState => {
+                    return {
+                        data: prevState.offset === 0 ? res.results : [ ...prevState.data, ...res.results ],
+                        error: res.error_message || null,
+                        offset: prevState.offset + this.results_count - 1,
+                        loading: false,
+                        refreshing: false,
+                        error: null
+                    }
+                })
             })
-        }
-        catch (error) {
-            this.setState({ error, loading: false, refreshing: false })
-        }
-
-        // fetch(`${this.props.url}?offset=${this.state.offset}&limit=${this.limit}`, {
-        //     method: 'GET',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     }
-        // })
-        // .then(res => res.json())
-        // .then(res => {
-        //     this.results_count = res.headers.results_count
-        //     this.results_fullcount = res.headers.results_fullcount
-
-        //     console.log('fetch', this.state.offset, this.results_count, res.results[0].id, res.results[res.results.length-1].id)
-
-        //     this.setState(prevState => {
-        //         return {
-        //             data: prevState.offset === 0 ? res.results : [ ...prevState.data, ...res.results ],
-        //             error: res.error_message || null,
-        //             offset: prevState.offset + this.results_count - 1,
-        //             loading: false,
-        //             refreshing: false,
-        //             error: null
-        //         }
-        //     })
-        // })
-        // .catch(error => {
-        //     this.setState({ error, loading: false, refreshing: false })
-        // })
+            .catch( error => {
+                this.setState({ error, loading: false, refreshing: false })
+            })
     }
 
     _handleLoadMore = () => {
@@ -138,7 +86,7 @@ export default class InfiniteList extends Component {
         // this.setState({
         //     loading: true
         // });
-        console.log('search')
+        console.log('InfiniteList', '_search')
     }
 
     _keyExtractor = (item, index) => item.id
@@ -205,4 +153,13 @@ export default class InfiniteList extends Component {
             </List>
         )
     }
+}
+
+InfiniteList.propTypes = {
+    getData: PropTypes.func.isRequired,
+    limit: PropTypes.number.isRequired,
+    renderItem: PropTypes.func.isRequired,
+    rowHeight: PropTypes.number.isRequired,
+    searchHolder: PropTypes.string.isRequired,
+    searchIcon: PropTypes.string
 }
