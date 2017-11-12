@@ -3,7 +3,7 @@ import { StyleSheet, Alert } from 'react-native'
 import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
 import ActionButton from 'react-native-action-button'
 
-import { API_PAGE_LIMIT } from '../../constants'
+import { SCREEN_SONGS_COLOR, API_PAGE_LIMIT } from '../../constants'
 import musicService from '../../services/MusicService'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
@@ -38,7 +38,8 @@ export default class SongsScreen extends Component {
     static navigationOptions = {
         title: SCREEN,
         headerLeft: null,
-        headerTitleStyle : { alignSelf: 'center' }
+        headerTitleStyle : { alignSelf: 'center' },
+        headerStyle: { backgroundColor: SCREEN_SONGS_COLOR }
     }
 
     constructor() {

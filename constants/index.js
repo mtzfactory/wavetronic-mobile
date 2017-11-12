@@ -11,7 +11,7 @@ const API_URL_BASE = `${SRV_URL_BASE}/api/v1`
 
 export const API_URL_REGISTER = `${SRV_URL_BASE}/auth/register`
 export const API_URL_LOGIN = `${SRV_URL_BASE}/auth/login`
-export const API_URL_LOGOUT = `${SRV_URL_BASE}/auth/logout`
+export const API_URL_LOGOUT = `${SRV_URL_BASE}/auth/revoke`
 export const API_URL_WELCOME = `${API_URL_BASE}`
 
 export const API_URL_TRACKS = `${API_URL_BASE}/tracks`
@@ -41,3 +41,9 @@ const DARK_BLUEGREY = '#2C3E50'
 
 export const PRIMARY_COLOR =  RED
 export const DARK_PRIMARY_COLOR =  DARK_RED
+
+export const SCREEN_SONGS_COLOR = '#9b59b6'
+export const SCREEN_ALBUMS_COLOR = '#3498db'
+export const SCREEN_PLAYLISTS_COLOR = '#1abc9c'
+export const SCREEN_CONTACTS_COLOR = '#F1C40F'
+
