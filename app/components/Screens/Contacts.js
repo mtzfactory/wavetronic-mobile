@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, ActivityIndicator, FlatList } from 'react-native'
+import { StyleSheet, Platform, StatusBar, ActivityIndicator, FlatList } from 'react-native'
 import { View, List, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
 import { SearchBar } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 import uuidv4 from 'uuid/v4'
 
-import { SCREEN_CONTACTS_COLOR, API_URL_FRIENDS } from '../../constants'
+import { SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR, API_URL_FRIENDS } from '../../constants'
 import UserData from '../../business/UserData'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
@@ -183,6 +183,9 @@ export default class ContactsScreen extends Component {
 
         return (
             <View style={ styles.container }>
+                {
+                    Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_CONTACTS_DARK_COLOR } />
+                }
                 <List contentContainerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
                     <FlatList
                         data={ this.state.data }

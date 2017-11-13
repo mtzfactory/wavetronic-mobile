@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { StyleSheet, Alert } from 'react-native'
+import { StyleSheet, Platform, StatusBar, Alert } from 'react-native'
 import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
 import ActionButton from 'react-native-action-button'
 
-import { SCREEN_SONGS_COLOR, API_PAGE_LIMIT } from '../../constants'
+import { SCREEN_SONGS_COLOR, SCREEN_SONGS_DARK_COLOR, API_PAGE_LIMIT } from '../../constants'
 
 import MusicData from '../../business/MusicData'
 import InfiniteList from '../InfiniteList'
@@ -63,6 +63,9 @@ export default class SongsScreen extends Component {
 
         return (
             <View style={ styles.container }>
+                {
+                    Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_SONGS_DARK_COLOR } />
+                }
                 <InfiniteList
                     getData={ musicData.getTracks }
                     limit={ API_PAGE_LIMIT }
