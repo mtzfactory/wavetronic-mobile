@@ -4,12 +4,10 @@ import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'nati
 import ActionButton from 'react-native-action-button'
 
 import { SCREEN_SONGS_COLOR, API_PAGE_LIMIT } from '../../constants'
-//import musicService from '../../services/MusicService'
+
 import MusicData from '../../business/MusicData'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
-
-import TokenService from '../../services/TokenService'
 
 const SCREEN = 'Songs'
 const musicData = new MusicData()
@@ -58,12 +56,6 @@ export default class SongsScreen extends Component {
         <PureListItem listItem={ item } handlePlaySong={ this.props.screenProps.handlePlaySong } />
     )
 
-    componentWillMount() {
-        //console.log('componentDidMount', 'SongsScreen')
-        //const { state: { params } } = this.props.navigation
-        //musicService.__setToken(params.token)
-    }
-
     render() {
         const ROWHEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
         const { navigate } = this.props.navigation
@@ -72,14 +64,12 @@ export default class SongsScreen extends Component {
         return (
             <View style={ styles.container }>
                 <InfiniteList
-                    //url={ API_URL_TRACKS }
                     getData={ musicData.getTracks }
                     limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderItem }
                     rowHeight={ ROWHEIGTH }
                     searchHolder='Search for songs ...'
                     searchIcon='ios-headset'
-                    //token={ params.token }
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } isPlayerVisible={ isPlayerVisible } />
             </View>

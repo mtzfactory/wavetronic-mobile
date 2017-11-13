@@ -28,11 +28,11 @@ class Fetcher {
         this.token = null
     }
 
-    setToken(token) {
-         //TokenService.get().saveToken(token)
-        this.token = token
-        this.HEADERS['Authorization'] = `Bearer ${token}`
-    }
+    // setToken(token) {
+    //      //TokenService.get().saveToken(token)
+    //     this.token = token
+    //     this.HEADERS['Authorization'] = `Bearer ${token}`
+    // }
 
     getHeaders() {
         if (!this.token) {
@@ -43,30 +43,10 @@ class Fetcher {
         return this.HEADERS
     }
 
-    setAuthHeader() {
-        this.HEADERS['Authorization'] = `Bearer ${TokenService.get().getToken()}`
-        // return Promise.resolve().then(() => {
-        //     if (this.token)
-        //         return null
-
-        //     return TokenService.get().readToken()
-        //         .then(token => {
-        //             if (token) {
-        //                 this.token = token
-        //                 this.HEADERS['Authorization'] = `Bearer ${token}`
-        //                 console.log(this.HEADERS)
-        //             }
-        //         })
-        //     })
-    }
-
     postWithAuth(url, data) {
-        if (!this.token)
-            this.setAuthHeader()
-
         return fetch(url, {
                 method: 'POST',
-                headers: this.HEADERS,
+                headers: this.getHeaders(),
                 body: JSON.stringify(data)
             })
             .then(checkStatus)
@@ -74,12 +54,9 @@ class Fetcher {
     }
 
     putWithAuth(url, data) {
-        if (!this.token)
-            this.setAuthHeader()
-
         return fetch(url, {
                 method: 'PUT',
-                headers: this.HEADERS,
+                headers: this.getHeaders(),
                 body: JSON.stringify(data)
             })
             .then(checkStatus)
@@ -87,24 +64,12 @@ class Fetcher {
     }
 
     getWithAuth(url) {
-        // if (!this.token)
-        //     this.setAuthHeader()
-        
         return fetch(url, {
                 method: 'GET',
-                headers: this.getHeaders(),
+                headers: this.getHeaders()
             })
             .then(checkStatus)
             .then(parseJSON)
-        // return this.setAuthHeader()
-        //     .then(() => {
-        //         return fetch(url, {
-        //             method: 'GET',
-        //             headers: this.HEADERS,
-        //         })
-        //         .then(checkStatus)
-        //         .then(parseJSON)
-        //     })
     }
 }
 

@@ -4,9 +4,7 @@ import { View, TouchableOpacity, Text, TextInput, Image, ImageBackground, Alert,
 import { Item, Input, Icon } from 'native-base'
 import { NavigationActions } from 'react-navigation'
 
-//import apiAuthorization from '../../services/ApiAuthorization' 
 import TokenService from '../../services/TokenService'
-//userData = new (require('../../business/UserData'))
 import UserData from '../../business/UserData'
 
 const userData = new UserData()
@@ -84,9 +82,7 @@ export default class LoginScreen extends Component {
                         error: `${username} login successfully`,
                         requesting: false
                     }, () => {
-                        //AsyncStorage.setItem('@mtzfactory:token', token)
                         TokenService.get().saveToken(token)
-                            //.then( () => this._navigate('Songs', { token }))
                             .then( () => this._navigate('Songs'))
                             .catch( error => {
                                 this.setState({

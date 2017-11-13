@@ -42,8 +42,12 @@ const DARK_BLUEGREY = '#2C3E50'
 export const PRIMARY_COLOR =  RED
 export const DARK_PRIMARY_COLOR =  DARK_RED
 
-export const SCREEN_SONGS_COLOR = '#9b59b6'
-export const SCREEN_ALBUMS_COLOR = '#3498db'
-export const SCREEN_PLAYLISTS_COLOR = '#1abc9c'
+export const SCREEN_SONGS_COLOR = '#673AB7' //'#9b59b6'
+export const SCREEN_SONGS_DARK_COLOR = '#512DA8'
+export const SCREEN_ALBUMS_COLOR = '#2196F3' //'#3498db'
+export const SCREEN_ALBUMS_DARK_COLOR = '#1976D2'
+export const SCREEN_PLAYLISTS_COLOR = '#009688' //'#1abc9c'
+export const SCREEN_PLAYLISTS_DARK_COLOR = '#00796B'
 export const SCREEN_CONTACTS_COLOR = '#F1C40F'
+export const SCREEN_CONTACTS_DARK_COLOR = '#FBC02D'
 

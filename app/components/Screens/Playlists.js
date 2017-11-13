@@ -1,20 +1,21 @@
 import React, { Component } from 'react'
-import { StyleSheet, Alert } from 'react-native'
+import { StyleSheet } from 'react-native'
 import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
 import ActionButton from 'react-native-action-button'
 
-import { SCREEN_ALBUMS_COLOR, API_PAGE_LIMIT } from '../../constants'
-//import musicService from '../../services/MusicService'
+import { SCREEN_PLAYLISTS_COLOR, API_PAGE_LIMIT } from '../../constants'
+
 import MusicData from '../../business/MusicData'
+import UserData from '../../business/UserData'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 
-const SCREEN = 'Albums'
+const SCREEN = 'Playlists'
 const musicData = new MusicData()
+const userData = new UserData()
 
 class PureListItem extends React.PureComponent {
-
-    _openAlbum = (id) => {
+    _openPlaylist = (id) => {
         Alert.alert(`${id} was clicked`)
     }
 
@@ -22,14 +23,11 @@ class PureListItem extends React.PureComponent {
         const { listItem } = this.props
 
         return (
-            <ListItem thumbnail button={true} onPress={ () => this._openAlbum(listItem.id) }>
-                <Left>
-                    <Thumbnail square large source={{ uri: listItem.image }} />
-                </Left>
+            <ListItem thumbnail button={true} onPress={ () => this._openPlaylist(listItem.id) }>
                 <Body>
                     <Text numberOfLines={ 1 } >{ listItem.name }</Text>
-                    <Text numberOfLines={ 1 } note>{ listItem.artist_name }</Text>
-                    <Text numberOfLines={ 1 } note>{ listItem.releasedate }</Text>
+                    <Text numberOfLines={ 1 } note>{ listItem.user_name }</Text>
+                    <Text numberOfLines={ 1 } note>{ listItem.creationdate }</Text>
                 </Body>
                 <Right>
                     <Button transparent>
@@ -41,41 +39,32 @@ class PureListItem extends React.PureComponent {
     }
 }
 
-export default class AlbumsScreen extends Component {
+export default class PlaylistsScreen extends Component {
     static navigationOptions = {
         title: SCREEN,
         headerLeft: null,
         headerTitleStyle : { alignSelf: 'center' },
-        headerStyle: { backgroundColor: SCREEN_ALBUMS_COLOR }
+        headerStyle: { backgroundColor: SCREEN_PLAYLISTS_COLOR }
     }
-
+    
     _renderItem = (item) => (
         <PureListItem listItem={ item } />
     )
 
-    componentWillMount() {
-        //console.log('componentDidMount', 'AlbumsScreen')
-        //const { state: { params } } = this.props.navigation
-        //musicService.__setToken(params.token)
-    }
-
     render() {
-        const ROWHEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical        
+        const ROWHEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
         const { navigate } = this.props.navigation
         const { isPlayerVisible } = this.props.screenProps
 
         return (
             <View style={ styles.container }>
                 <InfiniteList
-                    //url={ API_URL_ALBUMS }
-                    getData={ musicData.getAlbums }
+                    getData={ musicData.getPlaylists }
                     limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderItem }
                     rowHeight={ ROWHEIGTH }
-                    cols= { 2 }
-                    searchHolder='Search for albums ...'
-                    searchIcon='ios-disc'
-                    //token={params.token}
+                    searchHolder='Search for playlists ...'
+                    searchIcon='ios-infinite'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } isPlayerVisible={ isPlayerVisible } />
             </View>
