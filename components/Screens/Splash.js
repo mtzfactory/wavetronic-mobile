@@ -1,8 +1,13 @@
 import React, { Component } from 'react'
-import { StyleSheet, AsyncStorage, ActivityIndicator, View, Text, ImageBackground } from 'react-native'
+import { StyleSheet, ActivityIndicator, View, Text, ImageBackground } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 
-import apiAuthorization from '../../services/ApiAuthorization' 
+//import apiAuthorization from '../../services/ApiAuthorization' 
+import TokenService from '../../services/TokenService'
+//userData = new (require('../../business/UserData'))
+import UserData from '../../business/UserData'
+
+const userData = new UserData()
 
 export default class SplashScreen extends Component {    
     _navigate(page, params) {
@@ -22,27 +27,33 @@ export default class SplashScreen extends Component {
             this.props.navigation.dispatch(resetAction)
         }, 50 )
     }
-    
+
     componentDidMount() {
-        AsyncStorage.getItem('@mtzfactory:token')
+        TokenService.get().readToken()
             .then(token => {
                 if (token) {
-                    //console.log('Splash token:', token)
-                    apiAuthorization.amIAuthorized(token)
+                    console.log('Splash token:', token)
+                    //apiAuthorization.amIAuthorized(token)
+                    TokenService.get().setToken(token)
+                    userData.amIAuthorized()
                         .then( () => {
-                            //console.log('Splash -> Songs')
-                            this._navigate('Songs', { token })
+                            console.log('Splash -> Songs')
+                            this._navigate('Songs') //this._navigate('Songs', { token })
                         })
                         .catch( error => {
-                            //console.log('Splash -> Login:', error.message)
+                            console.log('Splash -> Login:', error.message)
                             this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                         })
                 }
                 else {
+                    console.log('Splash -> Login: no token', token)
                     this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                 }
             })
-            .catch( () => this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' }))
+            .catch( (error) =>  {
+                console.log('Splash -> Login: error', error.message)
+                this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
+            })
     }
 
     render() {

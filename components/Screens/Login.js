@@ -1,11 +1,15 @@
 import React, { Component } from 'react'
-import { StyleSheet, Dimensions, Keyboard, KeyboardAvoidingView, AsyncStorage } from 'react-native'
+import { StyleSheet, Dimensions, Keyboard, KeyboardAvoidingView } from 'react-native'
 import { View, TouchableOpacity, Text, TextInput, Image, ImageBackground, Alert, ActivityIndicator  } from 'react-native'
 import { Item, Input, Icon } from 'native-base'
 import { NavigationActions } from 'react-navigation'
 
-//import { API_URL_LOGIN } from '../../constants'
-import apiAuthorization from '../../services/ApiAuthorization' 
+//import apiAuthorization from '../../services/ApiAuthorization' 
+import TokenService from '../../services/TokenService'
+//userData = new (require('../../business/UserData'))
+import UserData from '../../business/UserData'
+
+const userData = new UserData()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 
@@ -56,7 +60,8 @@ export default class LoginScreen extends Component {
 
         if (params.type === 'Sign up') {
             data.email = email
-            apiAuthorization.doRegister(data)
+            //apiAuthorization.doRegister(data)
+            userData.doRegister(data)
                 .then( () => {
                     this.setState({
                         error: `${username} registered successfully`,
@@ -71,14 +76,18 @@ export default class LoginScreen extends Component {
                 })
         }
         else {
-            apiAuthorization.doLogin(data)
+            //apiAuthorization.doLogin(data)
+            userData.doLogin(data)
                 .then( token => {
+                    console.log('Login token:', token)
                     this.setState({
                         error: `${username} login successfully`,
                         requesting: false
                     }, () => {
-                        AsyncStorage.setItem('@mtzfactory:token', token)
-                            .then( () => this._navigate('Songs', { token }))
+                        //AsyncStorage.setItem('@mtzfactory:token', token)
+                        TokenService.get().saveToken(token)
+                            //.then( () => this._navigate('Songs', { token }))
+                            .then( () => this._navigate('Songs'))
                             .catch( error => {
                                 this.setState({
                                     error: error.message,
@@ -94,45 +103,6 @@ export default class LoginScreen extends Component {
                     })
                 })
         }
-
-        // fetch(API_URL_LOGIN, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json',
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify(data)
-        // })
-        // .then(res => {
-        //     console.log(res.status)
-        //     if (res.status !== 200) {
-        //         this.setState({
-        //             error: `Server error or Unauthorized (${res.status})`,
-        //             requesting: false
-        //         })
-        //         return null
-        //     }
-
-        //     return res.json()
-        // })
-        // .then(res => {
-        //     if (res) {
-        //         AsyncStorage.setItem('@mtzfactory:token', res.data)
-        //             .then(() => this._navigate('Songs', { token: res.data }))
-        //             .catch( error => {
-        //                 this.setState({
-        //                     error: error.message,
-        //                     requesting: false
-        //                 })
-        //             })
-        //     }
-        // })
-        // .catch(error => {
-        //     this.setState({
-        //         error: error.message,
-        //         requesting: false
-        //     })
-        // })
     }
 
     _changeScreen() {

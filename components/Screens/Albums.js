@@ -4,11 +4,13 @@ import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'nati
 import ActionButton from 'react-native-action-button'
 
 import { SCREEN_ALBUMS_COLOR, API_PAGE_LIMIT } from '../../constants'
-import musicService from '../../services/MusicService'
+//import musicService from '../../services/MusicService'
+import MusicData from '../../business/MusicData'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 
 const SCREEN = 'Albums'
+const musicData = new MusicData()
 
 class PureListItem extends React.PureComponent {
 
@@ -53,8 +55,8 @@ export default class AlbumsScreen extends Component {
 
     componentWillMount() {
         //console.log('componentDidMount', 'AlbumsScreen')
-        const { state: { params } } = this.props.navigation
-        musicService.__setToken(params.token)
+        //const { state: { params } } = this.props.navigation
+        //musicService.__setToken(params.token)
     }
 
     render() {
@@ -66,7 +68,7 @@ export default class AlbumsScreen extends Component {
             <View style={ styles.container }>
                 <InfiniteList
                     //url={ API_URL_ALBUMS }
-                    getData={ musicService.getAlbums }
+                    getData={ musicData.getAlbums }
                     limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderItem }
                     rowHeight={ ROWHEIGTH }

@@ -6,10 +6,12 @@ import ActionButton from 'react-native-action-button'
 import uuidv4 from 'uuid/v4'
 
 import { SCREEN_CONTACTS_COLOR, API_URL_FRIENDS } from '../../constants'
+import UserData from '../../business/UserData'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 
 const SCREEN = 'Contacts'
+const userData = new UserData()
 
 export default class ContactsScreen extends Component {
     static navigationOptions = {
@@ -36,7 +38,7 @@ export default class ContactsScreen extends Component {
         this._doTheFetch.bind(this)
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this._requestData()
     }
     
