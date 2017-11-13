@@ -54,7 +54,6 @@ export default class PlaylistsScreen extends Component {
     render() {
         const ROWHEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
         const { navigate } = this.props.navigation
-        const { isPlayerVisible } = this.props.screenProps
 
         return (
             <View style={ styles.container }>
@@ -69,7 +68,7 @@ export default class PlaylistsScreen extends Component {
                     searchHolder='Search for playlists ...'
                     searchIcon='ios-infinite'
                 />
-                <FabNavigator current={ SCREEN } navigate={ navigate } isPlayerVisible={ isPlayerVisible } />
+                <FabNavigator current={ SCREEN } navigate={ navigate } />
             </View>
         )
     }

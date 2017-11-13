@@ -98,9 +98,7 @@ export default class SongsScreen extends Component {
     _hideMe() {
         if (!this.state.playing)
             setTimeout(() => {
-                this.setState({ isVisible: false }, () => {
-                    this.props.onHidePlayer()
-                })
+                this.setState({ isVisible: false })
             }, 400)
     }
 

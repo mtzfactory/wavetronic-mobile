@@ -23,10 +23,10 @@ const buttonItems = [
 
 export default class FabNavigator extends Component {
     render() {
-        const { current, navigate, token, isPlayerVisible } = this.props
+        const { current, navigate } = this.props
 
         return (
-            <ActionButton fixNativeFeedbackRadius buttonColor={ PRIMARY_COLOR } offsetY={ isPlayerVisible ? 30 : 30 }>
+            <ActionButton fixNativeFeedbackRadius buttonColor={ PRIMARY_COLOR }>
                 {
                     buttonItems.map((button, idx) => {
                         if (current === button.title) return {}
@@ -37,7 +37,7 @@ export default class FabNavigator extends Component {
                                 key={ uuidv4() }
                                 buttonColor={ button.color }
                                 title={button.title}
-                                onPress={ () => navigate(button.screen, { token }) }>
+                                onPress={ () => navigate(button.screen) }>
                                 <Icon name={ button.icon } style={ styles.actionButtonIcon } />
                             </ActionButton.Item>
                         )

@@ -36,9 +36,6 @@ export default class InfiniteList extends Component {
 
         this.props.getData(this.state.offset, this.props.limit)
             .then( res => {
-
-                console.log('_requestData:', res)
-
                 this.results_count = res.headers.results_count
                 this.results_fullcount = res.headers.results_fullcount
 

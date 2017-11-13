@@ -12,17 +12,12 @@ export default class App extends Component {
 
         this.state = {
             systemIsReady: true,
-            song : {},
-            isPlayerVisible: false
+            song : {}
         }
     }
 
     _handlePlaySong(song) {
-        this.setState({ song, isPlayerVisible: true })   /// MODIFICAR A TRUE CUANDO FUNCIONE!!!
-    }
-
-    _handleOnHidePlayer() {
-        this.setState({ isPlayerVisible: false })
+        this.setState({ song })   /// MODIFICAR A TRUE CUANDO FUNCIONE!!!
     }
 
     render() {
@@ -40,8 +35,8 @@ export default class App extends Component {
                 { /* Platform.OS === 'android' && <View style={ styles.statusBarUnderlay } /> */
                   Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ DARK_PRIMARY_COLOR } />
                 }
-                <RootNavigation handlePlaySong={ this._handlePlaySong.bind(this) } isPlayerVisible={ this.state.isPlayerVisible } />
-                <Player newSong={ this.state.song } onHidePlayer={ this._handleOnHidePlayer.bind(this) } />
+                <RootNavigation handlePlaySong={ this._handlePlaySong.bind(this) } />
+                <Player newSong={ this.state.song } />
             </View>
         )
     }

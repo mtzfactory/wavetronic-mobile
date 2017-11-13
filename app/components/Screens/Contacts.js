@@ -179,7 +179,6 @@ export default class ContactsScreen extends Component {
 
     render() {
         const { navigate, state: { params } } = this.props.navigation
-        const { isPlayerVisible } = this.props.screenProps
 
         return (
             <View style={ styles.container }>
@@ -202,7 +201,7 @@ export default class ContactsScreen extends Component {
                         removeClippedSubviews={ true }
                     />
                 </List>
-                <FabNavigator current={ SCREEN } navigate={ navigate } isPlayerVisible={ isPlayerVisible } />
+                <FabNavigator current={ SCREEN } navigate={ navigate } />
             </View>
         )
     }

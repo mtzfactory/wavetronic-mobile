@@ -16,7 +16,7 @@ export const API_URL_WELCOME = `${API_URL_BASE}`
 
 export const API_URL_TRACKS = `${API_URL_BASE}/tracks`
 export const API_URL_ALBUMS = `${API_URL_BASE}/albums`
-export const API_URL_PLAYLISTS = `${API_URL_BASE}/playlists`
+export const API_URL_PLAYLISTS = `${API_URL_BASE}/user/playlists`
 export const API_URL_FRIENDS = 'https://randomuser.me/api/?results=20'
 
 export const API_PAGE_LIMIT = 15

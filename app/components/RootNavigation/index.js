@@ -43,7 +43,7 @@ const RootStackNavigator = StackNavigator(
 export default class RootNavigation extends Component {
     render() {
         return (
-            <RootStackNavigator screenProps={ { handlePlaySong: this.props.handlePlaySong, isPlayerVisible: this.props.isPlayerVisible } } />
+            <RootStackNavigator screenProps={ { handlePlaySong: this.props.handlePlaySong } } />
         )
     }
 }
