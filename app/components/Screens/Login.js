@@ -121,7 +121,7 @@ export default class LoginScreen extends Component {
                 placeholder="email address"
                 keyboardType="email-address"
                 placeholderTextColor = "#ffffff"
-                onChangeText={ email => this.setState({ email  }) }
+                onChangeText={ email => this.setState({ email }) }
                 onSubmitEditing={ ()=> this.password.focus() }
             />
         )
@@ -150,7 +150,7 @@ export default class LoginScreen extends Component {
                         placeholder="username"
                         placeholderTextColor = "#ffffff"
                         selectionColor="#fff"
-                        onChangeText={ username => this.setState({ username  }) }
+                        onChangeText={ username => this.setState({ username }) }
                         onSubmitEditing={ ()=> {
                             params.type === 'Login' ? this.password.focus() : this.email.focus() 
                         }}
@@ -162,7 +162,7 @@ export default class LoginScreen extends Component {
                         placeholder="password"
                         secureTextEntry
                         placeholderTextColor = "#ffffff"
-                        onChangeText={ password => this.setState({ password  }) }
+                        onChangeText={ password => this.setState({ password }) }
                     />
                     <TouchableOpacity style={ styles.submit } onPress={ this._submit.bind(this) }>
                         { loginButtonOrActivity }

@@ -28,11 +28,14 @@ class Fetcher {
         this.token = null
     }
 
-    // setToken(token) {
-    //      //TokenService.get().saveToken(token)
-    //     this.token = token
-    //     this.HEADERS['Authorization'] = `Bearer ${token}`
-    // }
+    timeoutFetch(input, init = {}) {
+        const timeout = init && Number(init.timeout) || 8000
+      
+        return new Promise((resolve, reject) => {
+            fetch(input, init).then(resolve, reject)
+            setTimeout(() => reject(new TypeError('Client timed out')), timeout)
+        })
+    }
 
     getHeaders() {
         if (!this.token) {
