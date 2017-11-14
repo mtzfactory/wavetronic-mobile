@@ -6,12 +6,12 @@ import ActionButton from 'react-native-action-button'
 import uuidv4 from 'uuid/v4'
 
 import { SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR, API_URL_FRIENDS } from '../../constants'
-import UserData from '../../business/UserData'
+import UserApi from '../../api/UserApi'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 
 const SCREEN = 'Contacts'
-const userData = new UserData()
+const userApi = new UserApi()
 
 export default class ContactsScreen extends Component {
     static navigationOptions = {

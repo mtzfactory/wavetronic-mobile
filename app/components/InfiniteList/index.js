@@ -36,6 +36,8 @@ export default class InfiniteList extends Component {
 
         this.props.getData(this.state.offset, this.props.limit)
             .then( res => {
+                console.log(res)
+
                 this.results_count = res.headers.results_count
                 this.results_fullcount = res.headers.results_fullcount
 
@@ -51,7 +53,8 @@ export default class InfiniteList extends Component {
                 })
             })
             .catch( error => {
-                this.setState({ error, loading: false, refreshing: false })
+                console.log(error.message)
+                this.setState({ error: error.message, loading: false, refreshing: false })
             })
     }
 
@@ -86,7 +89,7 @@ export default class InfiniteList extends Component {
         console.log('InfiniteList', '_search')
     }
 
-    _keyExtractor = (item, index) => item.id
+    _keyExtractor = (item, index) => item.id || item._id
 
     _renderHeader = () => {
         return (
@@ -100,11 +103,14 @@ export default class InfiniteList extends Component {
     }
 
     _renderFooter = () => {
-        return (
-            <View style={{ paddingVertical: 20 }}>
-                <ActivityIndicator animating size='large'/>
-            </View>
-        )
+        if ( this.state.loading )
+            return (
+                <View style={{ paddingVertical: 20 }}>
+                    <ActivityIndicator animating size='large'/>
+                </View>
+            )
+
+        return null
     }
 
     _renderItem = ( {item} ) => {

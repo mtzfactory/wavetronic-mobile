@@ -47,7 +47,7 @@ class Fetcher {
     }
 
     postWithAuth(url, data) {
-        return fetch(url, {
+        return this.timeoutFetch(url, {
                 method: 'POST',
                 headers: this.getHeaders(),
                 body: JSON.stringify(data)
@@ -57,7 +57,7 @@ class Fetcher {
     }
 
     putWithAuth(url, data) {
-        return fetch(url, {
+        return this.timeoutFetch(url, {
                 method: 'PUT',
                 headers: this.getHeaders(),
                 body: JSON.stringify(data)
@@ -67,7 +67,7 @@ class Fetcher {
     }
 
     getWithAuth(url) {
-        return fetch(url, {
+        return this.timeoutFetch(url, {
                 method: 'GET',
                 headers: this.getHeaders()
             })

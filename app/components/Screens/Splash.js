@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { StyleSheet, ActivityIndicator, View, Text, ImageBackground } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 
-//import apiAuthorization from '../../services/ApiAuthorization' 
-import TokenService from '../../services/TokenService'
-//userData = new (require('../../business/UserData'))
-import UserData from '../../business/UserData'
+import { SPLASH_COLOR } from '../../constants'
 
-const userData = new UserData()
+import TokenService from '../../services/TokenService'
+import UserApi from '../../api/UserApi'
+
+const userApi = new UserApi()
 
 export default class SplashScreen extends Component {    
     _navigate(page, params) {
@@ -28,6 +28,10 @@ export default class SplashScreen extends Component {
         }, 50 )
     }
 
+    componentWillMount() {
+        this.backgroundImage = require('../../assets/images/splash_screen_2.png')
+    }
+
     componentDidMount() {
         TokenService.get().readToken()
             .then(token => {
@@ -35,7 +39,7 @@ export default class SplashScreen extends Component {
                     console.log('Splash token:', token)
                     //apiAuthorization.amIAuthorized(token)
                     TokenService.get().setToken(token)
-                    userData.amIAuthorized()
+                    userApi.amIAuthorized()
                         .then( () => {
                             console.log('Splash -> Songs')
                             this._navigate('Songs') //this._navigate('Songs', { token })
@@ -58,7 +62,7 @@ export default class SplashScreen extends Component {
 
     render() {
         return (
-            <ImageBackground style={ styles.container } source={require('../../assets/images/splash_screen_2.png')}>
+            <ImageBackground style={ styles.container } source={this.backgroundImage}>
                 <View style={ styles.loading }>
                     <Text style={ styles.leitmotif }>do you remember when you shared music with tapes?</Text>
                     <ActivityIndicator size={'large'} color={'aliceblue'} style={ styles.spinner }/>
@@ -73,7 +77,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: '#EEF3E2'
+        backgroundColor: SPLASH_COLOR //'#EEF3E2'
     },
     loading: {
         marginVertical: '10%'

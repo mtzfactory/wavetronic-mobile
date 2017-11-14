@@ -5,12 +5,12 @@ import ActionButton from 'react-native-action-button'
 
 import { SCREEN_ALBUMS_COLOR, SCREEN_ALBUMS_DARK_COLOR, API_PAGE_LIMIT } from '../../constants'
 
-import MusicData from '../../business/MusicData'
+import MusicApi from '../../api/MusicApi'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 
 const SCREEN = 'Albums'
-const musicData = new MusicData()
+const musicApi = new MusicApi()
 
 class PureListItem extends React.PureComponent {
     _openAlbum = (id) => {
@@ -62,7 +62,7 @@ export default class AlbumsScreen extends Component {
                     Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_ALBUMS_DARK_COLOR } />
                 }
                 <InfiniteList
-                    getData={ musicData.getAlbums }
+                    getData={ musicApi.getAlbums }
                     limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderItem }
                     rowHeight={ ROWHEIGTH }

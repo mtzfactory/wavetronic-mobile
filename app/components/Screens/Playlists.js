@@ -1,21 +1,21 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, StatusBar, Alert } from 'react-native'
+import { StyleSheet, Platform, StatusBar, Alert, ImageBackground } from 'react-native'
 import { Content, View, ListItem, Left, Right, Body, Thumbnail, Text, Button, Icon, Form, Item, Input, Label } from 'native-base'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
 import { SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR, API_PAGE_LIMIT } from '../../constants'
 
-import MusicData from '../../business/MusicData'
-import UserData from '../../business/UserData'
+//import MusicApi from '../../api/MusicApi'
+import UserApi from '../../api/UserApi'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 
 const SCREEN = 'Playlists'
-const musicData = new MusicData()
-const userData = new UserData()
+//const musicApi = new MusicApi()
+const userApi = new UserApi()
 
-class PureListItem extends React.PureComponent {
+class PureListJamendoItem extends React.PureComponent {
     _openPlaylist = (id) => {
         Alert.alert(`${id} was clicked`)
     }
@@ -35,6 +35,34 @@ class PureListItem extends React.PureComponent {
                         <Text>Open</Text>
                     </Button>
                 </Right>
+            </ListItem>
+        )
+    }
+}
+
+class PureListItem extends React.PureComponent {
+    _openPlaylist = (id) => {
+        Alert.alert(`${id} was clicked`)
+    }
+
+    render() {
+        const { listItem } = this.props
+        const flickrPhoto = 'http://farm5.staticflickr.com/4523/24540490088_81cc6eb451_n.jpg'
+
+        return (
+            <ListItem thumbnail button={true} onPress={ () => this._openPlaylist(listItem._id) }>
+                <ImageBackground source={{uri: flickrPhoto}} style={{ height: 100, width: '100%', flex: 1 }}>
+                <Body>
+                    <Text numberOfLines={ 1 } >{ listItem.name }</Text>
+                    <Text numberOfLines={ 1 } note>{ listItem.amount }</Text>
+                    <Text numberOfLines={ 1 } note>{ listItem.creation_date }</Text>
+                </Body>
+                <Right>
+                    <Button transparent>
+                        <Text>Open</Text>
+                    </Button>
+                </Right>
+                </ImageBackground>
             </ListItem>
         )
     }
@@ -79,7 +107,7 @@ export default class PlaylistsScreen extends Component {
                     Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_PLAYLISTS_DARK_COLOR } />
                 }
                 <InfiniteList
-                    getData={ musicData.getPlaylists }
+                    getData={ userApi.getPlaylists } //musicApi.getPlaylists }
                     limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderItem }
                     rowHeight={ ROWHEIGTH }

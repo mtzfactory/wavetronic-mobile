@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, StatusBar, View, Text } from 'react-native'
+import { StyleSheet, Platform, StatusBar, View, Text, Image } from 'react-native'
 //import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 
 import { DARK_PRIMARY_COLOR } from './constants'
@@ -19,6 +19,10 @@ export default class App extends Component {
     _handlePlaySong(song) {
         this.setState({ song })   /// MODIFICAR A TRUE CUANDO FUNCIONE!!!
     }
+
+    // componentWillMount() {
+    //     Image.prefetch('file://./assets/images/splash_screen_2.png')
+    // }
 
     render() {
         if (!this.state.systemIsReady) {

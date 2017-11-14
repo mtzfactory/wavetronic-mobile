@@ -5,9 +5,9 @@ import { Item, Input, Icon } from 'native-base'
 import { NavigationActions } from 'react-navigation'
 
 import TokenService from '../../services/TokenService'
-import UserData from '../../business/UserData'
+import UserApi from '../../api/UserApi'
 
-const userData = new UserData()
+const userApi = new UserApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 
@@ -58,8 +58,7 @@ export default class LoginScreen extends Component {
 
         if (params.type === 'Sign up') {
             data.email = email
-            //apiAuthorization.doRegister(data)
-            userData.doRegister(data)
+            userApi.doRegister(data)
                 .then( () => {
                     this.setState({
                         error: `${username} registered successfully`,
@@ -74,8 +73,7 @@ export default class LoginScreen extends Component {
                 })
         }
         else {
-            //apiAuthorization.doLogin(data)
-            userData.doLogin(data)
+            userApi.doLogin(data)
                 .then( token => {
                     console.log('Login token:', token)
                     this.setState({
