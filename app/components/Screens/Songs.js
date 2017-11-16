@@ -40,7 +40,7 @@ export default class SongsScreen extends Component {
     static navigationOptions = {
         title: SCREEN,
         headerLeft: null,
-        headerTitleStyle : { alignSelf: 'center' },
+        headerTitleStyle : { alignSelf: 'center', color: '#fff' },
         headerStyle: { backgroundColor: SCREEN_SONGS_COLOR }
     }
 
@@ -67,11 +67,9 @@ export default class SongsScreen extends Component {
                 }
                 <InfiniteList
                     getData={ musicApi.getTracks }
-                    limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderItem }
                     rowHeight={ ROWHEIGTH }
                     searchHolder='Search for songs ...'
-                    searchIcon='ios-headset'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
             </View>

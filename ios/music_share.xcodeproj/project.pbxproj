@@ -53,6 +53,7 @@
 		6BE6778A1FF84EE2B0CBE700 /* MaterialCommunityIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 69AB8C75ED1040E9BC2E8FB0 /* MaterialCommunityIcons.ttf */; };
 		607C0606EA4E4D96A1EA062F /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7DB9C1EF50C1426E851B128E /* libRCTVideo.a */; };
 		7BE2020CBD9640EEB4A39F42 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B560605EFA72489BAF33E668 /* SpaceMono-Regular.ttf */; };
+		B421DF4014804E21A97F7115 /* SpaceMono-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = F336A5F6367543A9AB1625FC /* SpaceMono-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -299,6 +300,7 @@
 		67D67885FD7340C3A063C039 /* RCTVideo.xcodeproj */ = {isa = PBXFileReference; name = "RCTVideo.xcodeproj"; path = "../node_modules/react-native-video/ios/RCTVideo.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		7DB9C1EF50C1426E851B128E /* libRCTVideo.a */ = {isa = PBXFileReference; name = "libRCTVideo.a"; path = "libRCTVideo.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		B560605EFA72489BAF33E668 /* SpaceMono-Regular.ttf */ = {isa = PBXFileReference; name = "SpaceMono-Regular.ttf"; path = "../assets/fonts/SpaceMono-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		F336A5F6367543A9AB1625FC /* SpaceMono-Regular.ttf */ = {isa = PBXFileReference; name = "SpaceMono-Regular.ttf"; path = "../app/assets/fonts/SpaceMono-Regular.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -563,6 +565,7 @@
 				752DD6467A3C42B8A7876023 /* Feather.ttf */,
 				69AB8C75ED1040E9BC2E8FB0 /* MaterialCommunityIcons.ttf */,
 				B560605EFA72489BAF33E668 /* SpaceMono-Regular.ttf */,
+				F336A5F6367543A9AB1625FC /* SpaceMono-Regular.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -952,6 +955,7 @@
 				843FA2E7CFE948AFA05E0327 /* Feather.ttf in Resources */,
 				6BE6778A1FF84EE2B0CBE700 /* MaterialCommunityIcons.ttf in Resources */,
 				7BE2020CBD9640EEB4A39F42 /* SpaceMono-Regular.ttf in Resources */,
+				B421DF4014804E21A97F7115 /* SpaceMono-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -6,7 +6,7 @@ import ActionButton from 'react-native-action-button'
 import uuidv4 from 'uuid/v4'
 
 import {
-    PRIMARY_COLOR,
+    FABNAVIGATOR_COLOR,
     SCREEN_SONGS_COLOR,
     SCREEN_ALBUMS_COLOR,
     SCREEN_PLAYLISTS_COLOR,
@@ -26,7 +26,7 @@ export default class FabNavigator extends Component {
         const { current, navigate } = this.props
 
         return (
-            <ActionButton fixNativeFeedbackRadius buttonColor={ PRIMARY_COLOR }>
+            <ActionButton fixNativeFeedbackRadius buttonColor={ FABNAVIGATOR_COLOR }>
                 {
                     buttonItems.map((button, idx) => {
                         if (current === button.title) return {}

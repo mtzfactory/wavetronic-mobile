@@ -31,17 +31,25 @@ class UserApi {
     amIAuthorized(token) {
         return this.fetcher.getWithAuth(API_URL_WELCOME)
     }
-
+// api/v1/user
     getProfile = () => {
         return this.fetcher.getWithAuth(`${API_URL_PROFILE}`)
     }
-
+// api/v1/user/friends
+    getFriends = (offset, limits) => {
+        return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}`)
+    }
+// api/v1/user/playlists
     getPlaylists = (offset, limit) => {
         return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}?offset=${offset}&limit=${limit}`)
     }
 
-    getFriends = (offset, limits) => {
-        return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}`)
+    addPlaylist = (name, description) => {
+        return this.fetcher.postWithAuth(API_URL_PLAYLISTS, {name, description})
+    }
+// api/vi1/user/playlists/:id
+    getTracksFromPlaylist = (playlistId) => {
+        return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}/${playlistId}`)
     }
 }
 

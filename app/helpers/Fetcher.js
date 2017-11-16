@@ -1,7 +1,6 @@
 import TokenService from '../services/TokenService'
 
 function checkStatus(res) {
-    //console.log('checkStatus:', res)
     if (res.status >= 200 && res.status < 300) {
         return res
     }
@@ -15,7 +14,6 @@ function checkStatus(res) {
 }
 
 function parseJSON(res) {
-    //console.log('parseJSON:', res)
     return res.json()
 }
 

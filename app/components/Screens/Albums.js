@@ -44,7 +44,7 @@ export default class AlbumsScreen extends Component {
     static navigationOptions = {
         title: SCREEN,
         headerLeft: null,
-        headerTitleStyle : { alignSelf: 'center' },
+        headerTitleStyle : { alignSelf: 'center', color: '#fff' },
         headerStyle: { backgroundColor: SCREEN_ALBUMS_COLOR }
     }
 
@@ -63,12 +63,10 @@ export default class AlbumsScreen extends Component {
                 }
                 <InfiniteList
                     getData={ musicApi.getAlbums }
-                    limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderItem }
                     rowHeight={ ROWHEIGTH }
-                    cols= { 2 }
+                    columns= { 2 }
                     searchHolder='Search for albums ...'
-                    searchIcon='ios-disc'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
             </View>

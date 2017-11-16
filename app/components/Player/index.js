@@ -220,6 +220,7 @@ export default class SongsScreen extends Component {
                             <Icon name='ios-arrow-forward' />
                         </Button>
                         <View style={ styles.sliderContainer }>
+                            <Text style={[ styles.song, styles.remaining ]}>{ getMMSSFromMillis(this.state.songDuration) }</Text>
                             <Slider
                                 onSlidingStart={ this._onSlidingStart.bind(this) }
                                 onSlidingComplete={ this._onSlidingComplete.bind(this) }
@@ -230,7 +231,7 @@ export default class SongsScreen extends Component {
                                 thumbStyle={ styles.sliderThumb }
                                 value={ songPercentage || 0 }
                             />
-                            <Text style={ styles.title }>{ '(' + getMMSSFromMillis(this.state.songDuration) + ') ' + (this.state.song.name && this.state.song.name.substring(0, 22)) }</Text>
+                            <Text style={[ styles.song, styles.title ]}>{ this.state.song.name }</Text>
                         </View>
                         <Button transparent onPress={ this._toggleVolume.bind(this) }>
                             <Icon name={ this.state.muted ? 'ios-volume-off' : 'ios-volume-up' } />
@@ -242,7 +243,7 @@ export default class SongsScreen extends Component {
                             <Icon name='ios-arrow-down' />
                         </Button>
                         <Button transparent onPress={ this._togglePlaylist.bind(this) }>
-                            <Icon name='ios-more' />
+                            <Icon name='md-more' />
                         </Button>
                     </View>
                 </View>
@@ -256,22 +257,23 @@ const styles = StyleSheet.create({
         backgroundColor: '#e1e8ee',//'#c8c8c8',
         position: 'absolute',
         bottom: 0,
+        right:0,
+        left:0,
         width: '100%'
     },
     controls: {
+        width: '100%',
         flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: 'row'
     },
     sliderContainer: {
         flexDirection: 'column',
-        justifyContent: 'space-around',
+        justifyContent: 'center',
         alignItems: 'stretch',
         flexGrow: 2,
     },
     slider: {
-        height: 20,
+        height: 15,
     },
     sliderTrack: {
         height: 2,
@@ -287,10 +289,16 @@ const styles = StyleSheet.create({
         shadowRadius: 2,
         shadowOpacity: 1,
     },
-    title: {
+    song: {
         fontSize: 10,
         fontFamily: 'SpaceMono-Regular.ttf',
-        textAlignVertical: 'top',
+        
         includeFontPadding: false,
+    },
+    title: {
+        textAlign: 'center'
+    },
+    remaining: {
+        alignSelf: 'center'
     }
 })

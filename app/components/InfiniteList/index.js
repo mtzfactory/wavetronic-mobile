@@ -4,7 +4,7 @@ import { StyleSheet, View, FlatList, ActivityIndicator, TextInput } from 'react-
 import { List } from 'native-base'
 import { SearchBar } from 'react-native-elements'
 
-//import { API_PAGE_LIMIT } from '../../constants'
+import { API_PAGE_LIMIT } from '../../constants'
 
 export default class InfiniteList extends Component {
     constructor() {
@@ -34,10 +34,8 @@ export default class InfiniteList extends Component {
         
         this.setState({ loading: true })
 
-        this.props.getData(this.state.offset, this.props.limit)
+        this.props.getData(this.state.offset, API_PAGE_LIMIT) //this.props.limit)
             .then( res => {
-                console.log(res)
-
                 this.results_count = res.headers.results_count
                 this.results_fullcount = res.headers.results_fullcount
 
@@ -138,11 +136,13 @@ export default class InfiniteList extends Component {
 
     render() {
         return (
-            <List contentContainerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+            // <List contentContainerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+            //<View onLayout={ this._handleOnLayout.bind(this) } style={ styles.container }>
                 <FlatList
                     data={ this.state.data }
                     renderItem={ this._renderItem }
-                    initialNumToRender={ 20 }
+                    key={ this.props.listKey || 'xs123qwa12s' }
+                    //initialNumToRender={ API_PAGE_LIMIT }
                     keyExtractor={ this._keyExtractor }
                     getItemLayout={ this._getItemLayout }
                     ListHeaderComponent={ this._renderHeader }
@@ -152,15 +152,19 @@ export default class InfiniteList extends Component {
                     refreshing={ this.state.refreshing }
                     onRefresh={ this._handleRefresh }
                     removeClippedSubviews={ true }
+                    numColumns={ this.props.columns || 1 }
                 />
-            </List>
+            //</View>
+            // </List>
         )
     }
 }
 
 InfiniteList.propTypes = {
     getData: PropTypes.func.isRequired,
-    limit: PropTypes.number.isRequired,
+    //limit: PropTypes.number.isRequired,
+    listKey: PropTypes.oneOfType([ PropTypes.string, PropTypes.number]),
+    columns: PropTypes.number,
     renderItem: PropTypes.func.isRequired,
     rowHeight: PropTypes.number.isRequired,
     searchHolder: PropTypes.string.isRequired,
