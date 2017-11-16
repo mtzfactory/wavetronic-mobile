@@ -22,11 +22,21 @@ const buttonItems = [
 ]
 
 export default class FabNavigator extends Component {
+    constructor() {
+        super()
+        this.FAB_COLOR = FABNAVIGATOR_COLOR
+    }
+    componentWillMount() {
+        this.FAB_COLOR = this.props.current !== undefined
+        ? buttonItems.find(x => x.title === this.props.current).color
+        : FABNAVIGATOR_COLOR
+    }
+
     render() {
         const { current, navigate } = this.props
 
         return (
-            <ActionButton fixNativeFeedbackRadius buttonColor={ FABNAVIGATOR_COLOR }>
+            <ActionButton fixNativeFeedbackRadius buttonColor={ this.FAB_COLOR }>
                 {
                     buttonItems.map((button, idx) => {
                         if (current === button.title) return {}
