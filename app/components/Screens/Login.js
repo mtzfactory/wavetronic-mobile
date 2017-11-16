@@ -75,7 +75,7 @@ export default class LoginScreen extends Component {
         else {
             userApi.doLogin(data)
                 .then( token => {
-                    console.log('Login token:', token)
+                    //console.log('Login token:', token)
                     this.setState({
                         error: `${username} login successfully`,
                         requesting: false

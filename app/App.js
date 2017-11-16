@@ -40,7 +40,7 @@ export default class App extends Component {
                   Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ DARK_PRIMARY_COLOR } />
                 }
                 <RootNavigation handlePlaySong={ this._handlePlaySong.bind(this) } />
-                <Player newSong={ this.state.song } />
+                <Player track={ this.state.song } />
             </View>
         )
     }

@@ -36,26 +36,25 @@ export default class SplashScreen extends Component {
         TokenService.get().readToken()
             .then(token => {
                 if (token) {
-                    console.log('Splash token:', token)
-                    //apiAuthorization.amIAuthorized(token)
+                    //console.log('Splash token:', token)
                     TokenService.get().setToken(token)
                     userApi.amIAuthorized()
                         .then( () => {
-                            console.log('Splash -> Songs')
+                            //console.log('Splash -> Songs')
                             this._navigate('Songs') //this._navigate('Songs', { token })
                         })
                         .catch( error => {
-                            console.log('Splash -> Login:', error.message)
+                            //console.log('Splash -> Login:', error.message)
                             this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                         })
                 }
                 else {
-                    console.log('Splash -> Login: no token', token)
+                    //console.log('Splash -> Login: no token', token)
                     this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                 }
             })
             .catch( (error) =>  {
-                console.log('Splash -> Login: error', error.message)
+                //console.log('Splash -> Login: error', error.message)
                 this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
             })
     }

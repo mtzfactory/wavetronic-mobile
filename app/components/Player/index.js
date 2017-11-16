@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { Platform, Dimensions, StyleSheet, UIManager, LayoutAnimation, FlatList, Alert } from 'react-native'
-import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button, Icon } from 'native-base'
+import { Platform, Dimensions, StyleSheet, View, Animated, FlatList, Alert } from 'react-native'
+import { Text, Button, Icon } from 'native-base'
+import { ListItem } from 'react-native-elements'
 import Video from 'react-native-video'
 import Slider from 'react-native-slider'
 import _ from 'lodash'
@@ -23,31 +24,29 @@ function getMMSSFromMillis(timeInSeconds) {
 }
 
 export default class SongsScreen extends Component {
-    constructor() {
+    constructor () {
         super()
 
         this.state = {
             isVisible: false,
-            showPlaylist: false,
-            song: {},
-            //songs: [],
+            expanded: false,
+            track: {},
+            trackHistory: [],
             playing: false,
             muted: false,
             shuffle: false,
             sliding: false,
             currentTime: 0,
-            songDuration: 0
+            songDuration: 0,
+            animation: new Animated.Value()
         }
-
-        this.songs = []
     }
 
-    _getRandomSong() {
-        //this.props.getRandomSong()
+    _getRandomSong () {
         return null
     }
 
-    _goBackward() {
+    _goBackward () {
         if(this.state.currentTime < 3 && this.state.shuffle )
             this._getRandomSong()
         else
@@ -58,126 +57,139 @@ export default class SongsScreen extends Component {
         })
     }
 
-    _goForward() {
+    _goForward () {
         this.refs.audio.seek(0)
 
         this.setState({
-            //songIndex: this.state.shuffle ? this.randomSongIndex() : this.state.songIndex + 1,
             currentTime: 0,
         })
+
+        const songIndex = this.state.shuffle ? this.randomSongIndex() : this.state.songIndex + 1
         
         if (this.state.shuffle) this._getRandomSong()
     }
 
-    _togglePlay() {
+    _togglePlayer () {
         this.setState({ playing: !this.state.playing })
     }
 
-    _toggleShuffle() {
+    _toggleShuffle () {
         this.setState({ shuffle: !this.state.shuffle })
     }
 
-    _toggleVolume() {
+    _toggleVolume () {
         this.setState({ muted: !this.state.muted })
     }
 
-    _onLoad(params) {
+    _onLoad (params) {
         this.setState({ songDuration: params.duration })
     }
 
-    _onProgress(params) {
+    _onProgress (params) {
         if( !this.state.sliding ) {
             this.setState({ currentTime: params.currentTime })
         }
     }
 
-    _onEnd() {
+    _onEnd () {
         this.setState({ playing: false, currentTime: 0 })
     }
 
-    _hideMe() {
+    _hideMe () {
         if (!this.state.playing)
+            this.state.animation.setValue(PLAYER_HEIGHT)
             setTimeout(() => {
-                this.setState({ isVisible: false })
+                this.setState({ expanded: false, isVisible: false })
             }, 400)
     }
 
-    _onSlidingStart() {
+    _onSlidingStart () {
         this.setState({ sliding: true });
       }
     
-    _onSlidingChange(value) {
+    _onSlidingChange (value) {
         let newPosition = value * this.state.songDuration;
         this.setState({ currentTime: newPosition });
     }
 
-    _onSlidingComplete() {
+    _onSlidingComplete () {
         this.refs.audio.seek( this.state.currentTime );
         this.setState({ sliding: false });
     }
 
-    _togglePlaylist() {
-        if (this.state.showPlaylist) {
-            LayoutAnimation.configureNext(LayoutAnimation.Presets.linear)
-        }
-        
-        this.setState({ showPlaylist: !this.state.showPlaylist })
+    _togglePlaylist () {
+        const initialValue = this.state.expanded ? DEVICE_HEIGHT/2 : PLAYER_HEIGHT
+        const finalValue = this.state.expanded ? PLAYER_HEIGHT : DEVICE_HEIGHT/2
+    
+        this.setState({ expanded : !this.state.expanded })
+    
+        this.state.animation.setValue(initialValue)
+        Animated.spring(this.state.animation, { toValue: finalValue }).start()
     }
 
-    _renderPlaylist() {
+    _playTrackFromHistory(index) {
+        this.setState({ 
+            track: this.state.trackHistory[index],
+            currentTime: 0,
+            playing: true,
+        })
+    }
+
+    _renderItem = (item, index) => {
+        return <ListItem
+            title={ item.name }
+            subtitle={ `${item.album_name}, ${item.artist_name}` }
+            leftIcon={{ name: 'ios-headset-outline', type: 'ionicon', style: { color: PRIMARY_COLOR } }}
+            rightTitle={ getMMSSFromMillis(item.duration) }
+            key={ item.id }
+            onPress={() => this._playTrackFromHistory(index) }/>
+    }
+
+    _renderPlaylist () {
         return (
             <FlatList
-                data={ this.songs }
-                renderItem={ ({item}) => <Text>{item.name}</Text> }
+                data={ this.state.trackHistory }
+                renderItem={ ({item, index}) => this._renderItem(item, index) }
                 keyExtractor={ item => item.id }
                 getItemLayout={ this._getItemLayout }
             />
         )
     }
 
-    _addNewSongToPlaylist = song => {
-        const miniSong = {
-            album_id: song.album_id,
-            album_name: song.album_name,
-            artist_name: song.artist_name,
-            audio: song.audio,
-            id: song.id,
-            image: song.image,
-            name: song.name
-        }
+    componentWillReceiveProps (nextProps) {
+        if (nextProps.track.id !== this.state.track.id) {
+            if (this.state.playing)
+                this._togglePlayer()
 
-        if (!_.some(this.songs, miniSong)) {
-            //this.songs = [miniSong, ...this.songs]
-            this.songs.unshift(miniSong)
-            console.log(this.songs)
+            const newTrack = {
+                album_name: nextProps.track.album_name,
+                artist_name: nextProps.track.artist_name,
+                audio: nextProps.track.audio,
+                id: nextProps.track.id,
+                name: nextProps.track.name,
+                duration: nextProps.track.duration
+            }
+
+            const newState = { 
+                track: nextProps.track,
+                currentTime: 0,
+                playing: true,
+                isVisible: true
+            }
+
+            if (!_.some(this.state.trackHistory, newTrack)) {
+                newState.trackHistory = [ newTrack, ... this.state.trackHistory]
+            }
+
+            this.setState(newState)
         }
     }
 
     componentDidMount() {
-        if (Platform.OS === 'android')
-            UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true)
+        this.state.animation.setValue(PLAYER_HEIGHT)
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.newSong.id !== this.state.song.id) {
-            if (this.state.playing)
-                this._togglePlay()
-
-            this.setState(prevState => { 
-                return {
-                    song: nextProps.newSong,
-                    //songs: [...prevState.songs, nextProps.newSong],
-                    currentTime: 0,
-                    playing: true,
-                    isVisible: true
-                }
-            })
-
-            this._addNewSongToPlaylist(nextProps.newSong)
-        }
-    }
-
-    render() {
+    render () {
         if (!this.state.isVisible && !this.state.playing) {
             return null
         }
@@ -187,16 +199,13 @@ export default class SongsScreen extends Component {
             songPercentage = this.state.currentTime / this.state.songDuration
         }
 
-        const container = this.state.showPlaylist ? { height: DEVICE_HEIGHT - STATUSBAR_HEIGHT - HEADER_HEIGHT } : { height: PLAYER_HEIGHT }
-        const listContainer = this.state.showPlaylist ? { flex: 1 } : {}
-
         return (
-            <View style={ [ container, { backgroundColor: 'seagreen' } ] }>
-                <View style={ [ listContainer, { backgroundColor: 'steelblue'} ] }>
-                { this.state.showPlaylist && this._renderPlaylist() }
+            <Animated.View style={[ styles.container, { height: this.state.animation } ]}>
+                <View style={ styles.playlist }>
+                { this.state.expanded && this._renderPlaylist() }
                 </View>
-                <View style={ styles.playerContainer }>
-                    <Video source={{ uri: this.state.song.audio }}
+                <View style={ styles.player }>
+                    <Video source={{ uri: this.state.track.audio }}
                         ref="audio"
                         volume={ this.state.muted ? 0 : 1.0 }
                         muted={ false }
@@ -213,14 +222,14 @@ export default class SongsScreen extends Component {
                         <Button transparent onPress={ this._goBackward.bind(this) }>
                             <Icon name='ios-arrow-back' />
                         </Button>
-                        <Button transparent onPress={ this._togglePlay.bind(this) }>
+                        <Button transparent onPress={ this._togglePlayer.bind(this) }>
                             <Icon style={ styles.play } name={ this.state.playing ? 'ios-pause' : 'ios-play' } />
                         </Button>
                         <Button transparent onPress={ this._goForward.bind(this) }>
                             <Icon name='ios-arrow-forward' />
                         </Button>
                         <View style={ styles.sliderContainer }>
-                            <Text style={[ styles.song, styles.remaining ]}>{ getMMSSFromMillis(this.state.songDuration) }</Text>
+                            <Text style={[ styles.track, styles.remaining ]}>{ getMMSSFromMillis(this.state.songDuration) }</Text>
                             <Slider
                                 onSlidingStart={ this._onSlidingStart.bind(this) }
                                 onSlidingComplete={ this._onSlidingComplete.bind(this) }
@@ -231,14 +240,11 @@ export default class SongsScreen extends Component {
                                 thumbStyle={ styles.sliderThumb }
                                 value={ songPercentage || 0 }
                             />
-                            <Text style={[ styles.song, styles.title ]}>{ this.state.song.name }</Text>
+                            <Text style={[ styles.track, styles.title ]}>{ this.state.track.name }</Text>
                         </View>
                         <Button transparent onPress={ this._toggleVolume.bind(this) }>
                             <Icon name={ this.state.muted ? 'ios-volume-off' : 'ios-volume-up' } />
                         </Button>
-                        {/* <Button transparent onPress={ this._toggleShuffle.bind(this) }>
-                            <Icon name={ this.state.shuffle ? 'ios-shuffle' : 'ios-arrow-round-forward' } />
-                        </Button> */}
                         <Button transparent disabled={ this.state.playing } onPress={ this._hideMe.bind(this) }>
                             <Icon name='ios-arrow-down' />
                         </Button>
@@ -247,14 +253,23 @@ export default class SongsScreen extends Component {
                         </Button>
                     </View>
                 </View>
-            </View>
+            </Animated.View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    playerContainer: {
-        backgroundColor: '#e1e8ee',//'#c8c8c8',
+    container: {
+        backgroundColor: '#e1e8ee',
+        overflow: 'hidden'
+    },
+    playlist: {
+        margin: 10,
+        flex: 1,
+        backgroundColor: 'transparent'
+    },
+    player: {
+        backgroundColor: '#e1e8ee',
         position: 'absolute',
         bottom: 0,
         right:0,
@@ -282,14 +297,14 @@ const styles = StyleSheet.create({
     sliderThumb: {
         width: 10,
         height: 10,
-        backgroundColor: PRIMARY_COLOR,//'#f62976',
+        backgroundColor: PRIMARY_COLOR,
         borderRadius: 10 / 2,
         shadowColor: 'red',
         shadowOffset: { width: 0, height: 0 },
         shadowRadius: 2,
         shadowOpacity: 1,
     },
-    song: {
+    track: {
         fontSize: 10,
         fontFamily: 'SpaceMono-Regular.ttf',
         

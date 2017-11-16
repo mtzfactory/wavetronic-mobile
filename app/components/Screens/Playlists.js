@@ -29,7 +29,7 @@ class PureListItem extends PureComponent {
         this.props.onItemPressed(id)
     }
 
-    componentWillMount() {
+    componentDidMount() {
         Flickr()
             .then( url => this.setState({ image: { uri: url } }))
             .catch(error => {
