@@ -1,6 +1,8 @@
 #mtz
 README-private*.md
 *.env
+ios/
+android/
 
 # OSX
 #
