@@ -4,9 +4,12 @@ import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import Video from 'react-native-video'
 import Slider from 'react-native-slider'
+import Modal from 'react-native-modalbox'
 import _ from 'lodash'
 
 import { PRIMARY_COLOR, STATUSBAR_HEIGHT, HEADER_HEIGHT, PLAYER_HEIGHT } from '../../constants'
+import UserApi from '../../api/UserApi'
+const userApi = new UserApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 
@@ -26,6 +29,9 @@ function getMMSSFromMillis(timeInSeconds) {
 export default class SongsScreen extends Component {
     constructor () {
         super()
+
+        this.playlists = null
+        this.trackIndex = null
 
         this.state = {
             isVisible: false,
@@ -126,8 +132,46 @@ export default class SongsScreen extends Component {
         this.state.animation.setValue(initialValue)
         Animated.spring(this.state.animation, { toValue: finalValue }).start()
     }
+// SAVE TRACK TO PLAYLIST
+    _saveTrackToPlaylist = (playlist) => {
+        this.refs.modalWindow.close()
+        userApi.saveTrackToPlaylist(playlist, this.state.trackHistory[this.trackIndex].id)
+            .catch( error => Alert.alert('Error on save.', error.message))
 
-    _playTrackFromHistory(index) {
+        this.trackIndex = null
+        this.playlists = null
+    }
+
+    _renderPlaylistsItem = (item, index) => {
+        return <ListItem
+            title={ item.name }
+            subtitle={ item.description }
+            leftIcon={{ name: 'ios-list', type: 'ionicon', style: { color: PRIMARY_COLOR } }}
+            key={ item._id }
+            onPress={ () => this._saveTrackToPlaylist(item._id) }/>
+    }
+
+    _renderPlaylists () {
+        return (
+            <FlatList
+                data={ this.playlists }
+                renderItem={ ({item, index}) => this._renderPlaylistsItem(item, index) }
+                getItemLayout={ this._getItemLayout }
+                keyExtractor={ item => item._id }
+            />
+        )
+    }
+
+    _selectPlaylistToAddTrack(trackIndex) {
+        userApi.getAllMyPlaylists()
+            .then( res => {
+                this.playlists = res.results
+                this.trackIndex = trackIndex
+                this.refs.modalWindow.open()
+            })
+    }
+// TRACK HISTORY
+    _playTrackFromHistory (index) {
         this.setState({ 
             track: this.state.trackHistory[index],
             currentTime: 0,
@@ -135,27 +179,29 @@ export default class SongsScreen extends Component {
         })
     }
 
-    _renderItem = (item, index) => {
+    _renderTrackHistoryItem = (item, index) => {
         return <ListItem
             title={ item.name }
             subtitle={ `${item.album_name}, ${item.artist_name}` }
             leftIcon={{ name: 'ios-headset-outline', type: 'ionicon', style: { color: PRIMARY_COLOR } }}
             rightTitle={ getMMSSFromMillis(item.duration) }
+            rightIcon={{ name: 'md-add', type: 'ionicon', style: { color: PRIMARY_COLOR, marginLeft: 20 } }}
+            onPressRightIcon={ () => this._selectPlaylistToAddTrack(index) }
             key={ item.id }
-            onPress={() => this._playTrackFromHistory(index) }/>
+            onPress={ () => this._playTrackFromHistory(index) }/>
     }
 
-    _renderPlaylist () {
+    _renderTrackHistory () {
         return (
             <FlatList
                 data={ this.state.trackHistory }
-                renderItem={ ({item, index}) => this._renderItem(item, index) }
-                keyExtractor={ item => item.id }
+                renderItem={ ({item, index}) => this._renderTrackHistoryItem(item, index) }
                 getItemLayout={ this._getItemLayout }
+                keyExtractor={ item => item.id }
             />
         )
     }
-
+// COMPONENT LIFE
     componentWillReceiveProps (nextProps) {
         if (nextProps.track.id !== this.state.track.id) {
             if (this.state.playing)
@@ -202,8 +248,11 @@ export default class SongsScreen extends Component {
         return (
             <Animated.View style={[ styles.container, { height: this.state.animation } ]}>
                 <View style={ styles.playlist }>
-                { this.state.expanded && this._renderPlaylist() }
+                { this.state.expanded && this._renderTrackHistory() }
                 </View>
+                <Modal style={ styles.modal } position={"bottom"} ref={"modalWindow"}>
+                { this.state.expanded && this._renderPlaylists() }
+                </Modal>
                 <View style={ styles.player }>
                     <Video source={{ uri: this.state.track.audio }}
                         ref="audio"
@@ -262,6 +311,9 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#e1e8ee',
         overflow: 'hidden'
+    },
+    modal: {
+        height: DEVICE_HEIGHT / 2 - 80
     },
     playlist: {
         margin: 10,

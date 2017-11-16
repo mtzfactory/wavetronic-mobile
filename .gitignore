@@ -1,3 +1,7 @@
+#mtz
+README-private*.md
+*.env
+
 # OSX
 #
 .DS_Store

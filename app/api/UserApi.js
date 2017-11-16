@@ -39,13 +39,21 @@ class UserApi {
     getFriends = (offset, limits) => {
         return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}`)
     }
+// api/v1/user/playlists/all
+    getAllMyPlaylists = () => {
+        return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}/all`)
+    }
 // api/v1/user/playlists
     getPlaylists = (offset, limit) => {
         return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}?offset=${offset}&limit=${limit}`)
     }
 
     addPlaylist = (name, description) => {
-        return this.fetcher.postWithAuth(API_URL_PLAYLISTS, {name, description})
+        return this.fetcher.postWithAuth(API_URL_PLAYLISTS, { name, description })
+    }
+
+    saveTrackToPlaylist = (playlist, track) => {
+        return this.fetcher.putWithAuth(`${API_URL_PLAYLISTS}/${playlist}/track/${track}`)
     }
 // api/vi1/user/playlists/:id
     getTracksFromPlaylist = (playlistId) => {
