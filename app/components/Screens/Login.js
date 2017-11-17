@@ -115,10 +115,12 @@ export default class LoginScreen extends Component {
         return (
             <TextInput style={ styles.inputBox } 
                 ref={ input => this.email = input }
-                underlineColorAndroid='rgba(0,0,0,0)' 
+                underlineColorAndroid="rgba(0,0,0,0)"
+                autoCapitalize="none"
+                blurOnSubmit={ false }
                 placeholder="email address"
                 keyboardType="email-address"
-                placeholderTextColor = "#ffffff"
+                placeholderTextColor = "#fff"
                 onChangeText={ email => this.setState({ email }) }
                 onSubmitEditing={ ()=> this.password.focus() }
             />
@@ -144,9 +146,11 @@ export default class LoginScreen extends Component {
             <ImageBackground style={ styles.container } source={require('../../assets/images/splash_screen_2.png')}>
                 <View style={ styles.form }>
                     <TextInput style={ styles.inputBox } 
-                        underlineColorAndroid='rgba(0,0,0,0)' 
+                        underlineColorAndroid="rgba(0,0,0,0)"
+                        autoCapitalize="none"
+                        blurOnSubmit={ false }
                         placeholder="username"
-                        placeholderTextColor = "#ffffff"
+                        placeholderTextColor = "#fff"
                         selectionColor="#fff"
                         onChangeText={ username => this.setState({ username }) }
                         onSubmitEditing={ ()=> {
@@ -156,10 +160,11 @@ export default class LoginScreen extends Component {
                     { this._renderEmailInput() }
                     <TextInput style={ styles.inputBox } 
                         ref={ input => this.password = input }
-                        underlineColorAndroid='rgba(0,0,0,0)' 
+                        underlineColorAndroid="rgba(0,0,0,0)"
+                        autoCapitalize="none"
                         placeholder="password"
                         secureTextEntry
-                        placeholderTextColor = "#ffffff"
+                        placeholderTextColor = "#fff"
                         onChangeText={ password => this.setState({ password }) }
                     />
                     <TouchableOpacity style={ styles.submit } onPress={ this._submit.bind(this) }>

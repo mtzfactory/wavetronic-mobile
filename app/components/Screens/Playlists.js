@@ -156,19 +156,27 @@ export default class PlaylistsScreen extends Component {
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
                 <Modal ref={"newPlaylistModal"} style={styles.modal} position={"center"}>
                     <Content>
-                        <Text style={{ textAlign: "center", marginTop: 15 }}>New playlist</Text>
+                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
+                            <Text style={{ textAlign: "center" }}>New playlist</Text>
+                            <TouchableHighlight underlayColor="#FFF" onPress={ () => Alert.alert('close!') }>
+                                <Text>Close</Text>
+                            </TouchableHighlight>
+                        </View>
                         <Form>
                             <Item floatingLabel success={ this.state.playlistName != null }>
                                 <Label>Playlist name</Label>
-                                <Input ref={ (c) => this.name = c }
+                                <Input ref="_name"
                                     autoFocus={ true }
+                                    autoCapitalize="words"
+                                    blurOnSubmit={ false }
                                     onChangeText={ playlistName => this.setState({ playlistName }) }
-                                    //onSubmitEditing={ () => this.description._root.focus() }
+                                    onSubmitEditing={ () => this.refs._description._root.focus() }
                                 />
                             </Item>
                             <Item floatingLabel last success={ this.state.playlistDescription != null }>
                                 <Label>Description</Label>
-                                <Input ref={ (c) => this.description = c }
+                                <Input ref="_description"
+                                    autoCapitalize="sentences"
                                     onChangeText={ playlistDescription => this.setState({ playlistDescription }) }
                                     onSubmitEditing={ this._onAddPlaylist.bind(this) }
                                 />
