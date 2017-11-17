@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Platform, Dimensions, StyleSheet, View, Animated, FlatList, Alert } from 'react-native'
+import { Platform, Dimensions, StyleSheet, View, Animated, FlatList, TouchableHighlight, ActivityIndicator, Alert } from 'react-native'
 import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import Video from 'react-native-video'
@@ -38,6 +38,7 @@ export default class SongsScreen extends Component {
             expanded: false,
             track: {},
             trackHistory: [],
+            loading: false,
             playing: false,
             muted: false,
             shuffle: false,
@@ -76,7 +77,8 @@ export default class SongsScreen extends Component {
     }
 
     _togglePlayer () {
-        this.setState({ playing: !this.state.playing })
+        if (this.state.track.audio)
+            this.setState({ playing: !this.state.playing })
     }
 
     _toggleShuffle () {
@@ -88,7 +90,7 @@ export default class SongsScreen extends Component {
     }
 
     _onLoad (params) {
-        this.setState({ songDuration: params.duration })
+        this.setState({ loading: false, songDuration: params.duration })
     }
 
     _onProgress (params) {
@@ -176,6 +178,7 @@ export default class SongsScreen extends Component {
             track: this.state.trackHistory[index],
             currentTime: 0,
             playing: true,
+            loading: true
         })
     }
 
@@ -220,6 +223,7 @@ export default class SongsScreen extends Component {
                 track: nextProps.track,
                 currentTime: 0,
                 playing: true,
+                loading: true,
                 isVisible: true
             }
 
@@ -237,7 +241,14 @@ export default class SongsScreen extends Component {
 
     render () {
         if (!this.state.isVisible && !this.state.playing) {
-            return null
+            return (
+                <View style={ styles.opener }>
+                    <TouchableHighlight underlayColor="#F1F1F1" onPress={ () => this.setState({ isVisible: true }) }>
+                        <Icon name="ios-arrow-dropup"/>
+                    </TouchableHighlight>
+                </View>
+            )
+            //return null
         }
 
         let songPercentage = 0
@@ -269,13 +280,16 @@ export default class SongsScreen extends Component {
                     />
                     <View style={ styles.controls }>
                         <Button transparent onPress={ this._goBackward.bind(this) }>
-                            <Icon name='ios-arrow-back' />
+                            <Icon name="ios-arrow-back" />
                         </Button>
-                        <Button transparent onPress={ this._togglePlayer.bind(this) }>
-                            <Icon style={ styles.play } name={ this.state.playing ? 'ios-pause' : 'ios-play' } />
+                        <Button transparent disabled={ this.state.track.name === undefined } onPress={ this._togglePlayer.bind(this) }>
+                            { this.state.loading
+                                ? <ActivityIndicator size={'small'}/>
+                                : <Icon style={ styles.play } name={ this.state.playing ? 'ios-pause' : 'ios-play' } />
+                            }
                         </Button>
                         <Button transparent onPress={ this._goForward.bind(this) }>
-                            <Icon name='ios-arrow-forward' />
+                            <Icon name="ios-arrow-forward" />
                         </Button>
                         <View style={ styles.sliderContainer }>
                             <Text style={[ styles.track, styles.remaining ]}>{ getMMSSFromMillis(this.state.songDuration) }</Text>
@@ -283,7 +297,7 @@ export default class SongsScreen extends Component {
                                 onSlidingStart={ this._onSlidingStart.bind(this) }
                                 onSlidingComplete={ this._onSlidingComplete.bind(this) }
                                 onValueChange={ this._onSlidingChange.bind(this) }
-                                minimumTrackTintColor='#851c44'
+                                minimumTrackTintColor="#851c44"
                                 style={ styles.slider }
                                 trackStyle={ styles.sliderTrack }
                                 thumbStyle={ styles.sliderThumb }
@@ -295,10 +309,10 @@ export default class SongsScreen extends Component {
                             <Icon name={ this.state.muted ? 'ios-volume-off' : 'ios-volume-up' } />
                         </Button>
                         <Button transparent disabled={ this.state.playing } onPress={ this._hideMe.bind(this) }>
-                            <Icon name='ios-arrow-down' />
+                            <Icon name="ios-eye-off"/>
                         </Button>
-                        <Button transparent onPress={ this._togglePlaylist.bind(this) }>
-                            <Icon name='md-more' />
+                        <Button transparent disabled={ this.state.loading || this.state.track.name === undefined } onPress={ this._togglePlaylist.bind(this) }>
+                            <Icon name={ this.state.expanded ? 'ios-arrow-down' : 'ios-arrow-up' } />
                         </Button>
                     </View>
                 </View>
@@ -313,12 +327,22 @@ const styles = StyleSheet.create({
         overflow: 'hidden'
     },
     modal: {
-        height: DEVICE_HEIGHT / 2 - 80
+        height: DEVICE_HEIGHT / 2 - 80 // giving some top space
     },
     playlist: {
         margin: 10,
         flex: 1,
         backgroundColor: 'transparent'
+    },
+    opener: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        position: 'absolute',
+        bottom: 0,
+        right:0,
+        left:0,
+        width: '100%',
+        marginBottom: 3 
     },
     player: {
         backgroundColor: '#e1e8ee',
