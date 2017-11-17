@@ -7,9 +7,15 @@ import { SPLASH_COLOR } from '../../constants'
 import TokenService from '../../services/TokenService'
 import UserApi from '../../api/UserApi'
 
+const BACKGROUND_IMAGE = require('../../assets/images/splash_screen_2.png')
 const userApi = new UserApi()
 
-export default class SplashScreen extends Component {    
+export default class SplashScreen extends Component {   
+    constructor() {
+        super()
+        this.state = { loaded: false }
+    }
+    
     _navigate(page, params) {
         // Route with disabled back functionality
         const resetAction = NavigationActions.reset({
@@ -28,58 +34,65 @@ export default class SplashScreen extends Component {
         }, 50 )
     }
 
-    componentWillMount() {
-        this.backgroundImage = require('../../assets/images/splash_screen_2.png')
-    }
+    // _handleOnLoad() {
+    //     this.setState({ loaded: true })
+    // }
 
-    componentDidMount() {
+    // componentWillMount() {
+    //     this.backgroundImage = require('../../assets/images/splash_screen_2.png')
+    // }
+
+    //componentDidMount() {
+    _handleOnLoad() {
         TokenService.get().readToken()
             .then(token => {
                 if (token) {
-                    //console.log('Splash token:', token)
                     TokenService.get().setToken(token)
                     userApi.amIAuthorized()
                         .then( () => {
-                            //console.log('Splash -> Songs')
-                            this._navigate('Songs') //this._navigate('Songs', { token })
+                            this._navigate('Songs')
                         })
                         .catch( error => {
-                            //console.log('Splash -> Login:', error.message)
                             this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                         })
                 }
                 else {
-                    //console.log('Splash -> Login: no token', token)
                     this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                 }
             })
             .catch( (error) =>  {
-                //console.log('Splash -> Login: error', error.message)
                 this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
             })
     }
 
     render() {
         return (
-            <ImageBackground style={ styles.container } source={this.backgroundImage}>
+            <View style={ styles.overlay }>
+            <ImageBackground style={ styles.background } source={ BACKGROUND_IMAGE } onLoad={ this._handleOnLoad.bind(this) }>
                 <View style={ styles.loading }>
                     <Text style={ styles.leitmotif }>do you remember when you shared music with tapes?</Text>
                     <ActivityIndicator size={'large'} color={'aliceblue'} style={ styles.spinner }/>
                 </View>
             </ImageBackground>
+            </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
+    overlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    },
+    background: {
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
-        backgroundColor: SPLASH_COLOR //'#EEF3E2'
+        backgroundColor: SPLASH_COLOR
     },
     loading: {
-        marginVertical: '10%'
+        marginVertical: '10%',
+        marginHorizontal: '8%'
     },
     leitmotif: {
         fontFamily: 'SpaceMono-Regular',
