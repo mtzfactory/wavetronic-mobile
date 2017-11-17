@@ -3,6 +3,8 @@ README-private*.md
 *.env
 ios/
 android/
+.sass-cache
+.sass-cache/*
 
 # OSX
 #

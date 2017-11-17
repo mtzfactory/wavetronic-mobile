@@ -1,12 +1,17 @@
 
 //const HOST = '192.168.1.129'  // CREMOSA
-const HOST = '192.168.1.100'    // HOME
+//const HOST = '192.168.1.100'    // HOME
 //const HOST = '192.168.0.39'   // SKYLAB
+const HOST = 'wavemybeat-api.herokuapp.com'
 
 // API
-const PORT = 3001
+//const PORT = 3001
 
-const SRV_URL_BASE = `http://${HOST}:${PORT}`
+const TYPE = 'https://'
+//const TYPE = 'http://'
+
+//const SRV_URL_BASE = `${TYPE}${HOST}:${PORT}`
+const SRV_URL_BASE = `${TYPE}${HOST}`
 const API_URL_BASE = `${SRV_URL_BASE}/api/v1`
 
 export const API_URL_REGISTER = `${SRV_URL_BASE}/auth/register`
