@@ -35,9 +35,10 @@ export const STATUSBAR_HEIGHT = 24
 export const HEADER_HEIGHT = 56
 export const PLAYER_HEIGHT = 45
 
+export const LANDSCAPE = 'LANDSCAPE'
+export const PORTRAIT = 'PORTRAIT'
+
 // APP COLORS
-
-
 export const PRIMARY_COLOR = '#E91E63'
 export const DARK_PRIMARY_COLOR = '#C2185B'
 

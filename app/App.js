@@ -1,30 +1,35 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, StatusBar, View, Text, Image } from 'react-native'
+import { StyleSheet, Platform, StatusBar, View, Image } from 'react-native'
 //import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 
-import { DARK_PRIMARY_COLOR } from './constants'
+import { LANDSCAPE, PORTRAIT, DARK_PRIMARY_COLOR } from './constants'
 import RootNavigation from './components/RootNavigation'
 import Player from './components/Player'
 
 export default class App extends Component {
-    constructor() {
+    constructor () {
         super()
 
         this.state = {
             systemIsReady: true,
+            orientation: PORTRAIT,
             song : {}
         }
     }
 
-    _handlePlaySong(song) {
+    _handleOnLayout(event) {
+        const {x, y, width, height} = event.nativeEvent.layout
+        if (width > height)
+          this.setState({ orientation: LANDSCAPE })
+        else
+          this.setState({ orientation: PORTRAIT })
+    }
+
+    _handlePlaySong (song) {
         this.setState({ song })   /// MODIFICAR A TRUE CUANDO FUNCIONE!!!
     }
 
-    // componentWillMount() {
-    //     Image.prefetch('file://./assets/images/splash_screen_2.png')
-    // }
-
-    render() {
+    render () {
         if (!this.state.systemIsReady) {
             return (
                 <View style={ styles.container }>
@@ -34,12 +39,12 @@ export default class App extends Component {
         }
 
         return (
-            <View style={ styles.container }>
+            <View style={ styles.container } onLayout={ this._handleOnLayout.bind(this) }>
                 { Platform.OS === 'ios' && <StatusBar barStyle="default" /> }
                 { /* Platform.OS === 'android' && <View style={ styles.statusBarUnderlay } /> */
                   Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ DARK_PRIMARY_COLOR } />
                 }
-                <RootNavigation handlePlaySong={ this._handlePlaySong.bind(this) } />
+                <RootNavigation handlePlaySong={ this._handlePlaySong.bind(this) } orientation={ this.state.orientation }/>
                 <Player track={ this.state.song } />
             </View>
         )

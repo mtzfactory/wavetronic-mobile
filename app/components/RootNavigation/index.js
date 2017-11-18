@@ -42,8 +42,10 @@ const RootStackNavigator = StackNavigator(
 
 export default class RootNavigation extends Component {
     render() {
+        const { handlePlaySong, orientation } = this.props
+        
         return (
-            <RootStackNavigator screenProps={ { handlePlaySong: this.props.handlePlaySong } } />
+            <RootStackNavigator screenProps={ { handlePlaySong, orientation } } />
         )
     }
 }

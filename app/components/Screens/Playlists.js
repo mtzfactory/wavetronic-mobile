@@ -4,7 +4,7 @@ import { Content, Text, Button, Icon, Form, Item, Input, Label, Badge } from 'na
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
-import { SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR, API_PAGE_LIMIT } from '../../constants'
+import { LANDSCAPE, PORTRAIT, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR, API_PAGE_LIMIT } from '../../constants'
 
 import Flickr from '../../helpers/Flickr'
 import UserApi from '../../api/UserApi'
@@ -14,22 +14,19 @@ import FabNavigator from '../FabNavigator'
 const moment = require('moment')
 const userApi = new UserApi()
 const SCREEN = 'Playlists'
-const LANDSCAPE = 'LANDSCAPE'
-const PORTRAIT = 'PORTRAIT'
 
 //class PureListItem extends React.PureComponent {
 class PureListItem extends PureComponent {
-    constructor() {
+    constructor () {
         super()
         this.state = { image: null }
     }
 
     _openPlaylist = (id) => {
-        //Alert.alert(`${id} was clicked`)
         this.props.onItemPressed(id)
     }
 
-    componentDidMount() {
+    componentDidMount () {
         Flickr()
             .then( url => this.setState({ image: { uri: url } }))
             .catch(error => {
@@ -37,7 +34,7 @@ class PureListItem extends PureComponent {
             })
     }
 
-    render() {
+    render () {
         const { listItem, columns } = this.props
         
         const WIDTH = (100 / columns).toFixed(1) + '%'
@@ -84,19 +81,18 @@ export default class PlaylistsScreen extends Component {
         }
     }
 
-    constructor() {
+    constructor () {
         super()
 
         this.state = {
             localPlaylist: true,
             playlistName: null,
             playlistDescription: null,
-            orientation: PORTRAIT,
             columns: 1
         }
     }
 
-    _handleOnItemPressed(id) {
+    _handleOnItemPressed (id) {
         userApi.getTracksFromPlaylist(id)
             .then(console.log)
             .catch(console.log)
@@ -110,15 +106,7 @@ export default class PlaylistsScreen extends Component {
         />
     )
 
-    _handleOnLayout(event) {
-        const {x, y, width, height} = event.nativeEvent.layout
-        if (width > height)
-          this.setState({ orientation: LANDSCAPE, columns: 2})
-        else
-          this.setState({ orientation: PORTRAIT, columns: 1})
-    }
-
-    _onAddPlaylist() {
+    _onAddPlaylist () {
         if (this.state.playlistName && this.state.playlistDescription)
             Promise.resolve()
                 .then( () => {
@@ -132,16 +120,23 @@ export default class PlaylistsScreen extends Component {
                 .then(() => this.setState({ playlistName: null, playlistDescription: null }))
     }
 
-    componentDidMount() {
+    componentWillReceiveProps(newProps) {
+        const { orientation } =  newProps.screenProps
+        if (orientation !== this.props.screenProps.orientation) {
+            this.setState({ columns: orientation === PORTRAIT ? 1 : 2 })
+        }
+    }
+
+    componentDidMount () {
         this.props.navigation.setParams({ handleRightButtonPressed: this.refs.newPlaylistModal.open })
     }
 
-    render() {
+    render () {
         const ROW_HEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
         const { navigate } = this.props.navigation
 
         return (
-            <View style={ styles.container } onLayout={ this._handleOnLayout.bind(this) }>
+            <View style={ styles.container }>
                 {
                     Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_PLAYLISTS_DARK_COLOR } />
                 }
@@ -150,7 +145,7 @@ export default class PlaylistsScreen extends Component {
                     renderItem={ this._renderItem }
                     rowHeight={ ROW_HEIGTH }
                     searchHolder='Search for playlists ...'
-                    listKey={ this.state.orientation === LANDSCAPE ? 'h' : 'v' }
+                    listKey={ this.props.screenProps.orientation === LANDSCAPE ? 'h' : 'v' }
                     columns={ this.state.columns }
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
