@@ -17,7 +17,7 @@ class PureListItem extends React.PureComponent {
         Alert.alert(`${id} was clicked`)
     }
 
-    render() {
+    render () {
         const { listItem } = this.props
 
         return (
@@ -48,11 +48,17 @@ export default class AlbumsScreen extends Component {
         headerStyle: { backgroundColor: SCREEN_ALBUMS_COLOR }
     }
 
+    constructor () {
+        super()
+
+        this.state = { columns: 1 }
+    }
+
     _renderItem = (item) => (
         <PureListItem listItem={ item } />
     )
 
-    render() {
+    render () {
         const ROWHEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical        
         const { navigate } = this.props.navigation
 
@@ -65,7 +71,7 @@ export default class AlbumsScreen extends Component {
                     getData={ musicApi.getAlbums }
                     renderItem={ this._renderItem }
                     rowHeight={ ROWHEIGTH }
-                    columns= { 2 }
+                    columns= { this.state.columns }
                     searchHolder='Search for albums ...'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />

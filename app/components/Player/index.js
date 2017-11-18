@@ -279,16 +279,16 @@ export default class SongsScreen extends Component {
                         repeat={ false }
                     />
                     <View style={ styles.controls }>
-                        <Button transparent onPress={ this._goBackward.bind(this) }>
+                        <Button transparent style={ styles.noRadius } onPress={ this._goBackward.bind(this) }>
                             <Icon name="ios-arrow-back" />
                         </Button>
-                        <Button transparent disabled={ this.state.track.name === undefined } onPress={ this._togglePlayer.bind(this) }>
+                        <Button transparent style={ styles.noRadius } disabled={ this.state.track.name === undefined } onPress={ this._togglePlayer.bind(this) }>
                             { this.state.loading
                                 ? <ActivityIndicator size={'small'}/>
                                 : <Icon style={ styles.play } name={ this.state.playing ? 'ios-pause' : 'ios-play' } />
                             }
                         </Button>
-                        <Button transparent onPress={ this._goForward.bind(this) }>
+                        <Button transparent style={ styles.noRadius } onPress={ this._goForward.bind(this) }>
                             <Icon name="ios-arrow-forward" />
                         </Button>
                         <View style={ styles.sliderContainer }>
@@ -305,13 +305,13 @@ export default class SongsScreen extends Component {
                             />
                             <Text style={[ styles.track, styles.title ]}>{ this.state.track.name }</Text>
                         </View>
-                        <Button transparent onPress={ this._toggleVolume.bind(this) }>
+                        <Button transparent style={ styles.noRadius } onPress={ this._toggleVolume.bind(this) }>
                             <Icon name={ this.state.muted ? 'ios-volume-off' : 'ios-volume-up' } />
                         </Button>
-                        <Button transparent disabled={ this.state.playing } onPress={ this._hideMe.bind(this) }>
+                        <Button transparent style={ styles.noRadius } disabled={ this.state.playing } onPress={ this._hideMe.bind(this) }>
                             <Icon name="ios-eye-off"/>
                         </Button>
-                        <Button transparent disabled={ this.state.loading || this.state.track.name === undefined } onPress={ this._togglePlaylist.bind(this) }>
+                        <Button transparent style={ styles.noRadius } disabled={ this.state.loading || this.state.track.name === undefined } onPress={ this._togglePlaylist.bind(this) }>
                             <Icon name={ this.state.expanded ? 'ios-arrow-down' : 'ios-arrow-up' } />
                         </Button>
                     </View>
@@ -356,6 +356,9 @@ const styles = StyleSheet.create({
         width: '100%',
         flex: 1,
         flexDirection: 'row'
+    },
+    noRadius: {
+        borderRadius: 0,
     },
     sliderContainer: {
         flexDirection: 'column',
