@@ -12,7 +12,6 @@ import {
     SCREEN_PLAYLISTS_COLOR,
     SCREEN_CONTACTS_COLOR
 } from '../../constants'
-// rgba(231,76,60,1)
 
 const buttonItems = [
     { title: 'Tracks', color: SCREEN_SONGS_COLOR, icon: 'headset', screen: 'Tracks' },

@@ -41,7 +41,7 @@ export default class App extends Component {
         return (
             <View style={ styles.container } onLayout={ this._handleOnLayout.bind(this) }>
                 { Platform.OS === 'ios' && <StatusBar barStyle="default" /> }
-                { /* Platform.OS === 'android' && <View style={ styles.statusBarUnderlay } /> */
+                {
                   Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ DARK_PRIMARY_COLOR } />
                 }
                 <RootNavigation handlePlaySong={ this._handlePlaySong.bind(this) } orientation={ this.state.orientation }/>

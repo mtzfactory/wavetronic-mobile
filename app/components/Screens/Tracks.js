@@ -36,7 +36,7 @@ class PureListItem extends React.PureComponent {
     }
 }
 
-export default class SongsScreen extends Component {
+export default class TracksScreen extends Component {
     static navigationOptions = {
         title: SCREEN,
         headerLeft: null,

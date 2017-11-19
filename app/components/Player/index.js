@@ -248,7 +248,6 @@ export default class SongsScreen extends Component {
                     </TouchableHighlight>
                 </View>
             )
-            //return null
         }
 
         let songPercentage = 0
