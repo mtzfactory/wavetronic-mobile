@@ -50,7 +50,7 @@ export default class SplashScreen extends Component {
                     TokenService.get().setToken(token)
                     userApi.amIAuthorized()
                         .then( () => {
-                            this._navigate('Songs')
+                            this._navigate('Tracks')
                         })
                         .catch( error => {
                             this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
@@ -68,12 +68,12 @@ export default class SplashScreen extends Component {
     render() {
         return (
             <View style={ styles.overlay }>
-            <ImageBackground style={ styles.background } source={ BACKGROUND_IMAGE } onLoad={ this._handleOnLoad.bind(this) }>
-                <View style={ styles.loading }>
-                    <Text style={ styles.leitmotif }>do you remember when you shared music with tapes?</Text>
-                    <ActivityIndicator size={'large'} color={'aliceblue'} style={ styles.spinner }/>
-                </View>
-            </ImageBackground>
+                <ImageBackground style={ styles.background } source={ BACKGROUND_IMAGE } onLoad={ this._handleOnLoad.bind(this) }>
+                    <View style={ styles.loading }>
+                        <Text style={ styles.leitmotif }>do you remember when you shared music with tapes?</Text>
+                        <ActivityIndicator size={'large'} color={'aliceblue'} style={ styles.spinner }/>
+                    </View>
+                </ImageBackground>
             </View>
         )
     }

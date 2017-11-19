@@ -15,7 +15,7 @@ import {
 // rgba(231,76,60,1)
 
 const buttonItems = [
-    { title: 'Songs', color: SCREEN_SONGS_COLOR, icon: 'headset', screen: 'Songs' },
+    { title: 'Tracks', color: SCREEN_SONGS_COLOR, icon: 'headset', screen: 'Tracks' },
     { title: 'Albums', color: SCREEN_ALBUMS_COLOR, icon: 'disc', screen: 'Albums' },
     { title: 'Playlists', color: SCREEN_PLAYLISTS_COLOR, icon: 'infinite', screen: 'Playlists' },
     { title: 'Contacts', color: SCREEN_CONTACTS_COLOR, icon: 'contacts', screen: 'Contacts' }

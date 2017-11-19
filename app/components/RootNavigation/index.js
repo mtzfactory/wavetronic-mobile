@@ -3,7 +3,7 @@ import { StackNavigator } from 'react-navigation'
 
 import SplashScreen from '../Screens/Splash'
 import LoginScreen from '../Screens/Login'
-import SongsScreen from '../Screens/Songs'
+import TracksScreen from '../Screens/Tracks'
 import AlbumsScreen from '../Screens/Albums'
 import PlaylistsScreen from '../Screens/Playlists'
 import ContactsScreen from '../Screens/Contacts'
@@ -22,7 +22,7 @@ const RootStackNavigator = StackNavigator(
                 header: false
             } 
         },
-        Songs: { screen: SongsScreen },
+        Tracks: { screen: TracksScreen },
         Albums: { screen: AlbumsScreen },
         Playlists: { screen: PlaylistsScreen },
         Contacts: { screen: ContactsScreen },

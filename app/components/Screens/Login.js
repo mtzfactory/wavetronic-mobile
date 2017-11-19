@@ -12,7 +12,7 @@ const userApi = new UserApi()
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 
 export default class LoginScreen extends Component {
-    constructor() {
+    constructor () {
         super()
 
         this.state = {
@@ -24,7 +24,7 @@ export default class LoginScreen extends Component {
         }
     }
 
-    _navigate(page, params) {
+    _navigate (page, params) {
         // Route with disabled back functionality
         const resetAction = NavigationActions.reset({
             index: 0,
@@ -38,7 +38,7 @@ export default class LoginScreen extends Component {
         this.props.navigation.dispatch(resetAction)
     }
 
-    _submit() {
+    _submit () {
         const { navigate, state: { params } } = this.props.navigation
         const { username, password, email } = this.state
 
@@ -64,6 +64,9 @@ export default class LoginScreen extends Component {
                         error: `${username} registered successfully`,
                         requesting: false
                     })
+                    setTimeout(() => {
+                        setParams({ type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
+                    } , 50)
                 })
                 .catch( error => {
                     this.setState({
@@ -81,7 +84,7 @@ export default class LoginScreen extends Component {
                         requesting: false
                     }, () => {
                         TokenService.get().saveToken(token)
-                            .then( () => this._navigate('Songs'))
+                            .then( () => this._navigate('Tracks'))
                             .catch( error => {
                                 this.setState({
                                     error: error.message,
@@ -99,7 +102,7 @@ export default class LoginScreen extends Component {
         }
     }
 
-    _changeScreen() {
+    _changeScreen () {
         const { navigate, state: { params }, setParams } = this.props.navigation
 
         if (params.type === 'Login') 
@@ -108,7 +111,7 @@ export default class LoginScreen extends Component {
             setParams({ type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
     }
 
-    _renderEmailInput() {
+    _renderEmailInput () {
         if (this.props.navigation.state.params.type === 'Login')
             return null
 
@@ -127,7 +130,7 @@ export default class LoginScreen extends Component {
         )
     }
 
-    _renderErrorMessage() {
+    _renderErrorMessage () {
         if (!this.state.error)
             return null
 
@@ -138,7 +141,7 @@ export default class LoginScreen extends Component {
         )
     }
 
-    render() {
+    render () {
         const { params } = this.props.navigation.state
         const loginButtonOrActivity = this.state.requesting ? <ActivityIndicator  size={25} color={'white'} /> : <Text style={ styles.submitText }>{ params.type }</Text>
 
