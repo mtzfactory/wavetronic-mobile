@@ -9,7 +9,7 @@ import MusicApi from '../../api/MusicApi'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
 
-const SCREEN = 'Songs'
+const SCREEN = 'Tracks'
 const musicApi = new MusicApi()
 
 class PureListItem extends React.PureComponent {

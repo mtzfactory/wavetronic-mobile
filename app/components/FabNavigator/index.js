@@ -35,7 +35,7 @@ export default class FabNavigator extends Component {
         const { current, navigate } = this.props
 
         return (
-            <ActionButton fixNativeFeedbackRadius buttonColor={ this.FAB_COLOR }>
+            <ActionButton fixNativeFeedbackRadius icon={<Icon style={{ color: "white" }} name="md-more"/>} buttonColor={ this.FAB_COLOR }>
                 {
                     buttonItems.map((button, idx) => {
                         if (current === button.title) return {}
