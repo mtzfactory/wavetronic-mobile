@@ -4,7 +4,7 @@ import { Content, Text, Button, Icon, Form, Item, Input, Label, Badge } from 'na
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
-import { LANDSCAPE, PORTRAIT, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR, API_PAGE_LIMIT } from '../../constants'
+import { LANDSCAPE, PORTRAIT, MAIN_THEME_COLOR, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR } from '../../constants'
 
 import Flickr from '../../helpers/Flickr'
 import UserApi from '../../api/UserApi'
@@ -76,8 +76,8 @@ export default class PlaylistsScreen extends Component {
                 }>
                     <Icon name="md-add" style={{ color: "#fff" }}/>
                 </TouchableHighlight>,
-            headerTitleStyle : { marginLeft: 80, alignSelf: 'center', color: '#fff' },
-            headerStyle: { backgroundColor: SCREEN_PLAYLISTS_COLOR }
+            headerTitleStyle : { marginLeft: 80, alignSelf: 'center', color: SCREEN_PLAYLISTS_COLOR },
+            headerStyle: { backgroundColor: MAIN_THEME_COLOR }
         }
     }
 

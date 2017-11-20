@@ -5,7 +5,7 @@ import { SearchBar } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 import uuidv4 from 'uuid/v4'
 
-import { SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR, API_URL_FRIENDS } from '../../constants'
+import { MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR, API_URL_FRIENDS } from '../../constants'
 import UserApi from '../../api/UserApi'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
@@ -17,8 +17,8 @@ export default class ContactsScreen extends Component {
     static navigationOptions = {
         title: SCREEN,
         headerLeft: null,
-        headerTitleStyle : { alignSelf: 'center' },
-        headerStyle: { backgroundColor: SCREEN_CONTACTS_COLOR }
+        headerTitleStyle : { alignSelf: 'center', color: SCREEN_CONTACTS_COLOR },
+        headerStyle: { backgroundColor: MAIN_THEME_COLOR }
     }
 
     constructor() {

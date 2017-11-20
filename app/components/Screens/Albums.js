@@ -3,7 +3,7 @@ import { StyleSheet, Platform, StatusBar, Alert } from 'react-native'
 import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
 import ActionButton from 'react-native-action-button'
 
-import { SCREEN_ALBUMS_COLOR, SCREEN_ALBUMS_DARK_COLOR, API_PAGE_LIMIT } from '../../constants'
+import { MAIN_THEME_COLOR, SCREEN_ALBUMS_COLOR, SCREEN_ALBUMS_DARK_COLOR } from '../../constants'
 
 import MusicApi from '../../api/MusicApi'
 import InfiniteList from '../InfiniteList'
@@ -44,8 +44,8 @@ export default class AlbumsScreen extends Component {
     static navigationOptions = {
         title: SCREEN,
         headerLeft: null,
-        headerTitleStyle : { alignSelf: 'center', color: '#fff' },
-        headerStyle: { backgroundColor: SCREEN_ALBUMS_COLOR }
+        headerTitleStyle : { alignSelf: 'center', color: SCREEN_ALBUMS_COLOR },
+        headerStyle: { backgroundColor: MAIN_THEME_COLOR }
     }
 
     constructor () {

@@ -7,7 +7,7 @@ import Slider from 'react-native-slider'
 import Modal from 'react-native-modalbox'
 import _ from 'lodash'
 
-import { PRIMARY_COLOR, STATUSBAR_HEIGHT, HEADER_HEIGHT, PLAYER_HEIGHT } from '../../constants'
+import { MAIN_THEME_COLOR, PRIMARY_COLOR, STATUSBAR_HEIGHT, HEADER_HEIGHT, PLAYER_HEIGHT } from '../../constants'
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
@@ -38,6 +38,7 @@ export default class SongsScreen extends Component {
             expanded: false,
             track: {},
             trackHistory: [],
+            currentHistoryIndex: 0,
             loading: false,
             playing: false,
             muted: false,
@@ -176,6 +177,7 @@ export default class SongsScreen extends Component {
     _playTrackFromHistory (index) {
         this.setState({ 
             track: this.state.trackHistory[index],
+            currentHistoryIndex: index,
             currentTime: 0,
             playing: true,
             loading: true
@@ -221,6 +223,7 @@ export default class SongsScreen extends Component {
 
             const newState = { 
                 track: nextProps.track,
+                currentHistoryIndex: 0,
                 currentTime: 0,
                 playing: true,
                 loading: true,
@@ -255,6 +258,13 @@ export default class SongsScreen extends Component {
             songPercentage = this.state.currentTime / this.state.songDuration
         }
 
+
+        const EN_BACKWARD = !this.state.shuffle || this.state.currentHistoryIndex !== 0
+        const EN_FOREWARD = !this.state.shuffle || this.state.currentHistoryIndex < this.state.trackHistory.length
+        const MUTE_ICON = this.state.muted ? 'ios-volume-off' : 'ios-volume-up'
+        const EN_SHOW_PLAYER = this.state.playing
+        const EN_SHOW_PLAYLIST = !this.state.expanded && (this.state.loading || this.state.track.name === undefined)
+
         return (
             <Animated.View style={[ styles.container, { height: this.state.animation } ]}>
                 <View style={ styles.playlist }>
@@ -278,16 +288,16 @@ export default class SongsScreen extends Component {
                         repeat={ false }
                     />
                     <View style={ styles.controls }>
-                        <Button transparent style={ styles.noRadius } onPress={ this._goBackward.bind(this) }>
+                        <Button transparent style={ styles.noRadius } disabled={ EN_BACKWARD } onPress={ this._goBackward.bind(this) }>
                             <Icon name="ios-arrow-back" />
                         </Button>
                         <Button transparent style={ styles.noRadius } disabled={ this.state.track.name === undefined } onPress={ this._togglePlayer.bind(this) }>
                             { this.state.loading
-                                ? <ActivityIndicator size={'small'}/>
+                                ? <ActivityIndicator size={'small'} style={{ width: 44 }}/>
                                 : <Icon style={ styles.play } name={ this.state.playing ? 'ios-pause' : 'ios-play' } />
                             }
                         </Button>
-                        <Button transparent style={ styles.noRadius } onPress={ this._goForward.bind(this) }>
+                        <Button transparent style={ styles.noRadius } disabled={ EN_FOREWARD } onPress={ this._goForward.bind(this) }>
                             <Icon name="ios-arrow-forward" />
                         </Button>
                         <View style={ styles.sliderContainer }>
@@ -302,15 +312,15 @@ export default class SongsScreen extends Component {
                                 thumbStyle={ styles.sliderThumb }
                                 value={ songPercentage || 0 }
                             />
-                            <Text style={[ styles.track, styles.title ]}>{ this.state.track.name }</Text>
+                            <Text style={[ styles.track, styles.title ]} numberOfLines={1}>{ this.state.track.name }</Text>
                         </View>
                         <Button transparent style={ styles.noRadius } onPress={ this._toggleVolume.bind(this) }>
-                            <Icon name={ this.state.muted ? 'ios-volume-off' : 'ios-volume-up' } />
+                            <Icon name={ MUTE_ICON } />
                         </Button>
-                        <Button transparent style={ styles.noRadius } disabled={ this.state.playing } onPress={ this._hideMe.bind(this) }>
+                        <Button transparent style={ styles.noRadius } disabled={ EN_SHOW_PLAYER } onPress={ this._hideMe.bind(this) }>
                             <Icon name="ios-eye-off"/>
                         </Button>
-                        <Button transparent style={ styles.noRadius } disabled={ this.state.loading || this.state.track.name === undefined } onPress={ this._togglePlaylist.bind(this) }>
+                        <Button transparent style={ styles.noRadius } disabled={ EN_SHOW_PLAYLIST } onPress={ this._togglePlaylist.bind(this) }>
                             <Icon name={ this.state.expanded ? 'ios-arrow-down' : 'ios-arrow-up' } />
                         </Button>
                     </View>
@@ -321,18 +331,6 @@ export default class SongsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        backgroundColor: '#e1e8ee',
-        overflow: 'hidden'
-    },
-    modal: {
-        height: DEVICE_HEIGHT / 2 - 80 // giving some top space
-    },
-    playlist: {
-        margin: 10,
-        flex: 1,
-        backgroundColor: 'transparent'
-    },
     opener: {
         justifyContent: 'center',
         alignItems: 'center',
@@ -343,27 +341,42 @@ const styles = StyleSheet.create({
         width: '100%',
         marginBottom: 3 
     },
-    player: {
+    container: {
         backgroundColor: '#e1e8ee',
+        overflow: 'hidden',
+        width: DEVICE_WIDTH,
+        maxWidth: DEVICE_WIDTH
+    },
+    playlist: {
+        flex: 1,
+        margin: 10,
+        backgroundColor: 'transparent'
+    },
+    modal: {
+        height: DEVICE_HEIGHT / 2 - 80 // giving some top space
+    },
+    player: {
         position: 'absolute',
         bottom: 0,
         right:0,
         left:0,
-        width: '100%'
+        backgroundColor: MAIN_THEME_COLOR, //'#e1e8ee',
     },
     controls: {
-        width: '100%',
         flex: 1,
-        flexDirection: 'row'
+        flexDirection: 'row',
+        maxWidth: DEVICE_WIDTH,
     },
     noRadius: {
         borderRadius: 0,
     },
     sliderContainer: {
+        flexGrow: 2,
+        flex: -1,   // When flex is -1, the component is normally sized according width and height. However, if there's not enough space, the component will shrink to its minWidth and minHeight.
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'stretch',
-        flexGrow: 2,
+        marginLeft: 5,
     },
     slider: {
         height: 15,
@@ -385,7 +398,6 @@ const styles = StyleSheet.create({
     track: {
         fontSize: 10,
         fontFamily: 'SpaceMono-Regular.ttf',
-        
         includeFontPadding: false,
     },
     title: {
