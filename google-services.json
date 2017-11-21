@@ -1,0 +1,73 @@
+{
+  "project_info": {
+    "project_number": "1004177920610",
+    "firebase_url": "https://wave-my-beat.firebaseio.com",
+    "project_id": "wave-my-beat",
+    "storage_bucket": "wave-my-beat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004177920610:android:48bdab8384a1ed26",
+        "android_client_info": {
+          "package_name": "com.react_native_fcm_test"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004177920610-a020fhtkiiphepgpct7avm2bv47tl8ot.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPEEfC0JsoNMu31iBX1cjU-RVvyZvB5Rk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004177920610:android:13c96bb816ce8607",
+        "android_client_info": {
+          "package_name": "com.wavemybeat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004177920610-a020fhtkiiphepgpct7avm2bv47tl8ot.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPEEfC0JsoNMu31iBX1cjU-RVvyZvB5Rk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

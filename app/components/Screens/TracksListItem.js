@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, ImageBackground } from 'react-native'
-import { ListItem, Left, Right, Body, Thumbnail, Text, Button, Icon } from 'native-base'
+import { StyleSheet, ImageBackground } from 'react-native'
+import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button, Icon } from 'native-base'
 
 export default class TracksListItem extends React.PureComponent {
     render () {

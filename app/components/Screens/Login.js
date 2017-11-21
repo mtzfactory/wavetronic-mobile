@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { StyleSheet, Dimensions, Keyboard, KeyboardAvoidingView } from 'react-native'
-import { View, TouchableOpacity, Text, TextInput, Image, ImageBackground, Alert, ActivityIndicator  } from 'react-native'
+import { StyleSheet, Dimensions, Keyboard, KeyboardAvoidingView, Alert } from 'react-native'
+import { View, TouchableOpacity, Text, TextInput, Image, ImageBackground, ActivityIndicator  } from 'react-native'
 import { Item, Input, Icon } from 'native-base'
 import { NavigationActions } from 'react-navigation'
 
@@ -84,7 +84,11 @@ export default class LoginScreen extends Component {
                         requesting: false
                     }, () => {
                         TokenService.get().saveToken(token)
-                            .then( () => this._navigate('Tracks'))
+                            .then( () => {
+                                userApi.updatePushNotificationToken(this.props.screenProps.pnToken)
+                                    .catch(error => Alert.alert(error.message))
+                                this._navigate('Tracks')
+                            })
                             .catch( error => {
                                 this.setState({
                                     error: error.message,

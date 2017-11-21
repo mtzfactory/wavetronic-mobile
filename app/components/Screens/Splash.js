@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, ActivityIndicator, View, Text, ImageBackground } from 'react-native'
+import { StyleSheet, Alert, ActivityIndicator, View, Text, ImageBackground } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 
 import { SPLASH_COLOR } from '../../constants'
@@ -34,15 +34,6 @@ export default class SplashScreen extends Component {
         }, 50 )
     }
 
-    // _handleOnLoad() {
-    //     this.setState({ loaded: true })
-    // }
-
-    // componentWillMount() {
-    //     this.backgroundImage = require('../../assets/images/splash_screen_2.png')
-    // }
-
-    //componentDidMount() {
     _handleOnLoad() {
         TokenService.get().readToken()
             .then(token => {
@@ -50,6 +41,8 @@ export default class SplashScreen extends Component {
                     TokenService.get().setToken(token)
                     userApi.amIAuthorized()
                         .then( () => {
+                            userApi.updatePushNotificationToken(this.props.screenProps.pnToken)
+                                .catch(error => Alert.alert(error.message))
                             this._navigate('Tracks')
                         })
                         .catch( error => {

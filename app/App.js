@@ -1,10 +1,12 @@
 import React, { Component } from 'react'
 import { StyleSheet, Platform, StatusBar, View, Image } from 'react-native'
+import FCM, {FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType} from 'react-native-fcm'
 //import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 
 import { LANDSCAPE, PORTRAIT, DARK_PRIMARY_COLOR } from './constants'
 import RootNavigation from './components/RootNavigation'
 import Player from './components/Player'
+import PushController from './helpers/PushController'
 
 export default class App extends Component {
     constructor () {
@@ -13,6 +15,7 @@ export default class App extends Component {
         this.state = {
             systemIsReady: true,
             orientation: PORTRAIT,
+            pnToken: null,
             song : {}
         }
     }
@@ -44,7 +47,8 @@ export default class App extends Component {
                 {
                   Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ DARK_PRIMARY_COLOR } />
                 }
-                <RootNavigation handlePlaySong={ this._handlePlaySong.bind(this) } orientation={ this.state.orientation }/>
+                <PushController onChangeToken={ pnToken => this.setState({ pnToken }) } />
+                <RootNavigation pnToken={ this.state.pnToken } handlePlaySong={ this._handlePlaySong.bind(this) } orientation={ this.state.orientation }/>
                 <Player track={ this.state.song } />
             </View>
         )

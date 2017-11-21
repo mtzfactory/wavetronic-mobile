@@ -35,7 +35,7 @@ class UserApi {
     getProfile = () => {
         return this.fetcher.getWithAuth(`${API_URL_PROFILE}`)
     }
-    updatePushNotificationToken = (updatePushNotificationToken) => {
+    updatePushNotificationToken = (pnToken) => {
         return this.fetcher.putWithAuth(`${API_URL_PROFILE}`, { pnToken })
     }
 // api/v1/user/friends
