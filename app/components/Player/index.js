@@ -8,9 +8,9 @@ import Modal from 'react-native-modalbox'
 import _ from 'lodash'
 
 import { MAIN_THEME_COLOR, PRIMARY_COLOR, STATUSBAR_HEIGHT, HEADER_HEIGHT, PLAYER_HEIGHT } from '../../constants'
-import UserApi from '../../api/UserApi'
 import InfiniteList from '../InfiniteList'
 
+import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
@@ -176,26 +176,30 @@ export default class SongsScreen extends Component {
             track: this.state.trackHistory[index],
             currentHistoryIndex: index,
             currentTime: 0,
+            songDuration: 0,
             playing: true,
             loading: true
         })
     }
 
     _getTrackHistoryItemLayout = (data, index) => {
+        const ROW_HEIGHT = 63 + 10 + 10
         return {
-            offset: 0,
-            length: 63 + 10 + 10,
+            offset: ROW_HEIGHT * index,
+            length: ROW_HEIGHT,
             index
         }
     }
 
     _renderTrackHistoryItem = (item, index) => {
+        const LEFT_ICON = this.state.currentHistoryIndex === index ? 'ios-headset-outline' : 'ios-musical-notes-outline'
+
         return <ListItem
             title={ item.name }
             subtitle={ `${item.album_name}, ${item.artist_name}` }
-            leftIcon={{ name: 'ios-headset-outline', type: 'ionicon', style: { color: PRIMARY_COLOR } }}
+            leftIcon={{ name: LEFT_ICON, type: 'ionicon', style: { color: PRIMARY_COLOR } }}
             rightTitle={ getMMSSFromMillis(item.duration) }
-            rightIcon={{ name: 'md-add', type: 'ionicon', style: { color: PRIMARY_COLOR, marginLeft: 20 } }}
+            rightIcon={{ name: 'md-add', type: 'ionicon', style: { color: PRIMARY_COLOR, marginLeft: 15 } }}
             onPressRightIcon={ () => this._selectPlaylistToAddTrack(index) }
             key={ item.id }
             onPress={ () => this._playTrackFromHistory(index) }/>
@@ -205,6 +209,7 @@ export default class SongsScreen extends Component {
         return (
             <FlatList
                 data={ this.state.trackHistory }
+                extraData={ this.state.currentHistoryIndex }
                 renderItem={ ({item, index}) => this._renderTrackHistoryItem(item, index) }
                 getItemLayout={ this._getTrackHistoryItemLayout }
                 keyExtractor={ item => item.id }
@@ -233,7 +238,8 @@ export default class SongsScreen extends Component {
                 playing: true,
                 loading: true,
                 isVisible: true,
-                showOpener: true
+                showOpener: true,
+                songDuration: 0
             }
 
             if (!_.some(this.state.trackHistory, newTrack)) {
@@ -279,9 +285,11 @@ export default class SongsScreen extends Component {
                 <View style={ styles.playlist }>
                 { this.state.expanded && this._renderTrackHistory() }
                 </View>
-                <Modal style={ styles.modal } position={"bottom"} ref={"modalWindow"}>
-                { this.state.expanded && this._renderPlaylists() }
-                </Modal>
+                <View style={ styles.wrapper }>
+                    <Modal style={ styles.modal } position={"bottom"} ref={"modalWindow"}>
+                    { this.state.expanded && this._renderPlaylists() }
+                    </Modal>
+                </View>
                 <View style={ styles.player }>
                     <Video source={{ uri: this.state.track.audio }}
                         ref="audio"
@@ -361,8 +369,11 @@ const styles = StyleSheet.create({
         margin: 10,
         backgroundColor: 'transparent'
     },
+    wrapper: {
+        marginBottom: 40,
+    },
     modal: {
-        height: DEVICE_HEIGHT / 2 - 80 // giving some top space
+        height: DEVICE_HEIGHT / 2 - 80, // giving some top space
     },
     player: {
         position: 'absolute',
