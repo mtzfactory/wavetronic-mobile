@@ -5,7 +5,7 @@ import { SearchBar } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 import uuidv4 from 'uuid/v4'
 
-import { MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR, API_URL_FRIENDS } from '../../constants'
+import { MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR, API_URL_FAKE_FRIENDS } from '../../constants'
 import UserApi from '../../api/UserApi'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'

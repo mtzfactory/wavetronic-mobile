@@ -25,8 +25,8 @@ export const API_URL_JMO_PLAYLISTS = `${API_URL_BASE}/playlists`
 
 export const API_URL_PROFILE = `${API_URL_BASE}/user`
 export const API_URL_PLAYLISTS = `${API_URL_BASE}/user/playlists`
-//export const API_URL_USR_PLAYLISTS = `${API_URL_BASE}/user/friends`
-export const API_URL_FRIENDS = 'https://randomuser.me/api/?results=20'
+export const API_URL_FRIENDS = `${API_URL_BASE}/user/friends`
+export const API_URL_FAKE_FRIENDS = 'https://randomuser.me/api/?results=20'
 
 export const API_PAGE_LIMIT = 15
 

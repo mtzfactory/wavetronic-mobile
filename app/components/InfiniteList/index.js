@@ -111,7 +111,7 @@ export default class InfiniteList extends Component {
         return null
     }
 
-    _renderItem = ( {item} ) => {
+    _renderItem = ( { item, index } ) => {
         if (this.state.error) {
             return (
                 <View>
@@ -120,15 +120,15 @@ export default class InfiniteList extends Component {
             )
         }
 
-        return this.props.renderItem(item)
+        return this.props.renderItem(item, index)
     }
 
     _getItemLayout = (data, index) => {
-        const SEARCHHEADERHEIGHT = 50
+        const SEARCH_HEADER_HEIGHT = 50
         const { rowHeight } = this.props
 
         return {
-            offset: SEARCHHEADERHEIGHT + (rowHeight * index),
+            offset: SEARCH_HEADER_HEIGHT + (rowHeight * index),
             length: rowHeight,
             index 
         }

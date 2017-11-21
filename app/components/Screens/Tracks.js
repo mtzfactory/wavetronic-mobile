@@ -1,40 +1,23 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, StatusBar, Alert } from 'react-native'
-import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
+import { StyleSheet, Platform, Dimensions, StatusBar, Alert, ImageBackground } from 'react-native'
+import { View, Left, Right, Body, Thumbnail, Text, Button, Icon } from 'native-base'
 import ActionButton from 'react-native-action-button'
+import Modal from 'react-native-modalbox'
 
 import { MAIN_THEME_COLOR, SCREEN_SONGS_COLOR, SCREEN_SONGS_DARK_COLOR } from '../../constants'
 
-import MusicApi from '../../api/MusicApi'
 import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
+import TracksFriendList from './TracksFriendList'
+import TracksListItem from './TracksListItem'
 
-const SCREEN = 'Tracks'
+import MusicApi from '../../api/MusicApi'
 const musicApi = new MusicApi()
 
-class PureListItem extends React.PureComponent {
-    render() {
-        const { listItem } = this.props
-
-        return (
-            <ListItem thumbnail button={true} onPress={ () => this.props.handlePlaySong(listItem) }>
-                <Left>
-                    <Thumbnail square large source={{ uri: listItem.image }} />
-                </Left>
-                <Body>
-                    <Text numberOfLines={ 1 } >{ listItem.name }</Text>
-                    <Text numberOfLines={ 1 } note>{ listItem.album_name }</Text>
-                    <Text numberOfLines={ 1 } note>{ listItem.artist_name }</Text>
-                </Body>
-                <Right>
-                    <Button transparent>
-                        <Text>Play</Text>
-                    </Button>
-                </Right>
-            </ListItem>
-        )
-    }
-}
+const SCREEN = 'Tracks'
+const THUMBNAIL_SIZE = 70
+const ROW_HEIGTH = THUMBNAIL_SIZE + 17 + 17 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 
 export default class TracksScreen extends Component {
     static navigationOptions = {
@@ -44,20 +27,40 @@ export default class TracksScreen extends Component {
         headerStyle: { backgroundColor: MAIN_THEME_COLOR }
     }
 
-    constructor() {
+    constructor () {
         super()
 
         this.state = {
-            songId: null,   // para marcar el listitem de otro color....
+            trackIndex: null,   // para marcar el listitem de otro color....
+            trackId: null,      // jamendo track Id.
+            showModal: false
         }
     }
 
-    _renderItem = (item) => (
-        <PureListItem listItem={ item } handlePlaySong={ this.props.screenProps.handlePlaySong } />
+    _handelOnShareTrack (trackId) {
+        this.setState({ showModal: true, trackId })
+        this.refs.modalWindow.open()
+    }
+
+    _renderFriendList () {
+        return <TracksFriendList trackId={ this.state.trackId } />
+    }
+
+    _handleOnPlaySong (trackIndex, track) {
+        this.setState({ trackIndex })
+        this.props.screenProps.handlePlaySong(track)
+    }
+
+    _renderTrackItem = (item, index) => (
+        <TracksListItem 
+            listItem={ item }
+            size={ THUMBNAIL_SIZE }
+            index={ index }
+            playSong={ this._handleOnPlaySong.bind(this) }
+            shareTrack={ this._handelOnShareTrack.bind(this) } />
     )
 
-    render() {
-        const ROWHEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
+    render () {
         const { navigate } = this.props.navigation
 
         return (
@@ -65,10 +68,13 @@ export default class TracksScreen extends Component {
                 {
                     Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_SONGS_DARK_COLOR } />
                 }
+                <Modal style={ styles.modal } position={"bottom"} ref={"modalWindow"}>
+                { this.state.showModal && this._renderFriendList() }
+                </Modal>
                 <InfiniteList
                     getData={ musicApi.getTracks }
-                    renderItem={ this._renderItem }
-                    rowHeight={ ROWHEIGTH }
+                    renderItem={ this._renderTrackItem }
+                    rowHeight={ ROW_HEIGTH }
                     searchHolder='Search for songs ...'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
@@ -80,6 +86,9 @@ export default class TracksScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'white'
-    }
+        backgroundColor: '#fff'
+    },
+    modal: {
+        height: DEVICE_HEIGHT * 0.66 
+    },
 })

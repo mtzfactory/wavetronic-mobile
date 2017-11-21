@@ -1,7 +1,7 @@
 import Fetcher from '../helpers/Fetcher'
 import TokenService from '../services/TokenService'
 import { API_URL_WELCOME, API_URL_REGISTER, API_URL_LOGIN, API_URL_LOGOUT } from '../constants'
-import {API_URL_PROFILE, API_URL_PLAYLISTS, API_URL_FRIENDS } from '../constants'
+import {API_URL_PROFILE, API_URL_PLAYLISTS, API_URL_FRIENDS, API_URL_FAKE_FRIENDS } from '../constants'
 
 class UserApi {
     constructor() {
@@ -29,19 +29,25 @@ class UserApi {
     }
 
     amIAuthorized(token) {
-        return this.fetcher.getWithAuth(API_URL_WELCOME)
+        return this.fetcher.getWithAuth(`${API_URL_WELCOME}`)
     }
 // api/v1/user
     getProfile = () => {
         return this.fetcher.getWithAuth(`${API_URL_PROFILE}`)
     }
+    updatePushNotificationToken = (updatePushNotificationToken) => {
+        return this.fetcher.putWithAuth(`${API_URL_PROFILE}`, { pnToken })
+    }
 // api/v1/user/friends
-    getFriends = (offset, limits) => {
+    getFriends = (offset, limit) => {
+        return this.fetcher.getWithAuth(`${API_URL_FAKE_FRIENDS}?offset=${offset}&limit=${limit}`)
+    }
+    getRealFriends = (offset, limit) => {
         return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}`)
     }
-// api/v1/user/playlists/all
-    getAllMyPlaylists = () => {
-        return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}/all`)
+// api/v1/user/friends/:friendId/track/:trackId
+    sendTrackToFriend = (friendId, trackId) => {
+        return this.fetcher.getWithAuth(`${API_URL_FRIENDS}/${friendId}/track/${trackId}`)
     }
 // api/v1/user/playlists
     getPlaylists = (offset, limit) => {
@@ -49,13 +55,13 @@ class UserApi {
     }
 
     addPlaylist = (name, description) => {
-        return this.fetcher.postWithAuth(API_URL_PLAYLISTS, { name, description })
+        return this.fetcher.postWithAuth(`${API_URL_PLAYLISTS}`, { name, description })
     }
 
-    saveTrackToPlaylist = (playlist, track) => {
+    addTrackToPlaylist = (playlist, track) => {
         return this.fetcher.putWithAuth(`${API_URL_PLAYLISTS}/${playlist}/track/${track}`)
     }
-// api/vi1/user/playlists/:id
+// api/v1/user/playlists/:id
     getTracksFromPlaylist = (playlistId) => {
         return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}/${playlistId}`)
     }

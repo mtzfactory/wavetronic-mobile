@@ -9,6 +9,8 @@ import _ from 'lodash'
 
 import { MAIN_THEME_COLOR, PRIMARY_COLOR, STATUSBAR_HEIGHT, HEADER_HEIGHT, PLAYER_HEIGHT } from '../../constants'
 import UserApi from '../../api/UserApi'
+import InfiniteList from '../InfiniteList'
+
 const userApi = new UserApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
@@ -30,10 +32,10 @@ export default class SongsScreen extends Component {
     constructor () {
         super()
 
-        this.playlists = null
         this.trackIndex = null
 
         this.state = {
+            showOpener: false,
             isVisible: false,
             expanded: false,
             track: {},
@@ -136,13 +138,12 @@ export default class SongsScreen extends Component {
         Animated.spring(this.state.animation, { toValue: finalValue }).start()
     }
 // SAVE TRACK TO PLAYLIST
-    _saveTrackToPlaylist = (playlist) => {
+    _addTrackToPlaylist = (playlist) => {
         this.refs.modalWindow.close()
-        userApi.saveTrackToPlaylist(playlist, this.state.trackHistory[this.trackIndex].id)
+        userApi.addTrackToPlaylist(playlist, this.state.trackHistory[this.trackIndex].id)
             .catch( error => Alert.alert('Error on save.', error.message))
 
         this.trackIndex = null
-        this.playlists = null
     }
 
     _renderPlaylistsItem = (item, index) => {
@@ -151,27 +152,23 @@ export default class SongsScreen extends Component {
             subtitle={ item.description }
             leftIcon={{ name: 'ios-list', type: 'ionicon', style: { color: PRIMARY_COLOR } }}
             key={ item._id }
-            onPress={ () => this._saveTrackToPlaylist(item._id) }/>
+            onPress={ () => this._addTrackToPlaylist(item._id) }/>
     }
 
     _renderPlaylists () {
         return (
-            <FlatList
-                data={ this.playlists }
-                renderItem={ ({item, index}) => this._renderPlaylistsItem(item, index) }
-                getItemLayout={ this._getItemLayout }
-                keyExtractor={ item => item._id }
+            <InfiniteList
+                getData={ userApi.getPlaylists }
+                renderItem={ this._renderPlaylistsItem }
+                rowHeight={ 63 + 10 + 10 }
+                searchHolder='Search for playlists ...'
             />
         )
     }
 
     _selectPlaylistToAddTrack(trackIndex) {
-        userApi.getAllMyPlaylists()
-            .then( res => {
-                this.playlists = res.results
-                this.trackIndex = trackIndex
-                this.refs.modalWindow.open()
-            })
+        this.trackIndex = trackIndex
+        this.refs.modalWindow.open()
     }
 // TRACK HISTORY
     _playTrackFromHistory (index) {
@@ -182,6 +179,14 @@ export default class SongsScreen extends Component {
             playing: true,
             loading: true
         })
+    }
+
+    _getTrackHistoryItemLayout = (data, index) => {
+        return {
+            offset: 0,
+            length: 63 + 10 + 10,
+            index
+        }
     }
 
     _renderTrackHistoryItem = (item, index) => {
@@ -201,7 +206,7 @@ export default class SongsScreen extends Component {
             <FlatList
                 data={ this.state.trackHistory }
                 renderItem={ ({item, index}) => this._renderTrackHistoryItem(item, index) }
-                getItemLayout={ this._getItemLayout }
+                getItemLayout={ this._getTrackHistoryItemLayout }
                 keyExtractor={ item => item.id }
             />
         )
@@ -227,7 +232,8 @@ export default class SongsScreen extends Component {
                 currentTime: 0,
                 playing: true,
                 loading: true,
-                isVisible: true
+                isVisible: true,
+                showOpener: true
             }
 
             if (!_.some(this.state.trackHistory, newTrack)) {
@@ -243,6 +249,10 @@ export default class SongsScreen extends Component {
     }
 
     render () {
+        if(!this.state.showOpener) {
+            return null
+        }
+
         if (!this.state.isVisible && !this.state.playing) {
             return (
                 <View style={ styles.opener }>
@@ -257,7 +267,6 @@ export default class SongsScreen extends Component {
         if( this.state.songDuration !== undefined && this.state.songDuration !== 0 ){
             songPercentage = this.state.currentTime / this.state.songDuration
         }
-
 
         const EN_BACKWARD = !this.state.shuffle || this.state.currentHistoryIndex !== 0
         const EN_FOREWARD = !this.state.shuffle || this.state.currentHistoryIndex < this.state.trackHistory.length
@@ -360,7 +369,7 @@ const styles = StyleSheet.create({
         bottom: 0,
         right:0,
         left:0,
-        backgroundColor: MAIN_THEME_COLOR, //'#e1e8ee',
+        backgroundColor: MAIN_THEME_COLOR,
     },
     controls: {
         flex: 1,
