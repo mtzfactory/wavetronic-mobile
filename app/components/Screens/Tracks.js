@@ -14,10 +14,10 @@ import TracksListItem from './TracksListItem'
 import MusicApi from '../../api/MusicApi'
 const musicApi = new MusicApi()
 
-const SCREEN = 'Tracks'
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const THUMBNAIL_SIZE = 70
 const ROW_HEIGTH = THUMBNAIL_SIZE + 17 + 17 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
+const SCREEN = 'Tracks'
 
 export default class TracksScreen extends Component {
     static navigationOptions = {

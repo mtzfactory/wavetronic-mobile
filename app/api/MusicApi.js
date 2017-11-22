@@ -15,6 +15,10 @@ class MusicService {
         return this.fetcher.getWithAuth(`${API_URL_JMO_ALBUMS}?offset=${offset}&limit=${limit}`)
     }
 
+    getTracksFromAlbum = (albumId) => {
+        return this.fetcher.getWithAuth(`${API_URL_JMO_ALBUMS}/${albumId}`)
+    }
+
     getPlaylists = (offset, limit) =>{
         return this.fetcher.getWithAuth(`${API_URL_JMO_PLAYLISTS}?offset=${offset}&limit=${limit}`)
     }

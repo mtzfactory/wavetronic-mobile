@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { StyleSheet, View, TouchableHighlight, ImageBackground } from 'react-native'
 import { ListItem, Body, Left, Right, Thumbnail, Text, Button } from 'native-base'
 
+import { SCREEN_ALBUMS_COLOR } from '../../constants'
+
 export default class PureListItem extends React.PureComponent {
     _openAlbum = (id, name) => {
         this.props.onItemPressed(id, name)
@@ -11,7 +13,7 @@ export default class PureListItem extends React.PureComponent {
         const { listItem } = this.props
 
         return (
-            <ListItem thumbnail button={true} onPress={ () => this._openAlbum(listItem._id, listItem.name) }>
+            <ListItem thumbnail button={true} onPress={ () => this._openAlbum(listItem.id, listItem.name) }>
                 <Left>
                     <Thumbnail square large source={{ uri: listItem.image }} />
                 </Left>
@@ -22,7 +24,7 @@ export default class PureListItem extends React.PureComponent {
                 </Body>
                 <Right>
                     <Button transparent>
-                        <Text>Open</Text>
+                        <Text style={{ color: SCREEN_ALBUMS_COLOR }}>Open</Text>
                     </Button>
                 </Right>
             </ListItem>
