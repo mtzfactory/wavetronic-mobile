@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, StatusBar, View, TouchableHighlight, Alert, TextInput } from 'react-native'
+import { StyleSheet, Platform, StatusBar, View, FlatList, TouchableHighlight, TextInput, Alert } from 'react-native'
 import { Content, Text, Button, Icon, Form, Item } from 'native-base'
+import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
@@ -9,6 +10,8 @@ import { LANDSCAPE, PORTRAIT, MAIN_THEME_COLOR, SCREEN_PLAYLISTS_COLOR, SCREEN_P
 import FabNavigator from '../FabNavigator'
 import InfiniteList from '../InfiniteList'
 import PlaylistsListItem from './PlaylistsListItem'
+
+import { getMMSSFromMillis } from '../../helpers/Functions'
 
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
@@ -40,10 +43,11 @@ export default class PlaylistsScreen extends Component {
             newPlaylistName: null,
             newPlaylistDescription: null,
             columns: 1,
-            showModal: false,
+            showPlaylistsTracksModal: false,
             playlistId: null,
+            playlistName: null,
             playlistTracks: null,
-            currentTrackIndex: 0
+            currentTrackIndex: -1
         }
     }
 
@@ -55,12 +59,17 @@ export default class PlaylistsScreen extends Component {
                 .then( () => {
                     return userApi.addPlaylist(newPlaylistName, newPlaylistDescription)
                         .then(res => {
-                            console.log(res)
                             this.refs.newPlaylistModal.close()
                         })
                         .catch(error => { Alert.alert(error.message) })
                 })
                 .then(() => this.setState({ newPlaylistName: null, newPlaylistDescription: null }))
+    }
+
+    _playAllTracksFromPlaylist () {
+        this.refs.playlistTracksModal.close()
+        this.setState({ showPlaylistsTracksModal:false, currentTrackIndex: null })
+        Alert.alert('play all')
     }
 
     _playTrackFromPlaylist (index) {
@@ -74,9 +83,9 @@ export default class PlaylistsScreen extends Component {
         return <ListItem
             title={ item.name }
             subtitle={ `${item.album_name}, ${item.artist_name}` }
-            leftIcon={{ name: LEFT_ICON, type: 'ionicon', style: { color: PRIMARY_COLOR } }}
+            leftIcon={{ name: LEFT_ICON, type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR } }}
             rightTitle={ getMMSSFromMillis(item.duration) }
-            rightIcon={{ name: 'md-add', type: 'ionicon', style: { color: PRIMARY_COLOR, marginLeft: 15 } }}
+            rightIcon={{ name: 'ios-play-outline', type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR, marginLeft: 15 } }}
             onPressRightIcon={ () => this._selectPlaylistToAddTrack(index) }
             key={ item.id }
             onPress={ () => this._playTrackFromPlaylist(index) }/>
@@ -84,29 +93,41 @@ export default class PlaylistsScreen extends Component {
 
     _renderPlaylistTracks () {
         return (
-            <FlatList
-                data={ this.state.playlistTracks }
-                extraData={ this.state.currentTrackIndex }
-                renderItem={ ({item, index}) => this._renderPlaylistTracksItem(item, index) }
-                getItemLayout={ this._getTrackHistoryItemLayout }
-                keyExtractor={ item => item.id }
-            />
+            <View style={{ flex: 1 }}>
+                <View style={ styles.modalHeader }>
+                    <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ this._playAllTracksFromPlaylist.bind(this) }>
+                        <Text style={ styles.close }>Play all</Text>
+                    </TouchableHighlight>
+                    <Text>{ this.state.playlistName.toUpperCase() }</Text>
+                    <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.playlistTracksModal.close() }>
+                        <Text style={ styles.close }>Close</Text>
+                    </TouchableHighlight>
+                </View>
+                <FlatList
+                    data={ this.state.playlistTracks }
+                    extraData={ this.state.currentTrackIndex }
+                    renderItem={ ({item, index}) => this._renderPlaylistTracksItem(item, index) }
+                    getItemLayout={ this._getTrackHistoryItemLayout }
+                    keyExtractor={ (item, index) => index }
+                />
+            </View>
         )
     }
 
-    _handleOnItemPressed (playlistId) {
-        userApi.getTracksFromPlaylist(this.state.playlistId)
+    _handleOnPlaylistsItemPressed (playlistId, playlistName) {
+        userApi.getTracksFromPlaylist(playlistId)
             .then(res => {
-                this.setState({ showModal: true, playlistId, playlistTracks: res.results })
+                this.setState({ showPlaylistsTracksModal: true, playlistId, playlistName, playlistTracks: res.results })
+                this.refs.playlistTracksModal.open()
             })
-            .catch(error => Alert.alert(error.message))
+            .catch(error => { console.log(error); Alert.alert(error.message) })
     }
 
     _renderPlaylistsItem = (item) => (
         <PlaylistsListItem
             listItem={ item }
             columns={ this.state.columns }
-            onItemPressed={ this._handleOnItemPressed.bind(this) }
+            onItemPressed={ this._handleOnPlaylistsItemPressed.bind(this) }
         />
     )
 
@@ -126,7 +147,7 @@ export default class PlaylistsScreen extends Component {
         const ROW_HEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
         const { navigate } = this.props.navigation
         const { orientation } = this.props.screenProps
-        const { columns, showModal } = this.state
+        const { columns, showPlaylistsTracksModal } = this.state
 
         return (
             <View style={ styles.container }>
@@ -142,8 +163,8 @@ export default class PlaylistsScreen extends Component {
                     columns={ columns }
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
-                <Modal ref={"playlistTracks"} style={ styles.modal } position={"bottom"}>
-                    { showModal && this._renderPlaylistTracks() }
+                <Modal ref={"playlistTracksModal"} style={ styles.modal } position={"bottom"}>
+                    { showPlaylistsTracksModal && this._renderPlaylistTracks() }
                 </Modal>
                 <Modal ref={"newPlaylistModal"} style={ styles.modal } position={"center"}>
                     <View style={ styles.form }>
@@ -186,10 +207,11 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius:50,
     },
-    modal: { height: 300 },
+    modal: { height: 300, padding: 10 },
     form: { margin: 15},
     formInput: { marginTop: 20, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR},
-    modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
+    modalHeader: { flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
+    buttonHeader: { height: 20 },
     title: { textAlign: 'center' },
     close: { fontSize: 12, color: '#c1c1c1' },
     submit: { marginTop: 45, backgroundColor: SCREEN_PLAYLISTS_COLOR },

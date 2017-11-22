@@ -10,23 +10,12 @@ import _ from 'lodash'
 import { MAIN_THEME_COLOR, PRIMARY_COLOR, STATUSBAR_HEIGHT, HEADER_HEIGHT, PLAYER_HEIGHT } from '../../constants'
 import InfiniteList from '../InfiniteList'
 
+import { getMMSSFromMillis } from '../../helpers/Functions'
+
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
-
-function getMMSSFromMillis(timeInSeconds) {
-    const seconds = Math.floor(timeInSeconds % 60)
-    const minutes = Math.floor(timeInSeconds / 60)
-
-    const padWithZero = number => {
-        if (number < 10) {
-            return `0${ number }`
-        }
-        return `${ number }`
-    }
-    return padWithZero(minutes) + ':' + padWithZero(seconds)
-}
 
 export default class SongsScreen extends Component {
     constructor () {

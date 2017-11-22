@@ -12,8 +12,8 @@ export default class PlaylistsListItem extends React.PureComponent {
         this.state = { image: null }
     }
 
-    _openPlaylist = (id) => {
-        this.props.onItemPressed(id)
+    _openPlaylist = (id, name) => {
+        this.props.onItemPressed(id, name)
     }
 
     componentDidMount () {
@@ -30,17 +30,21 @@ export default class PlaylistsListItem extends React.PureComponent {
         const WIDTH = (100 / columns).toFixed(1) + '%'
         const RANDOM_NUMBER = Math.round(Math.random() * 10)
 
+        const BADGE_COLOR = listItem.amount > 0 
+            ? { backgroundColor: 'rgba(255, 215, 0, 0.5)' }
+            : { backgroundColor: 'rgba(255, 255, 255, 0.4)' }
+
         return (
           <TouchableHighlight disabled={ listItem.amount === 0 }
             style={{ height: 120, width: WIDTH }}
             underlayColor="#F1F1F1"
-            onPress={ () => this._openPlaylist(listItem._id) }>        
+            onPress={ () => this._openPlaylist(listItem._id, listItem.name) }>        
               <ImageBackground source={ this.state.image } style={ styles.imagebackground }>
                 <View style={ styles.blackOverlay }>
                   <Text style={ [styles.text, styles.name] } numberOfLines={1}>{ listItem.name.toUpperCase() }</Text>
                   <Text style={ [styles.text, styles.description] } numberOfLines={1}>{ listItem.description }</Text>
                   <View style={ styles.row }>
-                    <Badge style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)' }}><Text style={ styles.songs }>{ listItem.amount }</Text></Badge>
+                    <Badge style={ BADGE_COLOR }><Text style={ styles.songs }>{ listItem.amount }</Text></Badge>
                     <Text style={ [styles.text, styles.date] }>{ moment(listItem.creation_date).format('MM/YYYY') }</Text>
                   </View>
                 </View>
@@ -63,7 +67,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
         bottom: 0,
         width: '100%',
-        paddingBottom: 4,
+        paddingBottom: 6,
         paddingHorizontal: 15,
         flexDirection: 'row',
         justifyContent: 'space-between',
