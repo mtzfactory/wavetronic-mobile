@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, Dimensions, StatusBar, Alert, ImageBackground } from 'react-native'
-import { View, Left, Right, Body, Thumbnail, Text, Button, Icon } from 'native-base'
+import { StyleSheet, Platform, Dimensions, StatusBar } from 'react-native'
+import { View, Thumbnail } from 'native-base'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
 import { MAIN_THEME_COLOR, SCREEN_SONGS_COLOR, SCREEN_SONGS_DARK_COLOR } from '../../constants'
 
-import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
+import InfiniteList from '../InfiniteList'
 import TracksFriendList from './TracksFriendList'
 import TracksListItem from './TracksListItem'
 
@@ -33,13 +33,17 @@ export default class TracksScreen extends Component {
         this.state = {
             trackIndex: null,   // para marcar el listitem de otro color....
             trackId: null,      // jamendo track Id.
-            showModal: false
+            showFriendListModal: false
         }
     }
 
-    _handelOnShareTrack (trackId) {
-        this.setState({ showModal: true, trackId })
-        this.refs.modalWindow.open()
+    _handleOnClosedFriendListModal () {
+        this.setState( { showFriendListModal: false })
+    }
+
+    _handleOnShareTrack (trackId) {
+        this.setState({ showFriendListModal: true, trackId })
+        this.refs.friendListModal.open()
     }
 
     _renderFriendList () {
@@ -57,7 +61,7 @@ export default class TracksScreen extends Component {
             size={ THUMBNAIL_SIZE }
             index={ index }
             playSong={ this._handleOnPlaySong.bind(this) }
-            shareTrack={ this._handelOnShareTrack.bind(this) } />
+            shareTrack={ this._handleOnShareTrack.bind(this) } />
     )
 
     render () {
@@ -68,9 +72,6 @@ export default class TracksScreen extends Component {
                 {
                     Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_SONGS_DARK_COLOR } />
                 }
-                <Modal style={ styles.modal } position={"bottom"} ref={"modalWindow"}>
-                { this.state.showModal && this._renderFriendList() }
-                </Modal>
                 <InfiniteList
                     getData={ musicApi.getTracks }
                     renderItem={ this._renderTrackItem }
@@ -78,6 +79,12 @@ export default class TracksScreen extends Component {
                     searchHolder='Search for songs ...'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
+                <Modal style={ styles.modal }
+                    position={"bottom"} 
+                    ref={"friendListModal"}
+                    onClosed={ this._handleOnClosedFriendListModal.bind(this) }>
+                    { this.state.showFriendListModal && this._renderFriendList() }
+                </Modal>
             </View>
         )
     }

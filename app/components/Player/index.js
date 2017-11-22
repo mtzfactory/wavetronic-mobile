@@ -278,18 +278,16 @@ export default class SongsScreen extends Component {
         const EN_FOREWARD = !this.state.shuffle || this.state.currentHistoryIndex < this.state.trackHistory.length
         const MUTE_ICON = this.state.muted ? 'ios-volume-off' : 'ios-volume-up'
         const EN_SHOW_PLAYER = this.state.playing
-        const EN_SHOW_PLAYLIST = !this.state.expanded && (this.state.loading || this.state.track.name === undefined)
+        const EN_SHOW_PLAYLIST = !this.state.expanded && this.state.track.name === undefined //(this.state.loading || this.state.track.name === undefined)
 
         return (
             <Animated.View style={[ styles.container, { height: this.state.animation } ]}>
                 <View style={ styles.playlist }>
-                { this.state.expanded && this._renderTrackHistory() }
+                    { this.state.expanded && this._renderTrackHistory() }
                 </View>
-                <View style={ styles.wrapper }>
-                    <Modal style={ styles.modal } position={"bottom"} ref={"modalWindow"}>
+                <Modal style={ styles.modal } position={"bottom"} ref={"modalWindow"}>
                     { this.state.expanded && this._renderPlaylists() }
-                    </Modal>
-                </View>
+                </Modal>
                 <View style={ styles.player }>
                     <Video source={{ uri: this.state.track.audio }}
                         ref="audio"
@@ -367,10 +365,8 @@ const styles = StyleSheet.create({
     playlist: {
         flex: 1,
         margin: 10,
+        marginBottom: 50,
         backgroundColor: 'transparent'
-    },
-    wrapper: {
-        marginBottom: 40,
     },
     modal: {
         height: DEVICE_HEIGHT / 2 - 80, // giving some top space

@@ -1,67 +1,19 @@
-import React, { Component, PureComponent } from 'react'
-import { StyleSheet, Platform, StatusBar, View, TouchableHighlight, ImageBackground, Alert } from 'react-native'
-import { Content, Text, Button, Icon, Form, Item, Input, Label, Badge } from 'native-base'
+import React, { Component } from 'react'
+import { StyleSheet, Platform, StatusBar, View, TouchableHighlight, Alert, TextInput } from 'react-native'
+import { Content, Text, Button, Icon, Form, Item } from 'native-base'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
 import { LANDSCAPE, PORTRAIT, MAIN_THEME_COLOR, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR } from '../../constants'
 
-import Flickr from '../../helpers/Flickr'
-import UserApi from '../../api/UserApi'
-import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
+import InfiniteList from '../InfiniteList'
+import PlaylistsListItem from './PlaylistsListItem'
 
-const moment = require('moment')
+import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
+
 const SCREEN = 'Playlists'
-
-//class PureListItem extends React.PureComponent {
-class PureListItem extends PureComponent {
-    constructor () {
-        super()
-        this.state = { image: null }
-    }
-
-    _openPlaylist = (id) => {
-        this.props.onItemPressed(id)
-    }
-
-    componentDidMount () {
-        Flickr()
-            .then( url => this.setState({ image: { uri: url } }))
-            .catch(error => {
-                this.setState({ image: require('../../assets/images/random-1.png')})
-            })
-    }
-
-    render () {
-        const { listItem, columns } = this.props
-        
-        const WIDTH = (100 / columns).toFixed(1) + '%'
-        const RANDOM_NUMBER = Math.round(Math.random() * 10)
-
-        if (this.state.image === null)
-            return null
-
-        return (
-          <TouchableHighlight 
-            style={{ height: 120, width: WIDTH }}
-            underlayColor="#F1F1F1"
-            onPress={ () => this._openPlaylist(listItem._id) }>        
-              <ImageBackground source={ this.state.image } style={ styles.imagebackground }>
-                <View style={ styles.blackOverlay }>
-                  <Text style={ [styles.text, styles. name] } numberOfLines={1}>{ listItem.name.toUpperCase() }</Text>
-                  <Text style={ [styles.text, styles. description] } numberOfLines={1}>{ listItem.description }</Text>
-                  <View style={ styles.row }>
-                    <Badge style={{ backgroundColor: 'rgba(255, 255, 255, 0.4)' }}><Text style={ styles.songs }>{ listItem.amount }</Text></Badge>
-                    <Text style={ [styles.text, styles.date] }>{ moment(listItem.creation_date).format('MM/YYYY') }</Text>
-                  </View>
-                </View>
-              </ImageBackground>
-          </TouchableHighlight>
-        )
-    }
-}
 
 export default class PlaylistsScreen extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -74,7 +26,7 @@ export default class PlaylistsScreen extends Component {
                 onPress={ () => 
                     navigation.state.params.handleRightButtonPressed()
                 }>
-                    <Icon name="md-add" style={{ color: "#fff" }}/>
+                    <Icon name="md-add" style={{ color: SCREEN_PLAYLISTS_COLOR }}/>
                 </TouchableHighlight>,
             headerTitleStyle : { marginLeft: 80, alignSelf: 'center', color: SCREEN_PLAYLISTS_COLOR },
             headerStyle: { backgroundColor: MAIN_THEME_COLOR }
@@ -85,43 +37,82 @@ export default class PlaylistsScreen extends Component {
         super()
 
         this.state = {
-            localPlaylist: true,
-            playlistName: null,
-            playlistDescription: null,
-            columns: 1
+            newPlaylistName: null,
+            newPlaylistDescription: null,
+            columns: 1,
+            showModal: false,
+            playlistId: null,
+            playlistTracks: null,
+            currentTrackIndex: 0
         }
     }
 
-    _handleOnItemPressed (id) {
-        userApi.getTracksFromPlaylist(id)
-            .then(console.log)
-            .catch(console.log)
+    _onAddPlaylist () {
+        const { newPlaylistName, newPlaylistDescription } = this.state
+
+        if (newPlaylistName && newPlaylistDescription)
+            Promise.resolve()
+                .then( () => {
+                    return userApi.addPlaylist(newPlaylistName, newPlaylistDescription)
+                        .then(res => {
+                            console.log(res)
+                            this.refs.newPlaylistModal.close()
+                        })
+                        .catch(error => { Alert.alert(error.message) })
+                })
+                .then(() => this.setState({ newPlaylistName: null, newPlaylistDescription: null }))
     }
 
-    _renderItem = (item) => (
-        <PureListItem
+    _playTrackFromPlaylist (index) {
+        this.setState({ currentTrackIndex: index })
+        this.props.screenProps.handlePlaySong(track)
+    }
+
+    _renderPlaylistTracksItem (item, index) {
+        const LEFT_ICON = this.state.currentTrackIndex === index ? 'ios-headset-outline' : 'ios-musical-notes-outline'
+        
+        return <ListItem
+            title={ item.name }
+            subtitle={ `${item.album_name}, ${item.artist_name}` }
+            leftIcon={{ name: LEFT_ICON, type: 'ionicon', style: { color: PRIMARY_COLOR } }}
+            rightTitle={ getMMSSFromMillis(item.duration) }
+            rightIcon={{ name: 'md-add', type: 'ionicon', style: { color: PRIMARY_COLOR, marginLeft: 15 } }}
+            onPressRightIcon={ () => this._selectPlaylistToAddTrack(index) }
+            key={ item.id }
+            onPress={ () => this._playTrackFromPlaylist(index) }/>
+    }
+
+    _renderPlaylistTracks () {
+        return (
+            <FlatList
+                data={ this.state.playlistTracks }
+                extraData={ this.state.currentTrackIndex }
+                renderItem={ ({item, index}) => this._renderPlaylistTracksItem(item, index) }
+                getItemLayout={ this._getTrackHistoryItemLayout }
+                keyExtractor={ item => item.id }
+            />
+        )
+    }
+
+    _handleOnItemPressed (playlistId) {
+        userApi.getTracksFromPlaylist(this.state.playlistId)
+            .then(res => {
+                this.setState({ showModal: true, playlistId, playlistTracks: res.results })
+            })
+            .catch(error => Alert.alert(error.message))
+    }
+
+    _renderPlaylistsItem = (item) => (
+        <PlaylistsListItem
             listItem={ item }
             columns={ this.state.columns }
             onItemPressed={ this._handleOnItemPressed.bind(this) }
         />
     )
 
-    _onAddPlaylist () {
-        if (this.state.playlistName && this.state.playlistDescription)
-            Promise.resolve()
-                .then( () => {
-                    return userApi.addPlaylist(this.state.playlistName, this.state.playlistDescription)
-                        .then(res => {
-                            console.log(res)
-                            this.refs.newPlaylistModal.close()
-                        })
-                        .catch(error => { console.log(error.message) })
-                })
-                .then(() => this.setState({ playlistName: null, playlistDescription: null }))
-    }
-
-    componentWillReceiveProps(newProps) {
+    componentWillReceiveProps (newProps) {
         const { orientation } =  newProps.screenProps
+
         if (orientation !== this.props.screenProps.orientation) {
             this.setState({ columns: orientation === PORTRAIT ? 1 : 2 })
         }
@@ -134,6 +125,8 @@ export default class PlaylistsScreen extends Component {
     render () {
         const ROW_HEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
         const { navigate } = this.props.navigation
+        const { orientation } = this.props.screenProps
+        const { columns, showModal } = this.state
 
         return (
             <View style={ styles.container }>
@@ -142,45 +135,44 @@ export default class PlaylistsScreen extends Component {
                 }
                 <InfiniteList
                     getData={ userApi.getPlaylists }
-                    renderItem={ this._renderItem }
+                    renderItem={ this._renderPlaylistsItem }
                     rowHeight={ ROW_HEIGTH }
                     searchHolder='Search for playlists ...'
-                    listKey={ this.props.screenProps.orientation === LANDSCAPE ? 'h' : 'v' }
-                    columns={ this.state.columns }
+                    listKey={ orientation === LANDSCAPE ? 'h' : 'v' }
+                    columns={ columns }
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
-                <Modal ref={"newPlaylistModal"} style={styles.modal} position={"center"}>
-                    <Content>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between", marginTop: 15 }}>
-                            <Text style={{ textAlign: "center" }}>New playlist</Text>
-                            <TouchableHighlight underlayColor="#FFF" onPress={ () => Alert.alert('close!') }>
-                                <Text>Close</Text>
+                <Modal ref={"playlistTracks"} style={ styles.modal } position={"bottom"}>
+                    { showModal && this._renderPlaylistTracks() }
+                </Modal>
+                <Modal ref={"newPlaylistModal"} style={ styles.modal } position={"center"}>
+                    <View style={ styles.form }>
+                        <View style={ styles.modalHeader }>
+                            <Text style={ styles.title }>NEW PLAYLIST</Text>
+                            <TouchableHighlight underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.newPlaylistModal.close() }>
+                                <Text style={ styles.close }>Close</Text>
                             </TouchableHighlight>
                         </View>
-                        <Form>
-                            <Item floatingLabel success={ this.state.playlistName != null }>
-                                <Label>Playlist name</Label>
-                                <Input ref="_name"
-                                    autoFocus={ true }
-                                    autoCapitalize="words"
-                                    blurOnSubmit={ false }
-                                    onChangeText={ playlistName => this.setState({ playlistName }) }
-                                    onSubmitEditing={ () => this.refs._description._root.focus() }
-                                />
-                            </Item>
-                            <Item floatingLabel last success={ this.state.playlistDescription != null }>
-                                <Label>Description</Label>
-                                <Input ref="_description"
-                                    autoCapitalize="sentences"
-                                    onChangeText={ playlistDescription => this.setState({ playlistDescription }) }
-                                    onSubmitEditing={ this._onAddPlaylist.bind(this) }
-                                />
-                            </Item>
-                        </Form>
+                        <TextInput style={ styles.formInput }
+                            ref={ c => this.name = c}
+                            autoFocus={ true }
+                            autoCapitalize="words"
+                            blurOnSubmit={ false }
+                            placeholder="playlist name"
+                            onChangeText={ newPlaylistName => this.setState({ newPlaylistName }) }
+                            onSubmitEditing={ () => this.description.focus() }
+                        />
+                        <TextInput style={ styles.formInput }
+                            ref={ c => this.description = c}
+                            autoCapitalize="sentences"
+                            placeholder="description"
+                            onChangeText={ newPlaylistDescription => this.setState({ newPlaylistDescription }) }
+                            onSubmitEditing={ this._onAddPlaylist.bind(this) }
+                        />
                         <Button block style={ styles.submit } onPress={ this._onAddPlaylist.bind(this) }>
                             <Text>Add</Text>
                         </Button>
-                    </Content>
+                    </View>
                 </Modal>
             </View>
         )
@@ -195,42 +187,10 @@ const styles = StyleSheet.create({
         borderRadius:50,
     },
     modal: { height: 300 },
-    submit: { margin: 15, marginTop: 50 },
-    imagebackground: {
-        flex: 1,
-    },
-    blackOverlay: {
-        flex: 1,
-        alignItems: 'stretch',
-        backgroundColor: 'rgba(0, 0, 0, 0.4)'
-    },
-    row: {
-        position: 'absolute',
-        bottom: 0,
-        width: '100%',
-        paddingBottom: 4,
-        paddingHorizontal: 15,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-    },
-    text: {
-        paddingTop: 8,
-        textAlign: 'center',
-        color: '#faebd7',
-    },
-    name: {
-        paddingTop: 10, paddingBottom: 4, fontSize: 18
-    },
-    description: {
-        fontSize: 16, color: '#c1c1c1'
-    },
-    date: {
-        fontSize: 14,
-        paddingTop: 0,
-        alignSelf: 'center',
-    },
-    songs: {
-        lineHeight: 20,
-        fontSize: 12,
-    }
+    form: { margin: 15},
+    formInput: { marginTop: 20, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR},
+    modalHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
+    title: { textAlign: 'center' },
+    close: { fontSize: 12, color: '#c1c1c1' },
+    submit: { marginTop: 45, backgroundColor: SCREEN_PLAYLISTS_COLOR },
 })

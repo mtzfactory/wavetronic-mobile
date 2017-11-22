@@ -129,7 +129,7 @@ export default class LoginScreen extends Component {
                 keyboardType="email-address"
                 placeholderTextColor = "#fff"
                 onChangeText={ email => this.setState({ email }) }
-                onSubmitEditing={ ()=> this.password.focus() }
+                onSubmitEditing={ () => this.password.focus() }
             />
         )
     }

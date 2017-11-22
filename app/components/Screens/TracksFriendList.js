@@ -9,8 +9,7 @@ import InfiniteList from '../InfiniteList'
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
-const THUMBNAIL_SIZE = 70
-const ROW_HEIGTH = THUMBNAIL_SIZE + 17 + 17 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
+const ROW_HEIGTH = 50 + 10 + 10
 
 export default class TracksFriendList extends Component {
     _sendTrackToFriend (friendId) {
@@ -21,7 +20,7 @@ export default class TracksFriendList extends Component {
     _renderFriendItem = (item, index) => (
         <ListItem disabled={ !item.confirmed }
             title={ item.username }
-            subtitle={ item.confirmed ? null : "friendship not confirmed" }
+            subtitle={ item.confirmed ? null : "hmm... not confirmed" }
             leftIcon={{ name: 'ios-person-outline', type: 'ionicon', style: { color: SCREEN_SONGS_COLOR } }}
             rightTitle="Send"
             key={ item._id }

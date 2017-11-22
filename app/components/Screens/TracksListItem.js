@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { StyleSheet, ImageBackground } from 'react-native'
 import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button, Icon } from 'native-base'
 
+import { SCREEN_SONGS_COLOR } from '../../constants'
+
 export default class TracksListItem extends React.PureComponent {
     render () {
         const { listItem, index, size } = this.props
@@ -9,8 +11,8 @@ export default class TracksListItem extends React.PureComponent {
         return (
             <ListItem thumbnail button={true} onPress={ () => this.props.playSong(index , listItem) }>
                 <Left>
-                    <ImageBackground source={{ uri: listItem.image }} style={{ width: size, height: size, justifyContent: "center", alignItems: "center" }}>
-                        <View style={{ width: 30, height: 30, borderRadius: 50, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0, 0, 0, 0.4)" }}>
+                    <ImageBackground source={{ uri: listItem.image }} style={[ { width: size, height: size }, styles.background] }>
+                        <View style={ styles.playButtonOverlay }>
                             <Icon name="ios-play" style={{ color: "rgba(255, 255, 255, 0.7)", marginLeft: 4 }}/>
                         </View>
                     </ImageBackground>
@@ -22,10 +24,29 @@ export default class TracksListItem extends React.PureComponent {
                 </Body>
                 <Right>
                     <Button transparent onPress={ () => this.props.shareTrack(`${listItem.id}`) }>
-                        <Text style={{ textAlign: "center" }}>{"wave\nme"}</Text>
+                        <Text style={ styles.actionButtonText }>{"wave\nme"}</Text>
                     </Button>
                 </Right>
             </ListItem>
         )
     }
 }
+
+const styles = StyleSheet.create({
+    background: {
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    playButtonOverlay: {
+        width: 30,
+        height: 30,
+        borderRadius: 50,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "rgba(0, 0, 0, 0.4)"
+    },
+    actionButtonText: {
+        textAlign: "center",
+        color: SCREEN_SONGS_COLOR
+    }
+})
