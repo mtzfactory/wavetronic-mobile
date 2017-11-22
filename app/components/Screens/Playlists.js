@@ -74,7 +74,7 @@ export default class PlaylistsScreen extends Component {
 
     _playTrackFromPlaylist (index) {
         this.setState({ currentTrackIndex: index })
-        this.props.screenProps.handlePlaySong(track)
+        this.props.screenProps.handlePlaySong(this.state.playlistTracks[index])
     }
 
     _renderPlaylistTracksItem (item, index) {
@@ -94,13 +94,13 @@ export default class PlaylistsScreen extends Component {
     _renderPlaylistTracks () {
         return (
             <View style={{ flex: 1 }}>
-                <View style={ styles.modalHeader }>
+                <View style={ styles.headerModal }>
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ this._playAllTracksFromPlaylist.bind(this) }>
-                        <Text style={ styles.close }>Play all</Text>
+                        <Text style={ styles.textHeader }>Play all</Text>
                     </TouchableHighlight>
                     <Text>{ this.state.playlistName.toUpperCase() }</Text>
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.playlistTracksModal.close() }>
-                        <Text style={ styles.close }>Close</Text>
+                        <Text style={ styles.textHeader }>Close</Text>
                     </TouchableHighlight>
                 </View>
                 <FlatList
@@ -167,14 +167,14 @@ export default class PlaylistsScreen extends Component {
                     { showPlaylistsTracksModal && this._renderPlaylistTracks() }
                 </Modal>
                 <Modal ref={"newPlaylistModal"} style={ styles.modal } position={"center"}>
-                    <View style={ styles.form }>
-                        <View style={ styles.modalHeader }>
-                            <Text style={ styles.title }>NEW PLAYLIST</Text>
+                    <View style={ styles.formModal }>
+                        <View style={ styles.headerModal }>
+                            <Text style={ styles.titleHeader }>NEW PLAYLIST</Text>
                             <TouchableHighlight underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.newPlaylistModal.close() }>
-                                <Text style={ styles.close }>Close</Text>
+                                <Text style={ styles.textHeader }>Close</Text>
                             </TouchableHighlight>
                         </View>
-                        <TextInput style={ styles.formInput }
+                        <TextInput style={ styles.inputForm }
                             ref={ c => this.name = c}
                             autoFocus={ true }
                             autoCapitalize="words"
@@ -183,7 +183,7 @@ export default class PlaylistsScreen extends Component {
                             onChangeText={ newPlaylistName => this.setState({ newPlaylistName }) }
                             onSubmitEditing={ () => this.description.focus() }
                         />
-                        <TextInput style={ styles.formInput }
+                        <TextInput style={ styles.inputForm }
                             ref={ c => this.description = c}
                             autoCapitalize="sentences"
                             placeholder="description"
@@ -208,11 +208,11 @@ const styles = StyleSheet.create({
         borderRadius:50,
     },
     modal: { height: 300, padding: 10 },
-    form: { margin: 15},
-    formInput: { marginTop: 20, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR},
-    modalHeader: { flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
+    formModal: { margin: 15},
+    inputForm: { marginTop: 20, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR},
+    headerModal: { marginBottom: 2, flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
     buttonHeader: { height: 20 },
-    title: { textAlign: 'center' },
-    close: { fontSize: 12, color: '#c1c1c1' },
+    titleHeader: { textAlign: 'center' },
+    textHeader: { fontSize: 12, color: '#c1c1c1' },
     submit: { marginTop: 45, backgroundColor: SCREEN_PLAYLISTS_COLOR },
 })
