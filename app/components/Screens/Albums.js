@@ -1,44 +1,22 @@
 import React, { Component } from 'react'
 import { StyleSheet, Platform, StatusBar, Alert } from 'react-native'
-import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
+import { View } from 'native-base'
+import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
+import Modal from 'react-native-modalbox'
 
 import { MAIN_THEME_COLOR, SCREEN_ALBUMS_COLOR, SCREEN_ALBUMS_DARK_COLOR } from '../../constants'
 
-import MusicApi from '../../api/MusicApi'
-import InfiniteList from '../InfiniteList'
 import FabNavigator from '../FabNavigator'
+import InfiniteList from '../InfiniteList'
+import AlbumsListItem from './AlbumsListItem'
 
-const SCREEN = 'Albums'
+import { getMMSSFromMillis } from '../../helpers/Functions'
+
+import MusicApi from '../../api/MusicApi'
 const musicApi = new MusicApi()
 
-class PureListItem extends React.PureComponent {
-    _openAlbum = (id) => {
-        Alert.alert(`${id} was clicked`)
-    }
-
-    render () {
-        const { listItem } = this.props
-
-        return (
-            <ListItem thumbnail button={true} onPress={ () => this._openAlbum(listItem.id) }>
-                <Left>
-                    <Thumbnail square large source={{ uri: listItem.image }} />
-                </Left>
-                <Body>
-                    <Text numberOfLines={ 1 } >{ listItem.name }</Text>
-                    <Text numberOfLines={ 1 } note>{ listItem.artist_name }</Text>
-                    <Text numberOfLines={ 1 } note>{ listItem.releasedate }</Text>
-                </Body>
-                <Right>
-                    <Button transparent>
-                        <Text>Open</Text>
-                    </Button>
-                </Right>
-            </ListItem>
-        )
-    }
-}
+const SCREEN = 'Albums'
 
 export default class AlbumsScreen extends Component {
     static navigationOptions = {
@@ -54,8 +32,15 @@ export default class AlbumsScreen extends Component {
         this.state = { columns: 1 }
     }
 
+    _handleOnAlbumItemPressed (albumId, albumName) {
+        Alert.alert(albumName)
+    }
+
     _renderItem = (item) => (
-        <PureListItem listItem={ item } />
+        <AlbumsListItem
+            listItem={ item }
+            onItemPressed={ this._handleOnAlbumItemPressed.bind(this) }
+        />
     )
 
     render () {
@@ -81,8 +66,5 @@ export default class AlbumsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white'
-    },
+    container: { flex: 1, backgroundColor: '#fff' },
 })
