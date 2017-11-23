@@ -4,7 +4,6 @@ import FCM, {FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, 
 
 export default class PushController extends Component {
     componentDidMount () {
-
         // this method generate fcm token.
         FCM.requestPermissions()
         FCM.getFCMToken().then(pnToken => {
@@ -16,23 +15,32 @@ export default class PushController extends Component {
         FCM.getInitialNotification().then(notif => {
             if (notif) {
                 console.log("getInitialNotification", notif)
-                Alert.alert('getInitialNotification', notif.title)
+                if (notif.title) Alert.alert('getInitialNotification', notif.title)
             }
         })
 
         // This method give received notifications to mobile to display.
         this.notificationListener = FCM.on(FCMEvent.Notification, async notif => {
             console.log('onNotification', notif);
-            if (notif && notif.local_notification) {
-                Alert.alert('local_notification', notif.title)
-                return
-            }
-            if (notif && notif.opened_from_tray) {
-                Alert.alert('opened_from_tray', notif.title)
+            if (notif && (notif.local_notification || notif.opened_from_tray)) {
+                const type = notif.local_notification ? 'local' : 'tray'
+                if (notif.opened_from_tray && !notif.show_in_foreground) {
+                    FCM.getInitialNotification().then(notif2 => {
+                        if (notif2) {
+                            Alert.alert(`2.- opened from ${type}`, notif2.title)
+                            return
+                        }
+                    })
+                }
+                Alert.alert(`1.- opened from ${type}`, notif.title)
                 return
             }
             // Process the notification
-            this.showLocalNotification(notif)
+            // if(notif.track){
+            //     const track = JSON.parse(notif.track)
+            //     console.log(track)
+            // }
+            //this.showLocalNotification(notif)
         })
 
         // this method call when FCM token is update(FCM token update any time so will get updated token from this method)

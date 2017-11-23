@@ -6,7 +6,7 @@ import FCM, {FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, 
 import { LANDSCAPE, PORTRAIT, DARK_PRIMARY_COLOR } from './constants'
 import RootNavigation from './components/RootNavigation'
 import Player from './components/Player'
-import PushController from './helpers/PushController'
+import PushController from './services/PushService'
 
 export default class App extends Component {
     constructor () {
