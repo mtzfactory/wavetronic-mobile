@@ -37,7 +37,7 @@ export default class TracksScreen extends Component {
         }
     }
 
-    _handleOnClosedFriendListModal () {
+    _handleClosedFriendListModal () {
         this.setState( { showFriendListModal: false })
     }
 
@@ -79,10 +79,10 @@ export default class TracksScreen extends Component {
                     searchHolder='Search for songs ...'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
-                <Modal style={ styles.modal }
-                    position={"bottom"} 
-                    ref={"friendListModal"}
-                    onClosed={ this._handleOnClosedFriendListModal.bind(this) }>
+                <Modal ref={"friendListModal"}
+                    style={ styles.modal }
+                    position={"bottom"}
+                    onClosed={ this._handleClosedFriendListModal.bind(this) }>
                     { this.state.showFriendListModal && this._renderFriendList() }
                 </Modal>
             </View>

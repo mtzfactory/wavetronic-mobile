@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, View, TouchableHighlight, ImageBackground } from 'react-native'
 import { Text, Badge } from 'native-base'
 
+import { SCREEN_PLAYLISTS_COLOR } from '../../constants'
 import Flickr from '../../helpers/Flickr'
 
 const moment = require('moment')
@@ -31,7 +32,7 @@ export default class PlaylistsListItem extends React.PureComponent {
         const RANDOM_NUMBER = Math.round(Math.random() * 10)
 
         const BADGE_COLOR = listItem.amount > 0 
-            ? { backgroundColor: 'rgba(255, 215, 0, 0.5)' }
+            ? { backgroundColor: SCREEN_PLAYLISTS_COLOR + '80' } //'rgba(255, 215, 0, 0.5)' }
             : { backgroundColor: 'rgba(255, 255, 255, 0.4)' }
 
         return (

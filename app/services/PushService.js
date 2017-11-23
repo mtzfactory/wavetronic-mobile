@@ -1,72 +1,15 @@
 import React, { Component } from 'react'
 import { Alert } from 'react-native'
 import FCM, {FCMEvent, RemoteNotificationResult, WillPresentNotificationResult, NotificationType} from "react-native-fcm"
+import _ from 'lodash'
 
-export default class PushController extends Component {
-    componentDidMount () {
-        // this method generate fcm token.
-        FCM.requestPermissions()
-        FCM.getFCMToken().then(pnToken => {
-            //console.log("PushController getFCMToken", pnToken)
-            this.props.onChangeToken(pnToken)
-        })
-
-        // This method get all notification from server side.
-        FCM.getInitialNotification().then(notif => {
-            if (notif) {
-                console.log("getInitialNotification", notif)
-                if (notif.title) Alert.alert('getInitialNotification', notif.title)
-            }
-        })
-
-        // This method give received notifications to mobile to display.
-        this.notificationListener = FCM.on(FCMEvent.Notification, async notif => {
-            console.log('onNotification', notif);
-            if (notif && (notif.local_notification || notif.opened_from_tray)) {
-                const type = notif.local_notification ? 'local' : 'tray'
-                if (notif.opened_from_tray && !notif.show_in_foreground) {
-                    FCM.getInitialNotification().then(notif2 => {
-                        if (notif2) {
-                            Alert.alert(`2.- opened from ${type}`, notif2.title)
-                            return
-                        }
-                    })
-                }
-                Alert.alert(`1.- opened from ${type}`, notif.title)
-                return
-            }
-            // Process the notification
-            // if(notif.track){
-            //     const track = JSON.parse(notif.track)
-            //     console.log(track)
-            // }
-            //this.showLocalNotification(notif)
-        })
-
-        // this method call when FCM token is update(FCM token update any time so will get updated token from this method)
-        this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, pnToken => {
-            //console.log('onRefreshToken', pnToken)
-            this.props.onChangeToken(pnToken)
-        })
-
-        FCM.subscribeToTopic('mtzFactory_WaveMyBeat')
-
-        // direct channel related methods are ios only
-        // directly channel is truned off in iOS by default, this method enables it
-        FCM.enableDirectChannel()
-
-        this.channelConnectionListener = FCM.on(FCMEvent.DirectChannelConnectionChanged, (data) => {
-            console.log('direct channel connected' + data)
-        })
-
-        setTimeout(function() {
-            FCM.isDirectChannelEstablished().then(d => d)//console.log('isDirectChannelEstablished', d))
-        }, 1000)
+export default class PushService extends Component {
+    constructor() {
+        super()
+        this.state = { notif: [] }
     }
 
-    // This method display the notification on mobile screen.
-    showLocalNotification(notif) {
-        //console.log('showLocalNotification', notif)
+    showLocalNotification (notif) {
         FCM.presentLocalNotification({
             title: notif.fcm.title,
             body: notif.fcm.body,
@@ -78,13 +21,62 @@ export default class PushController extends Component {
         })
     }
 
-    componentWillUnmount() {
+    removeProcessedNotification (id) {
+        FCM.removeDeliveredNotification(id)
+        const remainigNotif = this.state.notif.filter(item => {
+            return item.id !== id;
+        })
+        console.log(remainigNotif)
+        this.setState({ notif: remainigNotif })
+    }
+
+    componentDidMount () {
+        FCM.requestPermissions()
+        FCM.getFCMToken().then(pnToken => {
+            this.props.onChangeToken(pnToken)
+        })
+
+        FCM.getInitialNotification().then(notif => {
+            if (notif) {
+                if (notif.title) Alert.alert(notif.title)
+            }
+        })
+
+        this.notificationListener = FCM.on(FCMEvent.Notification, async notif => {
+            // Process the notification
+            let track = {}, friend = null, id = null
+            if (notif.track) {
+                this.setState(prevState => { return { notif: [ ...prevState.notif, notif ] } })
+                track = JSON.parse(notif.track)
+                friend = notif.friend
+                id = notif.id
+            }
+            else if (this.state.notif.length > 0) {
+                const previousNotif = _.find(this.state.notif, { id: notif.id })
+                if (previousNotif) {
+                    track = JSON.parse(previousNotif.track)
+                    friend = previousNotif.friend
+                    id = previousNotif.id
+                }
+            }
+
+            if (Object.keys(track).length > 0) this.props.onNotificationReceived(friend, track, id)
+        })
+
+        this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, pnToken => {
+            this.props.onChangeToken(pnToken)
+        })
+
+        FCM.subscribeToTopic('mtzFactory_WaveMyBeat')
+    }
+
+    componentWillUnmount () {
         FCM.unsubscribeFromTopic('mtzFactory_WaveMyBeat')
         this.notificationListener.remove()
         this.refreshTokenListener.remove()
     }
 
-    render() {
-        return null;
+    render () {
+        return null
     }
 }

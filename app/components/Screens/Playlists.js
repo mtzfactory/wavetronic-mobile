@@ -69,7 +69,7 @@ export default class PlaylistsScreen extends Component {
 
     _playAllTracksFromPlaylist () {
         this.refs.playlistTracksModal.close()
-        this.setState({ showPlaylistTracksModal:false, currentTrackIndex: null })
+        this.setState({ currentTrackIndex: null })
         Alert.alert('play all')
     }
 
@@ -124,10 +124,14 @@ export default class PlaylistsScreen extends Component {
         )
     }
 
+    _handleClosedPlaylistTracksModal () {
+        this.setState({ showPlaylistTracksModal: false })
+    }
+
     _handleOnPlaylistsItemPressed (playlistId, playlistName) {
         userApi.getTracksFromPlaylist(playlistId)
             .then(res => {
-                this.setState({ showPlaylistTracksModal: true, playlistId, playlistName, playlistTracks: res.results })
+                this.setState({ showPlaylistTracksModal: true, playlistId, playlistName, currentTrackIndex: -1, playlistTracks: res.results })
                 this.refs.playlistTracksModal.open()
             })
             .catch(error => { Alert.alert(error.message) })
@@ -173,7 +177,10 @@ export default class PlaylistsScreen extends Component {
                     columns={ columns }
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
-                <Modal ref={"playlistTracksModal"} style={ styles.modal } position={"bottom"}>
+                <Modal ref={"playlistTracksModal"}
+                    style={ styles.modal }
+                    position={"bottom"}
+                    onClosed={ this._handleClosedPlaylistTracksModal.bind(this) }>
                     { showPlaylistTracksModal && this._renderPlaylistTracks() }
                 </Modal>
                 <Modal ref={"newPlaylistModal"} style={ styles.modal } position={"center"}>

@@ -42,7 +42,7 @@ export default class AlbumsScreen extends Component {
 
     _playAllTracksFromAlbum () {
         this.refs.albumTracksModal.close()
-        this.setState({ showAlbumTracksModal:false, currentTrackIndex: null })
+        this.setState({ currentTrackIndex: null })
         Alert.alert('play all')
     }
 
@@ -96,11 +96,15 @@ export default class AlbumsScreen extends Component {
         )
     }
 
+    _handleClosedAlbumTracksModal () {
+        this.setState({ showAlbumTracksModal: false })
+    }
+
     _handleOnAlbumItemPressed (albumId, albumName) {
         musicApi.getTracksFromAlbum(albumId)
             .then(res => {
                 console.log(res)
-                this.setState({ showAlbumTracksModal: true, albumId, albumName, albumsTracks: res.results[0] })
+                this.setState({ showAlbumTracksModal: true, albumId, albumName, currentTrackIndex: -1, albumsTracks: res.results[0] })
                 this.refs.albumTracksModal.open()
             })
             .catch(error => { Alert.alert(error.message) })
@@ -132,7 +136,10 @@ export default class AlbumsScreen extends Component {
                     searchHolder='Search for albums ...'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
-                <Modal ref={"albumTracksModal"} style={ styles.modal } position={"bottom"}>
+                <Modal ref={"albumTracksModal"}
+                    style={ styles.modal }
+                    position={"bottom"}
+                    onClosed={ this._handleClosedAlbumTracksModal.bind(this) }>
                     { showAlbumTracksModal && this._renderAlbumTracks() }
                 </Modal>
             </View>
