@@ -72,6 +72,7 @@ export default class PushService extends Component {
 
     componentWillUnmount () {
         FCM.unsubscribeFromTopic('mtzFactory_WaveMyBeat')
+        FCM.removeAllDeliveredNotifications()
         this.notificationListener.remove()
         this.refreshTokenListener.remove()
     }

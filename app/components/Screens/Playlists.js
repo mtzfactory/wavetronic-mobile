@@ -24,14 +24,16 @@ export default class PlaylistsScreen extends Component {
         return {
             title: SCREEN,
             headerLeft: null,
-            headerRight: <TouchableHighlight 
-                underlayColor="rgba(255,255,255,0.3)"
-                style={styles.rightHeaderButton}
-                onPress={ () => 
-                    navigation.state.params.handleRightButtonPressed()
-                }>
-                    <Icon name="md-add" style={{ color: SCREEN_PLAYLISTS_COLOR }}/>
-                </TouchableHighlight>,
+            headerRight: (
+                    <TouchableHighlight 
+                        underlayColor="rgba(255,255,255,0.3)"
+                        style={styles.rightHeaderButton}
+                        onPress={ () => 
+                            navigation.state.params.handleRightButtonPressed()
+                        }>
+                            <Icon name="md-add" style={{ color: SCREEN_PLAYLISTS_COLOR }}/>
+                    </TouchableHighlight>
+                ),
             headerTitleStyle : { marginLeft: 80, alignSelf: 'center', color: SCREEN_PLAYLISTS_COLOR },
             headerStyle: { backgroundColor: MAIN_THEME_COLOR }
         }
@@ -161,7 +163,9 @@ export default class PlaylistsScreen extends Component {
         const ROW_HEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
         const { navigate } = this.props.navigation
         const { orientation } = this.props.screenProps
-        const { columns, showPlaylistTracksModal } = this.state
+        const { columns, showPlaylistTracksModal, newPlaylistName, newPlaylistDescription } = this.state
+
+        const BUTTON_ENABLED = newPlaylistName === null && newPlaylistDescription === null
 
         return (
             <View style={ styles.container }>
@@ -207,7 +211,7 @@ export default class PlaylistsScreen extends Component {
                             onChangeText={ newPlaylistDescription => this.setState({ newPlaylistDescription }) }
                             onSubmitEditing={ this._onAddPlaylist.bind(this) }
                         />
-                        <Button block style={ styles.submit } onPress={ this._onAddPlaylist.bind(this) }>
+                        <Button block style={ styles.submit } disabled={ BUTTON_ENABLED } onPress={ this._onAddPlaylist.bind(this) }>
                             <Text>Add</Text>
                         </Button>
                     </View>
@@ -224,12 +228,12 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius:50,
     },
-    modal: { height: DEVICE_HEIGHT / 2, padding: 10 },
-    formModal: { margin: 15 },
-    inputForm: { marginTop: 20, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR},
-    headerModal: { marginBottom: 2, flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
+    modal: { height: (DEVICE_HEIGHT / 2) - 50 },
+    formModal: { margin: 25 },
+    inputForm: { marginTop: 15, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR},
+    headerModal: { flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
     buttonHeader: { height: 20 },
     titleHeader: { textAlign: 'center' },
     textHeader: { fontSize: 12, color: '#c1c1c1' },
-    submit: { marginTop: 45, backgroundColor: SCREEN_PLAYLISTS_COLOR },
+    submit: { marginTop: 35, backgroundColor: SCREEN_PLAYLISTS_COLOR },
 })
