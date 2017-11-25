@@ -50,8 +50,9 @@ class UserApi {
         return this.fetcher.getWithAuth(`${API_URL_FRIENDS}/${friendId}/track/${trackId}`)
     }
 // api/v1/user/playlists
-    getPlaylists = (offset, limit) => {
-        return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}?offset=${offset}&limit=${limit}`)
+    getPlaylists = (offset, limit, query) => {
+        const search = query !== undefined && query !== null ? `&namesearch=${query.split(' ').join('+')}`: ''
+        return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}?offset=${offset}&limit=${limit}${search}`)
     }
 
     addPlaylist = (name, description) => {

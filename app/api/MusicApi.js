@@ -7,20 +7,23 @@ class MusicService {
         this.fetcher = new Fetcher()
     }
 
-    getTracks = (offset, limit) => {
-        return this.fetcher.getWithAuth(`${API_URL_JMO_TRACKS}?offset=${offset}&limit=${limit}`)
+    getTracks = (offset, limit, query) => {
+        const search = query !== undefined && query !== null ? `&namesearch=${query.split(' ').join('+')}`: ''
+        return this.fetcher.getWithAuth(`${API_URL_JMO_TRACKS}?offset=${offset}&limit=${limit}${search}`)
     }
 
-    getAlbums = (offset, limit) => {
-        return this.fetcher.getWithAuth(`${API_URL_JMO_ALBUMS}?offset=${offset}&limit=${limit}`)
+    getAlbums = (offset, limit, query) => {
+        const search = query !== undefined && query !== null ? `&namesearch=${query.split(' ').join('+')}`: ''
+        return this.fetcher.getWithAuth(`${API_URL_JMO_ALBUMS}?offset=${offset}&limit=${limit}${search}`)
     }
 
     getTracksFromAlbum = (albumId) => {
         return this.fetcher.getWithAuth(`${API_URL_JMO_ALBUMS}/${albumId}`)
     }
 
-    getPlaylists = (offset, limit) =>{
-        return this.fetcher.getWithAuth(`${API_URL_JMO_PLAYLISTS}?offset=${offset}&limit=${limit}`)
+    getPlaylists = (offset, limit, query) =>{
+        const search = query !== undefined && query !== null ? `&namesearch=${query.split(' ').join('+')}`: ''
+        return this.fetcher.getWithAuth(`${API_URL_JMO_PLAYLISTS}?offset=${offset}&limit=${limit}${search}`)
     }
 }
 
