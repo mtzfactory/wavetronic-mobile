@@ -12,26 +12,24 @@ export default class PlaylistsListItem extends React.PureComponent {
     }
 
     render () {
-        const { listItem, columns } = this.props
+        const { listItem } = this.props
 
         return (
             <View style={ styles.list }>
-            <ListItem 
-                disabled={ listItem.amount === 0 }
-                title={ listItem.name.toUpperCase() }
-                subtitle={ listItem.description }
-                leftIcon={{ name: 'ios-infinite', type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR } }}
-                rightTitle={ `${listItem.amount} tracks` }
-                rightIcon={{ name: 'ios-list-outline', type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR, marginLeft: 15 } }}
-                key={ listItem._id }
-                onPress={ () => this._onPressItem(listItem._id, listItem.name) }/>
+                <ListItem 
+                    disabled={ listItem.amount === 0 }
+                    title={ listItem.name.toUpperCase() }
+                    subtitle={ listItem.description }
+                    leftIcon={{ name: 'ios-infinite', type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR } }}
+                    rightTitle={ `${listItem.amount} tracks` }
+                    rightIcon={{ name: 'ios-list-outline', type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR, marginLeft: 15 } }}
+                    key={ listItem._id }
+                    onPress={ () => this._onPressItem(listItem._id, listItem.name) }/>
             </View>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    list: {
-        marginHorizontal: 10,
-    },
+    list: { marginHorizontal: 10, },
 })

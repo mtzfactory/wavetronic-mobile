@@ -10,7 +10,7 @@ export default class PureListItem extends React.PureComponent {
     }
 
     render () {
-        const { listItem, index, size } = this.props
+        const { listItem, size } = this.props
 
         return (
             <ListItem thumbnail button={true} onPress={ () => this._onPressItem(listItem.id, listItem.name) }>

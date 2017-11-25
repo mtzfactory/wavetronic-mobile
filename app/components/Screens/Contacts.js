@@ -1,206 +1,150 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, StatusBar, ActivityIndicator, FlatList } from 'react-native'
-import { View, List, ListItem, Left, Right, Body, Thumbnail, Text, Button } from 'native-base'
-import { SearchBar } from 'react-native-elements'
+import { StyleSheet, Platform, Keyboard, Dimensions, StatusBar, Easing, View, TouchableHighlight, TextInput, Alert } from 'react-native'
+import { Text, Button, Icon } from 'native-base'
+import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
-import uuidv4 from 'uuid/v4'
+import Modal from 'react-native-modalbox'
 
-import { MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR, API_URL_FAKE_FRIENDS } from '../../constants'
-import UserApi from '../../api/UserApi'
-import InfiniteList from '../InfiniteList'
+import { MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR } from '../../constants'
+
 import FabNavigator from '../FabNavigator'
+import InfiniteList from '../InfiniteList'
+import ContactsListItem from './ContactsListItem'
 
-const SCREEN = 'Contacts'
+import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
+const CONTACTS_ROW_HEIGTH = 63
+const SCREEN = 'Contacts'
+
 export default class ContactsScreen extends Component {
-    static navigationOptions = {
-        title: SCREEN,
-        headerLeft: null,
-        headerTitleStyle : { alignSelf: 'center', color: SCREEN_CONTACTS_COLOR },
-        headerStyle: { backgroundColor: MAIN_THEME_COLOR }
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: SCREEN,
+            headerLeft: null,
+            headerRight: (
+                <TouchableHighlight 
+                    underlayColor="rgba(255,255,255,0.3)"
+                    style={ styles.rightHeaderButton}
+                    onPress={ () => 
+                        navigation.state.params.handleRightButtonPressed()
+                    }>
+                        <Icon name="md-add" style={{ color: SCREEN_CONTACTS_COLOR }}/>
+                </TouchableHighlight>
+            ),
+            headerTitleStyle : { marginLeft: 80, alignSelf: 'center', color: SCREEN_CONTACTS_COLOR },
+            headerStyle: { backgroundColor: MAIN_THEME_COLOR }
+        }
     }
 
-    constructor() {
+    constructor () {
         super()
 
-        this.state = {
-            refreshing: false,
-            loading: false,
-            page: 1,
-            data: [],
-            error: null,
-            search: null,
-            seed: 0
-        }
-
-        this._requestData.bind(this)
-        this._doTheFetch.bind(this)
+        this.state = { newContactName: null, friendId: null, friendName: null }
     }
 
-    componentWillMount() {
-        this._requestData()
-    }
-    
-    async _doTheFetch() {
-        try {
-            let response = await fetch(`${API_URL_FRIENDS}&page=${this.state.page}&seed=${this.state.seed}`, {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                }
-            })
-
-            let body = await response.json()
-            return body
-        }
-        catch (error) {
-            throw new Error(error.name + ' ' + error.message)
-        }
+    _sendFriendship () {
+        this.setState({ friendId: null, friendName: null })
+        this.refs.sendFriendshipModal.close()
+        Alert.alert('Ups... Not implemented yet')
     }
 
-    async _requestData() {
-        const { page } = this.state
+    _addContact () {
+        const { newContactName } = this.state
 
-        if (this.state.loading) return null
+        Keyboard.dismiss()
 
-        this.setState({ loading: true })
+        if (newContactName)
+            userApi.addFriend(newContactName)
+                .then(res => {
+                    this.refs.newPlaylistModal.close()
+                    this.setState({ newContactName: null })
+                })
+                .catch(error => { Alert.alert(error.message) })
 
-        try {
-            res = await this._doTheFetch()
-
-            this.setState(prevState => {
-                return {
-                    data: prevState.page === 0 ? res.results : [ ...prevState.data, ...res.results ],
-                    error: res.error_message || null,
-                    loading: false,
-                    refreshing: false,
-                    error: null
-                }
-            })
-        }
-        catch (error) {
-            this.setState({ error, loading: false, refreshing: false })
-        }
     }
 
-    _handleLoadMore = () => {
-        if (!this.state.loading) {
-            this.setState(prevState => {
-                return {
-                    page: prevState.page + 1
-                }
-            }, () => {
-                this._requestData()
-            })
-        }
+    _handleOnContactsItemPressed (friendId, friendName) {
+        this.setState({ friendId, friendName })
+        this.refs.sendFriendshipModal.open()
     }
 
-    _handleRefresh = () => {
-        this.setState(prevState => {
-            return {
-                page: 0,
-                seed: prevState.seed + 1,
-                refreshing: true
-            }
-        }, () => {
-            this._requestData()
-        })
-    }
+    _rendeContactsItem = (item, index) => (
+        <ContactsListItem
+            listItem={ item }
+            onItemPressed={ this._handleOnContactsItemPressed.bind(this) }
+        />
+    )
 
-    _search() {
-        // Set loading to true when the search starts to display a Spinner
-        // this.setState({
-        //     loading: true
-        // });
-        console.log('search')
-    }
-
-    _keyExtractor = (item, index) => uuidv4()
-
-    _renderHeader = () => {
-        return (
-            <SearchBar
-                lightTheme
-                clearIcon
-                round
-                onChangeText={ this._search }
-                placeholder={ this.props.searchHolder || 'Type here...' }
-            />
-        )
-    }
-
-    _renderFooter = () => {
-        return (
-            <View style={{ paddingVertical: 20 }}>
-                <ActivityIndicator animating size='large'/>
-            </View>
-        )
-    }
-
-    _renderItem = ( {item} ) => {
-        if (this.state.error) {
-            return (
-                <View>
-                    <Text style={{ color: 'red' }} >{ this.state.error.message }</Text>
-                </View>
-            )
-        }
-
-        return (
-            <ListItem thumbnail>
-                <Left>
-                    <Thumbnail source={{ uri: item.picture.medium }} />
-                </Left>
-                <Body>
-                    <Text numberOfLines={ 1 } >{ item.name.first + ' ' + item.name.last }</Text>
-                    <Text numberOfLines={ 1 } note>{ item.email }</Text>
-                </Body>
-                <Right>
-                    <Button transparent>
-                        <Text>Open</Text>
-                    </Button>
-                </Right>
-            </ListItem>
-        )
-    }
-
-    _getItemLayout = (data, index) => {
-        const SEARCHHEADERHEIGHT = 50
-        const ROWHEIGHT = 56 + 2 * 15 // Thumbnail size + 2 * paddingVertical
-
-        return {
-            offset: SEARCHHEADERHEIGHT + (ROWHEIGHT * index),
-            length: ROWHEIGHT,
-            index 
-        }
+    componentDidMount () {
+        this.props.navigation.setParams({ handleRightButtonPressed: this.refs.newContactModal.open })
     }
 
     render() {
         const { navigate, state: { params } } = this.props.navigation
+        const { newContactName, friendName } = this.state
+
+        const BUTTON_DISABLED = newContactName === null
+        const BUTTON_COLOR = { backgroundColor: BUTTON_DISABLED ? '#c9c9c9' : SCREEN_CONTACTS_COLOR }
 
         return (
             <View style={ styles.container }>
                 {
                     Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_CONTACTS_DARK_COLOR } />
                 }
-                <List contentContainerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
-                    <FlatList
-                        data={ this.state.data }
-                        renderItem={ this._renderItem }
-                        getItemLayout={ this._getItemLayout }
-                        initialNumToRender={ 15 }
-                        keyExtractor={ this._keyExtractor }
-                        ListHeaderComponent={ this._renderHeader }
-                        ListFooterComponent={ this._renderFooter }
-                        onEndReached={ this._handleLoadMore }
-                        onEndReachedThreshold={ 0.75 }
-                        refreshing={ this.state.refreshing }
-                        onRefresh={ this._handleRefresh }
-                        removeClippedSubviews={ true }
-                    />
-                </List>
+                <InfiniteList
+                    getData={ userApi.getFriends }
+                    renderItem={ this._rendeContactsItem }
+                    rowHeight={ CONTACTS_ROW_HEIGTH }
+                    searchHolder='Search for friends ...'
+                />
+                <Modal ref={"newContactModal"}
+                    style={ styles.modal }
+                    position={"center"} entry={"bottom"} easing={Easing.ease}
+                    backButtonClose={true}>
+                    <View style={ styles.formModal }>
+                        <View style={ styles.headerModal }>
+                            <Text style={ styles.titleHeader }>NEW CONTACT</Text>
+                            <TouchableHighlight underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.newContactModal.close() }>
+                                <Text style={ styles.textHeader }>Close</Text>
+                            </TouchableHighlight>
+                        </View>
+                        <TextInput style={ styles.inputForm }
+                            ref={ c => this.name = c}
+                            autoFocus={ true }
+                            autoCapitalize="none"
+                            blurOnSubmit={ false }
+                            placeholder="your friend's username"
+                            onChangeText={ newContactName => this.setState({ newContactName }) }
+                            onSubmitEditing={ () => Keyboard.dismiss() }
+                        />
+                        <Button block style={[ styles.submit, BUTTON_COLOR ]} disabled={ BUTTON_DISABLED } onPress={ this._addContact.bind(this) }>
+                            <Text>Add</Text>
+                        </Button>
+                    </View>
+                </Modal>
+                <Modal ref={"sendFriendshipModal"}
+                    style={ styles.modal }
+                    position={"center"} entry={"bottom"} easing={Easing.ease}
+                    backButtonClose={true}>
+                    <View style={ styles.formModal }>
+                        <View style={ styles.headerModal }>
+                            <Text style={ styles.titleHeader }>FRIENDSHIP</Text>
+                            <TouchableHighlight underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.newContactModal.close() }>
+                                <Text style={ styles.textHeader }>Close</Text>
+                            </TouchableHighlight>
+                        </View>
+                        <View style={{ flex: 2, justifyContent: "center", alignItems: "center" }}>
+                            <Text style={{ marginTop: 20 }}>Your friend hasn't confirmed yet!</Text>
+                            <Text style={{ marginTop: 15 }}>Send another friend request to:</Text>
+                            <Text style={{ marginTop: 15, fontSize: 20, fontWeight: 'bold' }}>{friendName}</Text>
+                        </View>
+                        <Button block style={ styles.submit } onPress={ this._sendFriendship.bind(this) }>
+                                <Text>Yeah! Ask him again!</Text>
+                        </Button>
+                    </View>
+                </Modal>
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
             </View>
         )
@@ -208,8 +152,13 @@ export default class ContactsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: 'white'
-    },
+    container: { flex: 1, backgroundColor: '#fff' },
+    rightHeaderButton: { marginRight: 5, padding: 15, borderRadius:50, },
+    modal: { height: DEVICE_HEIGHT / 2, backgroundColor: '#fff' },
+    formModal: { margin: 25, flex: 1, flexDirection: 'column' },
+    headerModal: { flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
+    titleHeader: { textAlign: 'center', color: SCREEN_CONTACTS_DARK_COLOR },
+    textHeader: { fontSize: 12, color: SCREEN_CONTACTS_COLOR + '80' },
+    inputForm: { marginTop: 15, borderBottomWidth: 2, borderBottomColor: SCREEN_CONTACTS_COLOR },
+    submit: { marginTop: 35, backgroundColor: SCREEN_CONTACTS_COLOR },
 })

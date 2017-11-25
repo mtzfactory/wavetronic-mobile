@@ -26,7 +26,6 @@ export const API_URL_JMO_PLAYLISTS = `${API_URL_BASE}/playlists`
 export const API_URL_PROFILE = `${API_URL_BASE}/user`
 export const API_URL_PLAYLISTS = `${API_URL_BASE}/user/playlists`
 export const API_URL_FRIENDS = `${API_URL_BASE}/user/friends`
-export const API_URL_FAKE_FRIENDS = 'https://randomuser.me/api/?results=20'
 
 export const API_PAGE_LIMIT = 15
 
@@ -46,12 +45,13 @@ export const FABNAVIGATOR_COLOR = PRIMARY_COLOR //'#CE3175'
 export const MAIN_THEME_COLOR = '#E1E8EE'
 export const MAIN_DARK_THEME_COLOR = '#AFB6BC'
 
+export const SPLASH_COLOR = PRIMARY_COLOR //'#FF1744'
+
 export const SCREEN_SONGS_COLOR = PRIMARY_COLOR //'#673AB7' //'#9b59b6'
 export const SCREEN_SONGS_DARK_COLOR = DARK_PRIMARY_COLOR //'#512DA8'
 export const SCREEN_ALBUMS_COLOR = '#2196F3' //'#3498db'
 export const SCREEN_ALBUMS_DARK_COLOR = '#1976D2'
 export const SCREEN_PLAYLISTS_COLOR = '#009688' //'#1abc9c'
 export const SCREEN_PLAYLISTS_DARK_COLOR = '#00796B'
-export const SCREEN_CONTACTS_COLOR = '#FFD700' //'#F1C40F'
-export const SCREEN_CONTACTS_DARK_COLOR = '#C7A600' //'#FBC02D'
-export const SPLASH_COLOR = PRIMARY_COLOR //'#FF1744'
+export const SCREEN_CONTACTS_COLOR = '#AB47BC' //'#FFD700' //'#F1C40F'
+export const SCREEN_CONTACTS_DARK_COLOR = '#790e8b' //'#C7A600' //'#FBC02D'

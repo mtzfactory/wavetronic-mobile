@@ -34,7 +34,6 @@ export default class AlbumsScreen extends Component {
         super()
 
         this.state = {
-            columns: 1,
             showAlbumTracksModal: false,
             albumId: null,
             albumName: null,
@@ -122,7 +121,7 @@ export default class AlbumsScreen extends Component {
     render () {
         const { navigate } = this.props.navigation
         const { orientation } = this.props.screenProps
-        const { columns, showAlbumTracksModal } = this.state
+        const { showAlbumTracksModal } = this.state
 
         return (
             <View style={ styles.container }>
@@ -133,7 +132,6 @@ export default class AlbumsScreen extends Component {
                     getData={ musicApi.getAlbums }
                     renderItem={ this._renderAlbumsItem }
                     rowHeight={ ALBUM_ROW_HEIGTH }
-                    columns= { columns }
                     searchHolder='Search for albums ...'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />

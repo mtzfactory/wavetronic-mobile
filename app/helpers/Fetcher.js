@@ -5,11 +5,9 @@ function checkStatus(res) {
         return res
     }
     else {
-        const errorMessage = res.statusText === undefined ? res._bodyText : res.statusText
-        const error = new Error(errorMessage)
-        error.code = res.status
-        error.response = res
-        throw error
+        //const errorMessage = res.statusText === undefined ? res._bodyText : res.statusText
+        err = JSON.parse(res._bodyText)
+        throw new Error(err.message)
     }
 }
 

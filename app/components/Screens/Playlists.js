@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, Dimensions, StatusBar, Easing, View, FlatList, TouchableHighlight, TextInput, Alert } from 'react-native'
+import { StyleSheet, Platform, Keyboard, Dimensions, StatusBar, Easing, View, FlatList, TouchableHighlight, TextInput, Alert } from 'react-native'
 import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
-import { LANDSCAPE, PORTRAIT, MAIN_THEME_COLOR, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR } from '../../constants'
+import { MAIN_THEME_COLOR, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR } from '../../constants'
 
 import FabNavigator from '../FabNavigator'
 import InfiniteList from '../InfiniteList'
@@ -29,7 +29,7 @@ export default class PlaylistsScreen extends Component {
             headerRight: (
                     <TouchableHighlight 
                         underlayColor="rgba(255,255,255,0.3)"
-                        style={styles.rightHeaderButton}
+                        style={ styles.rightHeaderButton }
                         onPress={ () => 
                             navigation.state.params.handleRightButtonPressed()
                         }>
@@ -45,7 +45,6 @@ export default class PlaylistsScreen extends Component {
         super()
 
         this.state = {
-            columns: 1,
             newPlaylistName: null,
             newPlaylistDescription: null,
             showPlaylistTracksModal: false,
@@ -56,19 +55,18 @@ export default class PlaylistsScreen extends Component {
         }
     }
 
-    _onAddPlaylist () {
+    _addPlaylist () {
         const { newPlaylistName, newPlaylistDescription } = this.state
 
+        Keyboard.dismiss()
+
         if (newPlaylistName && newPlaylistDescription)
-            Promise.resolve()
-                .then( () => {
-                    return userApi.addPlaylist(newPlaylistName, newPlaylistDescription)
-                        .then(res => {
-                            this.refs.newPlaylistModal.close()
-                        })
-                        .catch(error => { Alert.alert(error.message) })
+            userApi.addPlaylist(newPlaylistName, newPlaylistDescription)
+                .then(res => {
+                    this.refs.newPlaylistModal.close()
+                    this.setState({ newPlaylistName: null, newPlaylistDescription: null })
                 })
-                .then(() => this.setState({ newPlaylistName: null, newPlaylistDescription: null }))
+                .catch(error => { Alert.alert(error.message) })
     }
 
     _playAllTracksFromPlaylist () {
@@ -111,7 +109,7 @@ export default class PlaylistsScreen extends Component {
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ this._playAllTracksFromPlaylist.bind(this) }>
                         <Text style={ styles.textHeader }>Play all</Text>
                     </TouchableHighlight>
-                    <Text numberOfLines={ 1 } style={ styles.textAlbum }>{ this.state.playlistName.toUpperCase() }</Text>
+                    <Text numberOfLines={ 1 } style={ styles.textPlaylist }>{ this.state.playlistName.toUpperCase() }</Text>
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.playlistTracksModal.close() }>
                         <Text style={ styles.textHeader }>Close</Text>
                     </TouchableHighlight>
@@ -143,7 +141,6 @@ export default class PlaylistsScreen extends Component {
     _renderPlaylistsItem = (item, index) => (
         <PlaylistsListItem
             listItem={ item }
-            columns={ this.state.columns }
             onItemPressed={ this._handleOnPlaylistsItemPressed.bind(this) }
         />
     )
@@ -156,7 +153,8 @@ export default class PlaylistsScreen extends Component {
         const { navigate } = this.props.navigation
         const { showPlaylistTracksModal, newPlaylistName, newPlaylistDescription } = this.state
 
-        const BUTTON_ENABLED = newPlaylistName === null && newPlaylistDescription === null
+        const BUTTON_DISABLED = newPlaylistName === null || newPlaylistDescription === null
+        const BUTTON_COLOR = { backgroundColor: BUTTON_DISABLED ? '#c9c9c9' : SCREEN_PLAYLISTS_COLOR }
 
         return (
             <View style={ styles.container }>
@@ -202,9 +200,9 @@ export default class PlaylistsScreen extends Component {
                             autoCapitalize="sentences"
                             placeholder="description"
                             onChangeText={ newPlaylistDescription => this.setState({ newPlaylistDescription }) }
-                            onSubmitEditing={ this._onAddPlaylist.bind(this) }
+                            onSubmitEditing={ () => Keyboard.dismiss() }
                         />
-                        <Button block style={ styles.submit } disabled={ BUTTON_ENABLED } onPress={ this._onAddPlaylist.bind(this) }>
+                        <Button block style={[ styles.submit, BUTTON_COLOR ]} disabled={ BUTTON_DISABLED } onPress={ this._addPlaylist.bind(this) }>
                             <Text>Add</Text>
                         </Button>
                     </View>
@@ -216,18 +214,14 @@ export default class PlaylistsScreen extends Component {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: 'white' },
-    rightHeaderButton: {
-        marginRight: 5,
-        padding: 15,
-        borderRadius:50,
-    },
+    rightHeaderButton: { marginRight: 5, padding: 15, borderRadius:50, },
     modal: { height: DEVICE_HEIGHT / 2, backgroundColor: '#fff' },
-    formModal: { margin: 25 },
-    inputForm: { marginTop: 15, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR},
+    formModal: { margin: 25, flex: 1, flexDirection: 'column' },
     headerModal: { flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
-    buttonHeader: { height: 20 },
     titleHeader: { textAlign: 'center', color: SCREEN_PLAYLISTS_DARK_COLOR },
     textHeader: { fontSize: 12, color: SCREEN_PLAYLISTS_COLOR + '80' },
+    inputForm: { marginTop: 15, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR },
+    buttonHeader: { height: 20 },
     textPlaylist: { flex: -1, paddingHorizontal: 15, },
-    submit: { marginTop: 35, backgroundColor: SCREEN_PLAYLISTS_COLOR },
+    submit: { marginTop: 35, position: 'absolute', bottom: 0, width: '100%', backgroundColor: SCREEN_PLAYLISTS_COLOR },
 })

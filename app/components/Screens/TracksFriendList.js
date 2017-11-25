@@ -20,7 +20,7 @@ export default class TracksFriendList extends Component {
     _renderFriendItem = (item, index) => (
         <ListItem disabled={ !item.confirmed }
             title={ item.username }
-            subtitle={ item.confirmed ? null : "hmm... not confirmed" }
+            subtitle={ item.confirmed ? null : "hmm... not confirmed yet" }
             leftIcon={{ name: 'ios-person-outline', type: 'ionicon', style: { color: SCREEN_SONGS_COLOR } }}
             rightTitle="Send"
             key={ item._id }

@@ -40,10 +40,10 @@ class UserApi {
     }
 // api/v1/user/friends
     getFriends = (offset, limit) => {
-        return this.fetcher.getWithAuth(`${API_URL_FAKE_FRIENDS}?offset=${offset}&limit=${limit}`)
-    }
-    getRealFriends = (offset, limit) => {
         return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}`)
+    }
+    addFriend = (name) => {
+        return this.fetcher.postWithAuth(API_URL_FRIENDS, { name })
     }
 // api/v1/user/friends/:friendId/track/:trackId
     sendTrackToFriend = (friendId, trackId) => {
