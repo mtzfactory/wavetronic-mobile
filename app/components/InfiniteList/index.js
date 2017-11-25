@@ -139,7 +139,7 @@ export default class InfiniteList extends Component {
         }
     }
 
-    _keyExtractor = (item, index) => item.id || item._id || uuidv4()
+    _keyExtractor = (item, index) => uuidv4() // item.id || item._id || uuidv4()
 
     render() {
         return (
