@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, Dimensions, StatusBar } from 'react-native'
+import { StyleSheet, Platform, Dimensions, StatusBar, Easing } from 'react-native'
 import { View, Thumbnail } from 'native-base'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
@@ -81,7 +81,7 @@ export default class TracksScreen extends Component {
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
                 <Modal ref={"friendListModal"}
                     style={ styles.modal }
-                    position={"top"} entry={"top"}
+                    position={"top"} entry={"top"} easing={Easing.ease}
                     backButtonClose={true}
                     onClosed={ this._handleClosedFriendListModal.bind(this) }>
                     { this.state.showFriendListModal && this._renderFriendList() }
@@ -96,7 +96,5 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#fff'
     },
-    modal: {
-        height: DEVICE_HEIGHT / 2
-    },
+    modal: { height: DEVICE_HEIGHT / 2, padding: 10 },
 })

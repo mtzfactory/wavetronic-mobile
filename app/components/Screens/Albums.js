@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, Dimensions, StatusBar, View, FlatList, TouchableHighlight, Alert } from 'react-native'
+import { StyleSheet, Platform, Dimensions, StatusBar, Easing, View, FlatList, TouchableHighlight, Alert } from 'react-native'
 import { Text } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
@@ -77,7 +77,7 @@ export default class AlbumsScreen extends Component {
 
     _renderAlbumTracks () {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1,  padding: 10, backgroundColor: SCREEN_ALBUMS_COLOR + '40' }}>
                 <View style={ styles.headerModal }>
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ this._playAllTracksFromAlbum.bind(this) }>
                         <Text style={ styles.textHeader }>Play all</Text>
@@ -139,7 +139,7 @@ export default class AlbumsScreen extends Component {
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
                 <Modal ref={"albumTracksModal"}
                     style={ styles.modal }
-                    position={"top"} entry={"top"}
+                    position={"top"} entry={"top"} easing={Easing.ease}
                     backButtonClose={true}
                     onClosed={ this._handleClosedAlbumTracksModal.bind(this) }>
                     { showAlbumTracksModal && this._renderAlbumTracks() }
@@ -151,7 +151,7 @@ export default class AlbumsScreen extends Component {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#fff' },
-    modal: { height: DEVICE_HEIGHT / 2, padding: 10 },
+    modal: { height: DEVICE_HEIGHT / 2 },
     headerModal: { marginBottom: 2, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
     buttonHeader: { height: 20 },
     titleHeader: { textAlign: 'center' },

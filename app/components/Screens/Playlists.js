@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, Dimensions, StatusBar, View, FlatList, TouchableHighlight, TextInput, Alert } from 'react-native'
+import { StyleSheet, Platform, Dimensions, StatusBar, Easing, View, FlatList, TouchableHighlight, TextInput, Alert } from 'react-native'
 import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
@@ -106,7 +106,7 @@ export default class PlaylistsScreen extends Component {
 
     _renderPlaylistTracks () {
         return (
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, padding: 10, backgroundColor: SCREEN_PLAYLISTS_COLOR + '40' }}>
                 <View style={ styles.headerModal }>
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ this._playAllTracksFromPlaylist.bind(this) }>
                         <Text style={ styles.textHeader }>Play all</Text>
@@ -172,12 +172,15 @@ export default class PlaylistsScreen extends Component {
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
                 <Modal ref={"playlistTracksModal"}
                     style={ styles.modal }
-                    position={"top"} entry={"top"}
+                    position={"top"} entry={"top"} easing={Easing.ease}
                     backButtonClose={true}
                     onClosed={ this._handleClosedPlaylistTracksModal.bind(this) }>
                     { showPlaylistTracksModal && this._renderPlaylistTracks() }
                 </Modal>
-                <Modal ref={"newPlaylistModal"} style={ styles.modal } position={"center"} backButtonClose={true}>
+                <Modal ref={"newPlaylistModal"}
+                    style={ styles.modal }
+                    position={"center"} entry={"bottom"} easing={Easing.ease}
+                    backButtonClose={true}>
                     <View style={ styles.formModal }>
                         <View style={ styles.headerModal }>
                             <Text style={ styles.titleHeader }>NEW PLAYLIST</Text>
@@ -218,7 +221,7 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius:50,
     },
-    modal: { height: DEVICE_HEIGHT / 2, padding: 10 },
+    modal: { height: DEVICE_HEIGHT / 2, backgroundColor: '#fff' },
     formModal: { margin: 25 },
     inputForm: { marginTop: 15, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR},
     headerModal: { flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Platform, Dimensions, StyleSheet, View, Animated, FlatList, TouchableHighlight, ActivityIndicator, Alert } from 'react-native'
+import { Platform, Dimensions, StyleSheet, Easing, View, Animated, FlatList, TouchableHighlight, ActivityIndicator, Alert } from 'react-native'
 import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import Video from 'react-native-video'
@@ -279,7 +279,10 @@ export default class SongsScreen extends Component {
                 <View style={ styles.playlist }>
                     { this.state.expanded && this._renderTrackHistory() }
                 </View>
-                <Modal ref={"modalWindow"} style={ styles.modal } position={"bottom"} backButtonClose={true}>
+                <Modal ref={"modalWindow"} 
+                    style={ styles.modal }
+                    position={"bottom"} easing={Easing.ease}
+                    backButtonClose={true}>
                     { this.state.expanded && this._renderPlaylists() }
                 </Modal>
                 <View style={ styles.player }>

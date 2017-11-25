@@ -24,9 +24,7 @@ export default class PureListItem extends React.PureComponent {
                     <Text numberOfLines={ 1 } note>{ listItem.releasedate }</Text>
                 </Body>
                 <Right>
-                    <Button transparent>
-                        <Text style={{ color: SCREEN_ALBUMS_COLOR }}>Open</Text>
-                    </Button>
+                    <Text style={{ color: SCREEN_ALBUMS_COLOR }}>Open</Text>
                 </Right>
             </ListItem>
         )
