@@ -16,7 +16,7 @@ const musicApi = new MusicApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const THUMBNAIL_SIZE = 70
-const ROW_HEIGTH = THUMBNAIL_SIZE + 17 + 17 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
+const TRACKS_ROW_HEIGTH = THUMBNAIL_SIZE + 17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
 const SCREEN = 'Tracks'
 
 export default class TracksScreen extends Component {
@@ -75,7 +75,7 @@ export default class TracksScreen extends Component {
                 <InfiniteList
                     getData={ musicApi.getTracks }
                     renderItem={ this._renderTrackItem }
-                    rowHeight={ ROW_HEIGTH }
+                    rowHeight={ TRACKS_ROW_HEIGTH }
                     searchHolder='Search for songs ...'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />

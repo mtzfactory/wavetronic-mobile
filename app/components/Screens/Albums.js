@@ -17,6 +17,8 @@ import MusicApi from '../../api/MusicApi'
 const musicApi = new MusicApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
+const THUMBNAIL_SIZE = 70
+const ALBUM_ROW_HEIGTH = THUMBNAIL_SIZE + 17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
 const SCREEN = 'Albums'
 
 export default class AlbumsScreen extends Component {
@@ -52,10 +54,10 @@ export default class AlbumsScreen extends Component {
     }
 
     _getAlbumTracksItemLayout = (data, index) => {
-        const ROW_HEIGHT = 50 + 10 + 10
+        const TRACK_ROW_HEIGHT = 50 + 10 + 10
         return {
-            offset: ROW_HEIGHT * index,
-            length: ROW_HEIGHT,
+            offset: TRACK_ROW_HEIGHT * index,
+            length: TRACK_ROW_HEIGHT,
             index
         }
     }
@@ -110,15 +112,15 @@ export default class AlbumsScreen extends Component {
             .catch(error => { Alert.alert(error.message) })
     }
 
-    _renderAlbumsItem = (item) => (
+    _renderAlbumsItem = (item, index) => (
         <AlbumsListItem
             listItem={ item }
+            size={ THUMBNAIL_SIZE }
             onItemPressed={ this._handleOnAlbumItemPressed.bind(this) }
         />
     )
 
     render () {
-        const ROWHEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical        
         const { navigate } = this.props.navigation
         const { orientation } = this.props.screenProps
         const { columns, showAlbumTracksModal } = this.state
@@ -131,7 +133,7 @@ export default class AlbumsScreen extends Component {
                 <InfiniteList
                     getData={ musicApi.getAlbums }
                     renderItem={ this._renderAlbumsItem }
-                    rowHeight={ ROWHEIGTH }
+                    rowHeight={ ALBUM_ROW_HEIGTH }
                     columns= { columns }
                     searchHolder='Search for albums ...'
                 />
@@ -153,5 +155,5 @@ const styles = StyleSheet.create({
     headerModal: { marginBottom: 2, flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
     buttonHeader: { height: 20 },
     titleHeader: { textAlign: 'center' },
-    textHeader: { fontSize: 12, color: '#c1c1c1' },
+    textHeader: { fontSize: 12, color: SCREEN_ALBUMS_COLOR + '80' },
 })

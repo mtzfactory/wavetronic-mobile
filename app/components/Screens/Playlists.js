@@ -81,10 +81,10 @@ export default class PlaylistsScreen extends Component {
     }
 
     _getPlaylistTracksItemLayout = (data, index) => {
-        const ROW_HEIGHT = 63 + 10 + 10
+        const TRACKS_ROW_HEIGHT = 63 + 10 + 10
         return {
-            offset: ROW_HEIGHT * index,
-            length: ROW_HEIGHT,
+            offset: TRACKS_ROW_HEIGHT * index,
+            length: TRACKS_ROW_HEIGHT,
             index
         }
     }
@@ -228,12 +228,12 @@ const styles = StyleSheet.create({
         padding: 15,
         borderRadius:50,
     },
-    modal: { height: (DEVICE_HEIGHT / 2) - 50 },
+    modal: { height: DEVICE_HEIGHT / 2, padding: 10 },
     formModal: { margin: 25 },
     inputForm: { marginTop: 15, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR},
     headerModal: { flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
     buttonHeader: { height: 20 },
-    titleHeader: { textAlign: 'center' },
-    textHeader: { fontSize: 12, color: '#c1c1c1' },
+    titleHeader: { textAlign: 'center', color: SCREEN_PLAYLISTS_DARK_COLOR },
+    textHeader: { fontSize: 12, color: SCREEN_PLAYLISTS_COLOR + '80' },
     submit: { marginTop: 35, backgroundColor: SCREEN_PLAYLISTS_COLOR },
 })

@@ -34,7 +34,7 @@ export default class InfiniteList extends Component {
         
         this.setState({ loading: true })
 
-        this.props.getData(this.state.offset, this.props.limit, this.state.search) //this.props.limit)
+        this.props.getData(this.state.offset, this.props.limit, this.state.search)
             .then( res => {
                 this.results_count = res.headers.results_count
                 this.results_fullcount = res.headers.results_fullcount
@@ -56,8 +56,7 @@ export default class InfiniteList extends Component {
             })
     }
 
-    _handleLoadMore () {
-        //if (!this.state.loading && this.state.offset + 1 < this.results_fullcount) {
+    _handleLoadMore = () => {
         if (this.state.offset + this.results_count  < this.results_fullcount) {
             this.setState(prevState => {
                 return {
@@ -69,7 +68,7 @@ export default class InfiniteList extends Component {
         }
     }
 
-    _handleRefresh () {
+    _handleRefresh = () => {
         this.setState(prevState => {
             return {
                 offset: 0,
@@ -80,8 +79,8 @@ export default class InfiniteList extends Component {
         })
     }
 
-    _search (search) {
-        if (search.length > 4) {
+    _search = (search) => {
+        if (search.length >= 4) {
             this.setState({ offset: 0, search, searching: true }, () => {
                 this._requestData()
             })
@@ -89,24 +88,24 @@ export default class InfiniteList extends Component {
         }
     }
 
-    _clearSearch () {
+    _clearSearch = () => {
         this.setState({ offset: 0, search: null, searching: false }, () => {
             this._requestData()
         })
     }
 
-    _renderHeader () {
+    _renderHeader = () => {
         return (
             <SearchBar
                 lightTheme round clearIcon
                 showLoadingIcon = { this.state.searching }
-                onChangeText={ this._search.bind(this) }
-                onClearText={ this._clearSearch.bind(this) }
+                onChangeText={ this._search }
+                onClearText={ this._clearSearch }
                 placeholder={ this.props.searchHolder } />
         )
     }
 
-    _renderFooter () {
+    _renderFooter = () => {
         if ( this.state.loading )
             return (
                 <View style={{ paddingVertical: 20 }}>
@@ -117,7 +116,7 @@ export default class InfiniteList extends Component {
         return null
     }
 
-    _renderItem ( { item, index } ) {
+    _renderItem = ( { item, index } ) => {
         if (this.state.error) {
             return (
                 <View>
@@ -129,7 +128,7 @@ export default class InfiniteList extends Component {
         return this.props.renderItem(item, index)
     }
 
-    _getItemLayout (data, index) {
+    _getItemLayout = (data, index) => {
         const SEARCH_HEADER_HEIGHT = 50
         const { rowHeight } = this.props
 
@@ -147,17 +146,17 @@ export default class InfiniteList extends Component {
             <FlatList
                 key={ this.props.listKey }
                 data={ this.state.data }
-                renderItem={ this._renderItem.bind(this) }
+                renderItem={ this._renderItem }
                 keyExtractor={ this._keyExtractor }
-                getItemLayout={ this._getItemLayout.bind(this) }
-                ListHeaderComponent={ this._renderHeader.bind(this) }
-                ListFooterComponent={ this._renderFooter.bind(this) }
-                onRefresh={ this._handleRefresh.bind(this) }
-                onEndReached={ this._handleLoadMore.bind(this) }
+                getItemLayout={ this._getItemLayout }
+                ListHeaderComponent={ this._renderHeader }
+                ListFooterComponent={ this._renderFooter }
+                onRefresh={ this._handleRefresh }
+                onEndReached={ this._handleLoadMore }
                 onEndReachedThreshold={ 0.50 }
                 refreshing={ this.state.refreshing }
                 removeClippedSubviews={ true }
-                //initialNumToRender={ this.props.initialNumToRender }
+                initialNumToRender={ this.props.initialNumToRender }
                 numColumns={ this.props.columns }
             />
         )
@@ -178,7 +177,7 @@ InfiniteList.propTypes = {
 InfiniteList.defaultProps = {
     listKey: uuidv4(),
     limit: 15,
-    initialNumToRender: 15,
+    initialNumToRender: 8,
     columns: 1,
     searchHolder: 'Type here...',
 }

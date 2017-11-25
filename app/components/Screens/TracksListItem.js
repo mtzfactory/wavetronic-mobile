@@ -5,11 +5,15 @@ import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button, Icon } from
 import { SCREEN_SONGS_COLOR } from '../../constants'
 
 export default class TracksListItem extends React.PureComponent {
+    _onPressItem (index , listItem) {
+        this.props.playSong(index , listItem)
+    }
+
     render () {
         const { listItem, index, size } = this.props
 
         return (
-            <ListItem thumbnail button={true} onPress={ () => this.props.playSong(index , listItem) }>
+            <ListItem thumbnail button={true} onPress={ () => this._onPressItem(index , listItem) }>
                 <Left>
                     <ImageBackground source={{ uri: listItem.image }} style={[ { width: size, height: size }, styles.background] }>
                         <View style={ styles.playButtonOverlay }>
