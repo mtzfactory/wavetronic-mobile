@@ -17,6 +17,8 @@ import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
+const PLAYLISTS_ROW_HEIGTH = 63
+const TRACKS_ROW_HEIGHT = 63
 const SCREEN = 'Playlists'
 
 export default class PlaylistsScreen extends Component {
@@ -43,9 +45,9 @@ export default class PlaylistsScreen extends Component {
         super()
 
         this.state = {
+            columns: 1,
             newPlaylistName: null,
             newPlaylistDescription: null,
-            columns: 1,
             showPlaylistTracksModal: false,
             playlistId: null,
             playlistName: null,
@@ -81,7 +83,6 @@ export default class PlaylistsScreen extends Component {
     }
 
     _getPlaylistTracksItemLayout = (data, index) => {
-        const TRACKS_ROW_HEIGHT = 63 + 10 + 10
         return {
             offset: TRACKS_ROW_HEIGHT * index,
             length: TRACKS_ROW_HEIGHT,
@@ -110,7 +111,7 @@ export default class PlaylistsScreen extends Component {
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ this._playAllTracksFromPlaylist.bind(this) }>
                         <Text style={ styles.textHeader }>Play all</Text>
                     </TouchableHighlight>
-                    <Text>{ this.state.playlistName.toUpperCase() }</Text>
+                    <Text numberOfLines={ 1 } style={ styles.textAlbum }>{ this.state.playlistName.toUpperCase() }</Text>
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.playlistTracksModal.close() }>
                         <Text style={ styles.textHeader }>Close</Text>
                     </TouchableHighlight>
@@ -139,7 +140,7 @@ export default class PlaylistsScreen extends Component {
             .catch(error => { Alert.alert(error.message) })
     }
 
-    _renderPlaylistsItem = (item) => (
+    _renderPlaylistsItem = (item, index) => (
         <PlaylistsListItem
             listItem={ item }
             columns={ this.state.columns }
@@ -147,23 +148,13 @@ export default class PlaylistsScreen extends Component {
         />
     )
 
-    componentWillReceiveProps (newProps) {
-        const { orientation } =  newProps.screenProps
-
-        if (orientation !== this.props.screenProps.orientation) {
-            this.setState({ columns: orientation === PORTRAIT ? 1 : 2 })
-        }
-    }
-
     componentDidMount () {
         this.props.navigation.setParams({ handleRightButtonPressed: this.refs.newPlaylistModal.open })
     }
 
     render () {
-        const ROW_HEIGTH = 80 + 15 + 15 // 80 por Thumbnail large + 2 * (12+3) ListItem paddingVertical
         const { navigate } = this.props.navigation
-        const { orientation } = this.props.screenProps
-        const { columns, showPlaylistTracksModal, newPlaylistName, newPlaylistDescription } = this.state
+        const { showPlaylistTracksModal, newPlaylistName, newPlaylistDescription } = this.state
 
         const BUTTON_ENABLED = newPlaylistName === null && newPlaylistDescription === null
 
@@ -175,19 +166,18 @@ export default class PlaylistsScreen extends Component {
                 <InfiniteList
                     getData={ userApi.getPlaylists }
                     renderItem={ this._renderPlaylistsItem }
-                    rowHeight={ ROW_HEIGTH }
+                    rowHeight={ PLAYLISTS_ROW_HEIGTH }
                     searchHolder='Search for playlists ...'
-                    listKey={ orientation === LANDSCAPE ? 'h' : 'v' }
-                    columns={ columns }
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
                 <Modal ref={"playlistTracksModal"}
                     style={ styles.modal }
-                    position={"bottom"}
+                    position={"top"} entry={"top"}
+                    backButtonClose={true}
                     onClosed={ this._handleClosedPlaylistTracksModal.bind(this) }>
                     { showPlaylistTracksModal && this._renderPlaylistTracks() }
                 </Modal>
-                <Modal ref={"newPlaylistModal"} style={ styles.modal } position={"center"}>
+                <Modal ref={"newPlaylistModal"} style={ styles.modal } position={"center"} backButtonClose={true}>
                     <View style={ styles.formModal }>
                         <View style={ styles.headerModal }>
                             <Text style={ styles.titleHeader }>NEW PLAYLIST</Text>
@@ -235,5 +225,6 @@ const styles = StyleSheet.create({
     buttonHeader: { height: 20 },
     titleHeader: { textAlign: 'center', color: SCREEN_PLAYLISTS_DARK_COLOR },
     textHeader: { fontSize: 12, color: SCREEN_PLAYLISTS_COLOR + '80' },
+    textPlaylist: { flex: -1, paddingHorizontal: 15, },
     submit: { marginTop: 35, backgroundColor: SCREEN_PLAYLISTS_COLOR },
 })

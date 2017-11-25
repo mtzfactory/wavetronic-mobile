@@ -81,7 +81,8 @@ export default class TracksScreen extends Component {
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
                 <Modal ref={"friendListModal"}
                     style={ styles.modal }
-                    position={"bottom"}
+                    position={"top"} entry={"top"}
+                    backButtonClose={true}
                     onClosed={ this._handleClosedFriendListModal.bind(this) }>
                     { this.state.showFriendListModal && this._renderFriendList() }
                 </Modal>
@@ -96,6 +97,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff'
     },
     modal: {
-        height: DEVICE_HEIGHT * 0.66 
+        height: DEVICE_HEIGHT / 2
     },
 })

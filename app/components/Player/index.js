@@ -16,6 +16,8 @@ import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
+const TRACKS_ROW_HEIGHT = 63
+const PLAYLISTS_ROW_HEIGHT = 63
 
 export default class SongsScreen extends Component {
     constructor () {
@@ -149,7 +151,7 @@ export default class SongsScreen extends Component {
             <InfiniteList
                 getData={ userApi.getPlaylists }
                 renderItem={ this._renderPlaylistsItem }
-                rowHeight={ 63 + 10 + 10 }
+                rowHeight={ PLAYLISTS_ROW_HEIGHT }
                 searchHolder='Search for playlists ...'
             />
         )
@@ -172,10 +174,9 @@ export default class SongsScreen extends Component {
     }
 
     _getTrackHistoryItemLayout = (data, index) => {
-        const ROW_HEIGHT = 63 + 10 + 10
         return {
-            offset: ROW_HEIGHT * index,
-            length: ROW_HEIGHT,
+            offset: TRACKS_ROW_HEIGHT * index,
+            length: TRACKS_ROW_HEIGHT,
             index
         }
     }
@@ -231,8 +232,12 @@ export default class SongsScreen extends Component {
                 songDuration: 0
             }
 
-            if (!_.some(this.state.trackHistory, newTrack)) {
+            const index = _.findIndex(this.state.trackHistory, newTrack)
+            if (index === -1) {
                 newState.trackHistory = [ newTrack, ... this.state.trackHistory]
+            }
+            else {
+                newState.currentHistoryIndex = index
             }
 
             this.setState(newState)
@@ -274,7 +279,7 @@ export default class SongsScreen extends Component {
                 <View style={ styles.playlist }>
                     { this.state.expanded && this._renderTrackHistory() }
                 </View>
-                <Modal style={ styles.modal } position={"bottom"} ref={"modalWindow"}>
+                <Modal ref={"modalWindow"} style={ styles.modal } position={"bottom"} backButtonClose={true}>
                     { this.state.expanded && this._renderPlaylists() }
                 </Modal>
                 <View style={ styles.player }>

@@ -132,12 +132,14 @@ const styles = StyleSheet.create({
     },
     title: {
         color: '#FFF',
+        fontSize: 12,
         fontWeight: 'bold'
     },
     titleName: {
         fontSize: 20
     },
     trackTitle: {
+        marginTop: 15,
         fontSize: 18,
         color: '#FFF'
     },

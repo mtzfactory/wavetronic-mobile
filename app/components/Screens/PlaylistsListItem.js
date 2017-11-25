@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, TouchableHighlight, ImageBackground } from 'react-native'
 import { Text, Badge } from 'native-base'
+import { ListItem } from 'react-native-elements'
 
 import { SCREEN_PLAYLISTS_COLOR } from '../../constants'
 import Flickr from '../../helpers/Flickr'
@@ -8,22 +9,22 @@ import Flickr from '../../helpers/Flickr'
 const moment = require('moment')
 
 export default class PlaylistsListItem extends React.PureComponent {
-    constructor () {
-        super()
-        this.state = { image: null }
-    }
+    // constructor () {
+    //     super()
+    //     this.state = { image: null }
+    // }
 
-    _openPlaylist = (id, name) => {
+    _onPressItem = (id, name) => {
         this.props.onItemPressed(id, name)
     }
 
-    componentDidMount () {
-        Flickr()
-            .then( url => this.setState({ image: { uri: url } }))
-            .catch(error => {
-                this.setState({ image: require('../../assets/images/random-1.png')})
-            })
-    }
+    // componentDidMount () {
+    //     Flickr()
+    //         .then( url => this.setState({ image: { uri: url } }))
+    //         .catch(error => {
+    //             this.setState({ image: require('../../assets/images/random-1.png')})
+    //         })
+    // }
 
     render () {
         const { listItem, columns } = this.props
@@ -36,26 +37,39 @@ export default class PlaylistsListItem extends React.PureComponent {
             : { backgroundColor: 'rgba(255, 255, 255, 0.4)' }
 
         return (
-          <TouchableHighlight disabled={ listItem.amount === 0 }
-            style={{ height: 120, width: WIDTH }}
-            underlayColor="#F1F1F1"
-            onPress={ () => this._openPlaylist(listItem._id, listItem.name) }>        
-              <ImageBackground source={ this.state.image } style={ styles.imagebackground }>
-                <View style={ styles.blackOverlay }>
-                  <Text style={ [styles.text, styles.name] } numberOfLines={1}>{ listItem.name.toUpperCase() }</Text>
-                  <Text style={ [styles.text, styles.description] } numberOfLines={1}>{ listItem.description }</Text>
-                  <View style={ styles.row }>
-                    <Badge style={ BADGE_COLOR }><Text style={ styles.songs }>{ listItem.amount }</Text></Badge>
-                    <Text style={ [styles.text, styles.date] }>{ moment(listItem.creation_date).format('MM/YYYY') }</Text>
-                  </View>
-                </View>
-              </ImageBackground>
-          </TouchableHighlight>
+            <ListItem style={ styles.list }
+                disabled={ listItem.amount === 0 }
+                title={ listItem.name.toUpperCase() }
+                subtitle={ listItem.description }
+                leftIcon={{ name: 'ios-infinite', type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR } }}
+                rightTitle={ `${listItem.amount} tracks` }
+                rightIcon={{ name: 'ios-list-outline', type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR, marginLeft: 15 } }}
+                key={ listItem._id }
+                onPress={ () => this._onPressItem(listItem._id, listItem.name) }/>
+
+        //   <TouchableHighlight disabled={ listItem.amount === 0 }
+        //     style={{ height: 120, width: WIDTH }}
+        //     underlayColor="#F1F1F1"
+        //     onPress={ () => this._onPressItem(listItem._id, listItem.name) }>        
+        //       <ImageBackground source={ this.state.image } style={ styles.imagebackground }>
+        //         <View style={ styles.blackOverlay }>
+        //           <Text style={ [styles.text, styles.name] } numberOfLines={1}>{ listItem.name.toUpperCase() }</Text>
+        //           <Text style={ [styles.text, styles.description] } numberOfLines={1}>{ listItem.description }</Text>
+        //           <View style={ styles.row }>
+        //             <Badge style={ BADGE_COLOR }><Text style={ styles.songs }>{ listItem.amount }</Text></Badge>
+        //             <Text style={ [styles.text, styles.date] }>{ moment(listItem.creation_date).format('MM/YYYY') }</Text>
+        //           </View>
+        //         </View>
+        //       </ImageBackground>
+        //   </TouchableHighlight>
         )
     }
 }
 
 const styles = StyleSheet.create({
+    list: {
+        paddingHorizontal: 10,
+    },
     imagebackground: {
         flex: 1,
     },

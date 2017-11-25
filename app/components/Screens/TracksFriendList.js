@@ -9,7 +9,7 @@ import InfiniteList from '../InfiniteList'
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
-const ROW_HEIGTH = 50 + 10 + 10
+const FRIENDS_ROW_HEIGTH = 50
 
 export default class TracksFriendList extends Component {
     _sendTrackToFriend (friendId) {
@@ -32,7 +32,7 @@ export default class TracksFriendList extends Component {
             <InfiniteList
                 getData={ userApi.getRealFriends }
                 renderItem={ this._renderFriendItem }
-                rowHeight={ ROW_HEIGTH }
+                rowHeight={ FRIENDS_ROW_HEIGTH }
                 searchHolder='Search for friends ...'
             />
         )

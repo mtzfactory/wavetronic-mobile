@@ -19,6 +19,7 @@ const musicApi = new MusicApi()
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const THUMBNAIL_SIZE = 70
 const ALBUM_ROW_HEIGTH = THUMBNAIL_SIZE + 17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
+const TRACK_ROW_HEIGHT = 50
 const SCREEN = 'Albums'
 
 export default class AlbumsScreen extends Component {
@@ -54,7 +55,6 @@ export default class AlbumsScreen extends Component {
     }
 
     _getAlbumTracksItemLayout = (data, index) => {
-        const TRACK_ROW_HEIGHT = 50 + 10 + 10
         return {
             offset: TRACK_ROW_HEIGHT * index,
             length: TRACK_ROW_HEIGHT,
@@ -82,7 +82,7 @@ export default class AlbumsScreen extends Component {
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ this._playAllTracksFromAlbum.bind(this) }>
                         <Text style={ styles.textHeader }>Play all</Text>
                     </TouchableHighlight>
-                    <Text>{ this.state.albumName.toUpperCase() }</Text>
+                    <Text numberOfLines={ 1 } style={ styles.textAlbum }>{ this.state.albumName.toUpperCase() }</Text>
                     <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.albumTracksModal.close() }>
                         <Text style={ styles.textHeader }>Close</Text>
                     </TouchableHighlight>
@@ -105,7 +105,6 @@ export default class AlbumsScreen extends Component {
     _handleOnAlbumItemPressed (albumId, albumName) {
         musicApi.getTracksFromAlbum(albumId)
             .then(res => {
-                console.log(res)
                 this.setState({ showAlbumTracksModal: true, albumId, albumName, currentTrackIndex: -1, albumsTracks: res.results[0] })
                 this.refs.albumTracksModal.open()
             })
@@ -140,7 +139,8 @@ export default class AlbumsScreen extends Component {
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
                 <Modal ref={"albumTracksModal"}
                     style={ styles.modal }
-                    position={"bottom"}
+                    position={"top"} entry={"top"}
+                    backButtonClose={true}
                     onClosed={ this._handleClosedAlbumTracksModal.bind(this) }>
                     { showAlbumTracksModal && this._renderAlbumTracks() }
                 </Modal>
@@ -152,8 +152,9 @@ export default class AlbumsScreen extends Component {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#fff' },
     modal: { height: DEVICE_HEIGHT / 2, padding: 10 },
-    headerModal: { marginBottom: 2, flex: -1, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
+    headerModal: { marginBottom: 2, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
     buttonHeader: { height: 20 },
     titleHeader: { textAlign: 'center' },
     textHeader: { fontSize: 12, color: SCREEN_ALBUMS_COLOR + '80' },
+    textAlbum: { flex: -1, paddingHorizontal: 15, },
 })
