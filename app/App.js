@@ -9,6 +9,8 @@ import RootNavigation from './components/RootNavigation'
 import PushService from './services/PushService'
 import Player from './components/Player'
 
+import { SPLASH_COLOR } from './constants'
+
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 
 export default class App extends Component {
@@ -23,13 +25,13 @@ export default class App extends Component {
         }
     }
 
-    _handleOnLayout(event) {
-        const {x, y, width, height} = event.nativeEvent.layout
-        if (width > height)
-          this.setState({ orientation: LANDSCAPE })
-        else
-          this.setState({ orientation: PORTRAIT })
-    }
+    // _handleOnLayout(event) {
+    //     const {x, y, width, height} = event.nativeEvent.layout
+    //     if (width > height)
+    //       this.setState({ orientation: LANDSCAPE })
+    //     else
+    //       this.setState({ orientation: PORTRAIT })
+    // }
 
     _handlePlayTrack (track) {
         this.setState({ track })
@@ -80,7 +82,7 @@ export default class App extends Component {
 
     render () {
         return (
-            <View style={ styles.container } onLayout={ this._handleOnLayout.bind(this) }>
+            <View style={ styles.container }>
                 { Platform.OS === 'ios' && <StatusBar barStyle="default" /> }
                 {
                   Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ DARK_PRIMARY_COLOR } />
@@ -106,7 +108,7 @@ export default class App extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: 'transparent',
+        backgroundColor: SPLASH_COLOR + '80',
     },
     statusBarUnderlay: {
         height: 24,

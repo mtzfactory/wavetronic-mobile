@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, Keyboard, Dimensions, StatusBar, Easing, View, TouchableHighlight, TextInput, Alert } from 'react-native'
+import { StyleSheet, Platform, Dimensions, StatusBar, Easing, View, TouchableHighlight, TextInput, Alert } from 'react-native'
 import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
@@ -53,8 +53,6 @@ export default class ContactsScreen extends Component {
     _addContact () {
         const { newContactName } = this.state
 
-        Keyboard.dismiss()
-
         if (newContactName)
             userApi.addFriend(newContactName)
                 .then(res => {
@@ -101,7 +99,7 @@ export default class ContactsScreen extends Component {
                 />
                 <Modal ref={"newContactModal"}
                     style={ styles.modal }
-                    position={"center"} entry={"bottom"} easing={Easing.ease}
+                    position={"center"} entry={"top"} easing={Easing.ease}
                     backButtonClose={true}>
                     <View style={ styles.formModal }>
                         <View style={ styles.headerModal }>
@@ -110,15 +108,16 @@ export default class ContactsScreen extends Component {
                                 <Text style={ styles.textHeader }>Close</Text>
                             </TouchableHighlight>
                         </View>
+                        <View style={{ flex: 2 }}>
                         <TextInput style={ styles.inputForm }
                             ref={ c => this.name = c}
                             autoFocus={ true }
                             autoCapitalize="none"
-                            blurOnSubmit={ false }
+                            blurOnSubmit={ true }
                             placeholder="your friend's username"
                             onChangeText={ newContactName => this.setState({ newContactName }) }
-                            onSubmitEditing={ () => Keyboard.dismiss() }
                         />
+                        </View>
                         <Button block style={[ styles.submit, BUTTON_COLOR ]} disabled={ BUTTON_DISABLED } onPress={ this._addContact.bind(this) }>
                             <Text>Add</Text>
                         </Button>
@@ -135,8 +134,8 @@ export default class ContactsScreen extends Component {
                                 <Text style={ styles.textHeader }>Close</Text>
                             </TouchableHighlight>
                         </View>
-                        <View style={{ flex: 2, justifyContent: "center", alignItems: "center" }}>
-                            <Text style={{ marginTop: 20 }}>Your friend hasn't confirmed yet!</Text>
+                        <View style={{ flex: 2, flexDirection:"column", justifyContent: "center", alignItems: "center" }}>
+                            <Text style={{ marginTop: 0 }}>Your friend hasn't confirmed yet!</Text>
                             <Text style={{ marginTop: 15 }}>Send another friend request to:</Text>
                             <Text style={{ marginTop: 15, fontSize: 20, fontWeight: 'bold' }}>{friendName}</Text>
                         </View>

@@ -18,7 +18,7 @@ const musicApi = new MusicApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const THUMBNAIL_SIZE = 70
-const ALBUM_ROW_HEIGTH = THUMBNAIL_SIZE + 17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
+const ALBUM_ROW_HEIGTH = THUMBNAIL_SIZE + 10 //17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
 const TRACK_ROW_HEIGHT = 50
 const SCREEN = 'Albums'
 

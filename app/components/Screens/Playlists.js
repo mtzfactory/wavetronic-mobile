@@ -177,7 +177,7 @@ export default class PlaylistsScreen extends Component {
                 </Modal>
                 <Modal ref={"newPlaylistModal"}
                     style={ styles.modal }
-                    position={"center"} entry={"bottom"} easing={Easing.ease}
+                    position={"center"} entry={"top"} easing={Easing.ease}
                     backButtonClose={true}>
                     <View style={ styles.formModal }>
                         <View style={ styles.headerModal }>

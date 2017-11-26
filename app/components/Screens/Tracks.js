@@ -16,7 +16,7 @@ const musicApi = new MusicApi()
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const THUMBNAIL_SIZE = 70
-const TRACKS_ROW_HEIGTH = THUMBNAIL_SIZE + 17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
+const TRACKS_ROW_HEIGTH = THUMBNAIL_SIZE + 10 //17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
 const SCREEN = 'Tracks'
 
 export default class TracksScreen extends Component {
@@ -51,6 +51,7 @@ export default class TracksScreen extends Component {
     }
 
     _handleOnPlaySong (trackIndex, track) {
+        console.log('_handleOnPlaySong', track.name)
         this.setState({ trackIndex })
         this.props.screenProps.handlePlaySong(track)
     }
