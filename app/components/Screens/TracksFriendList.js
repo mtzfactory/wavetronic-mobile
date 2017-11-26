@@ -12,7 +12,7 @@ const userApi = new UserApi()
 const FRIENDS_ROW_HEIGTH = 50
 
 export default class TracksFriendList extends Component {
-    _sendTrackToFriend (friendId) {
+    _sendTrackToFriend = (friendId, friendName) => {
         userApi.sendTrackToFriend(friendId, this.props.trackId)
             .catch(error => Alert.alert(error.message))
     }
@@ -24,13 +24,13 @@ export default class TracksFriendList extends Component {
             leftIcon={{ name: 'ios-person-outline', type: 'ionicon', style: { color: SCREEN_SONGS_COLOR } }}
             rightTitle="Send"
             key={ item._id }
-            onPress={ () => this._sendTrackToFriend(item.username) }/>
+            onPress={ () => this._sendTrackToFriend(item._id, item.username) }/>
     )
 
     render () {
         return (
             <InfiniteList
-                getData={ userApi.getRealFriends }
+                getData={ userApi.getFriends }
                 renderItem={ this._renderFriendItem }
                 rowHeight={ FRIENDS_ROW_HEIGTH }
                 searchHolder='Search for friends ...'

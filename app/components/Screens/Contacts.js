@@ -131,7 +131,7 @@ export default class ContactsScreen extends Component {
                     <View style={ styles.formModal }>
                         <View style={ styles.headerModal }>
                             <Text style={ styles.titleHeader }>FRIENDSHIP</Text>
-                            <TouchableHighlight underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.newContactModal.close() }>
+                            <TouchableHighlight underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.sendFriendshipModal.close() }>
                                 <Text style={ styles.textHeader }>Close</Text>
                             </TouchableHighlight>
                         </View>

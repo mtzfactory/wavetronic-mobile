@@ -5,8 +5,12 @@ import { View, ListItem, Left, Right, Body, Thumbnail, Text, Button, Icon } from
 import { SCREEN_SONGS_COLOR } from '../../constants'
 
 export default class TracksListItem extends React.PureComponent {
-    _onPressItem (index , listItem) {
+    _onPressItem = (index , listItem) => {
         this.props.playSong(index , listItem)
+    }
+
+    _onRightPressItem = (listItemId) => {
+        this.props.shareTrack(listItemId)
     }
 
     render () {
@@ -27,7 +31,7 @@ export default class TracksListItem extends React.PureComponent {
                     <Text numberOfLines={ 1 } note>{ listItem.artist_name }</Text>
                 </Body>
                 <Right>
-                    <Button transparent onPress={ () => this.props.shareTrack(`${listItem.id}`) }>
+                    <Button transparent onPress={ () => this._onRightPressItem(`${listItem.id}`) }>
                         <Text style={ styles.actionButtonText }>{"wave\nme"}</Text>
                     </Button>
                 </Right>

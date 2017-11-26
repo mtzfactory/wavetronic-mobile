@@ -46,7 +46,7 @@ export default class TracksScreen extends Component {
         this.refs.friendListModal.open()
     }
 
-    _renderFriendList () {
+    _renderFriendList = () => {
         return <TracksFriendList trackId={ this.state.trackId } />
     }
 
