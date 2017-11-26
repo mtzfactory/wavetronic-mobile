@@ -45,6 +45,13 @@ class UserApi {
     addFriend = (name) => {
         return this.fetcher.postWithAuth(API_URL_FRIENDS, { name })
     }
+// api/v1/user/friends/:friendId
+    updateFriendship = (friendId) => {
+        return this.fetcher.putWithAuth(`${API_URL_FRIENDS}/${friendId}`, {})
+    }
+    removeFriend = (friendId) => {
+        return this.fetcher.delWithAuth(`${API_URL_FRIENDS}/${friendId}`)
+    }
 // api/v1/user/friends/:friendId/track/:trackId
     sendTrackToFriend = (friendId, trackId) => {
         return this.fetcher.getWithAuth(`${API_URL_FRIENDS}/${friendId}/track/${trackId}`)

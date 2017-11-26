@@ -34,7 +34,7 @@ export default class TracksListItem extends React.PureComponent {
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback onPress={ () => this._onRightPressItem(`${listItem.id}`) }>
                     <View style={{ height: "100%", justifyContent:"center", borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
-                        <Text style={ styles.actionButtonText }>{"wave\nme"}</Text>
+                        <Icon name="ios-paper-plane-outline" style={ styles.actionButtonText }/>
                     </View>
                 </TouchableWithoutFeedback>
             </View>
@@ -57,8 +57,12 @@ const styles = StyleSheet.create({
     },
     actionButtonText: {
         marginRight: 10,
-        fontSize: 12,
-        textAlign: "center",
         color: SCREEN_SONGS_COLOR
     }
 })
+
+/*
+<Text style={ styles.actionButtonText }>{"wave\nme"}</Text>
+        fontSize: 12,
+        textAlign: "center",
+*/

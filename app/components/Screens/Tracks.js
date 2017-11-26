@@ -94,5 +94,5 @@ export default class TracksScreen extends Component {
 
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#fff' },
-    modal: { height: DEVICE_HEIGHT / 2, padding: 10 },
+    modal: { height: DEVICE_HEIGHT / 2 },
 })

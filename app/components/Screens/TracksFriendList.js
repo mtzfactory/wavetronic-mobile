@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Alert } from 'react-native'
+import { Alert, View } from 'react-native'
 import { ListItem } from 'react-native-elements'
 
 import { SCREEN_SONGS_COLOR } from '../../constants'
@@ -18,6 +18,7 @@ export default class TracksFriendList extends Component {
     }
 
     _renderFriendItem = (item, index) => (
+        <View style={{ marginHorizontal: 10 }}>
         <ListItem disabled={ !item.confirmed }
             title={ item.username }
             subtitle={ item.confirmed ? null : "hmm... not confirmed yet" }
@@ -25,6 +26,7 @@ export default class TracksFriendList extends Component {
             rightTitle="Send"
             key={ item._id }
             onPress={ () => this._sendTrackToFriend(item._id, item.username) }/>
+        </View>
     )
 
     render () {

@@ -6,6 +6,7 @@ function checkStatus(res) {
     }
     else {
         //const errorMessage = res.statusText === undefined ? res._bodyText : res.statusText
+        console.log(res._bodyText)
         err = JSON.parse(res._bodyText)
         throw new Error(err.message)
     }
@@ -57,6 +58,15 @@ class Fetcher {
                 method: 'PUT',
                 headers: this.getHeaders(),
                 body: JSON.stringify(data)
+            })
+            .then(checkStatus)
+            .then(parseJSON)
+    }
+
+   delWithAuth(url) {
+        return this.timeoutFetch(url, {
+                method: 'DELETE',
+                headers: this.getHeaders(),
             })
             .then(checkStatus)
             .then(parseJSON)

@@ -63,7 +63,15 @@ export default class ContactsScreen extends Component {
 
     }
 
-    _handleOnContactsItemPressed (friendId, friendName) {
+    _removeFriend (friendId) {
+        userApi.removeFriend(friendId)
+            .then(
+                this.contacts._handleRefresh()
+            )
+            .catch(error => { Alert.alert(error.message) })
+    }
+
+    _sendFriendship (friendId, friendName) {
         this.setState({ friendId, friendName })
         this.refs.sendFriendshipModal.open()
     }
@@ -71,7 +79,8 @@ export default class ContactsScreen extends Component {
     _rendeContactsItem = (item, index) => (
         <ContactsListItem
             listItem={ item }
-            onItemPressed={ this._handleOnContactsItemPressed.bind(this) }
+            onItemPressed={ this._sendFriendship.bind(this) }
+            onRemovePressed={ this._removeFriend.bind(this) }
         />
     )
 
@@ -92,6 +101,7 @@ export default class ContactsScreen extends Component {
                     Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_CONTACTS_DARK_COLOR } />
                 }
                 <InfiniteList
+                    ref={ c => this.contacts = c }
                     getData={ userApi.getFriends }
                     renderItem={ this._rendeContactsItem }
                     rowHeight={ CONTACTS_ROW_HEIGTH }

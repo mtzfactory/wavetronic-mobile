@@ -27,7 +27,7 @@ export default class PureListItem extends React.PureComponent {
                             <Text numberOfLines={ 1 } note>{ listItem.releasedate }</Text>
                         </View>
                         <View style={{ borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
-                            <Text style={ styles.actionButtonText }>Open</Text>
+                            <Icon name="ios-list-outline" style={ styles.actionButtonText }/>
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
@@ -50,11 +50,18 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0, 0, 0, 0.4)"
     },
     actionButtonText: {
+        marginRight: 10,
         height: '100%',
+        textAlignVertical: 'center',
+        color: SCREEN_ALBUMS_COLOR,
+    }
+})
+
+/*
+<Text style={ styles.actionButtonText }>Open</Text>
+        
         marginRight: 10,
         fontSize: 12,
         textAlign: "center",
         textAlignVertical: "center",
-        color: SCREEN_ALBUMS_COLOR,
-    }
-})
+*/

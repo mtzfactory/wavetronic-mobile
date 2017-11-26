@@ -138,12 +138,16 @@ export default class SongsScreen extends Component {
     }
 
     _renderPlaylistsItem = (item, index) => {
-        return <ListItem
-            title={ item.name }
-            subtitle={ item.description }
-            leftIcon={{ name: 'ios-list', type: 'ionicon', style: { color: PRIMARY_COLOR } }}
-            key={ item._id }
-            onPress={ () => this._addTrackToPlaylist(item._id) }/>
+        return (
+            <View style={{ marginHorizontal: 10 }}>
+            <ListItem
+                title={ item.name }
+                subtitle={ item.description }
+                leftIcon={{ name: 'ios-list', type: 'ionicon', style: { color: PRIMARY_COLOR } }}
+                key={ item._id }
+                onPress={ () => this._addTrackToPlaylist(item._id) }/>
+            </View>
+        )
     }
 
     _renderPlaylists () {

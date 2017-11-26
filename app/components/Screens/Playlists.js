@@ -222,6 +222,6 @@ const styles = StyleSheet.create({
     textHeader: { fontSize: 12, color: SCREEN_PLAYLISTS_COLOR + '80' },
     inputForm: { marginTop: 15, borderBottomWidth: 2, borderBottomColor: SCREEN_PLAYLISTS_COLOR },
     buttonHeader: { height: 20 },
-    textPlaylist: { flex: -1, paddingHorizontal: 15, },
+    textPlaylist: { flex: -1, paddingHorizontal: 15, color: '#43484d' },
     submit: { marginTop: 35, position: 'absolute', bottom: 0, width: '100%', backgroundColor: SCREEN_PLAYLISTS_COLOR },
 })

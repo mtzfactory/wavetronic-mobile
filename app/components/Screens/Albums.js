@@ -154,5 +154,5 @@ const styles = StyleSheet.create({
     buttonHeader: { height: 20 },
     titleHeader: { textAlign: 'center' },
     textHeader: { fontSize: 12, color: SCREEN_ALBUMS_COLOR + '80' },
-    textAlbum: { flex: -1, paddingHorizontal: 15, },
+    textAlbum: { flex: -1, paddingHorizontal: 15, color: '#43484d' },
 })
