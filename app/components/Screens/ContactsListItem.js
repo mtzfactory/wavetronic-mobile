@@ -28,8 +28,8 @@ export default class ContactsListItem extends React.PureComponent {
         ]
 
         return (
-            <SwipeOut
-                right={ SWIPEOUT_RIGHT }>
+            // <SwipeOut
+            //     right={ SWIPEOUT_RIGHT }>
                 <View style={ styles.list }>
                     <ListItem 
                         title={ listItem.username }
@@ -39,7 +39,7 @@ export default class ContactsListItem extends React.PureComponent {
                         key={ listItem._id }
                         onPress={ () => !listItem.confirmed && onPressItem(listItem._id, listItem.username) }/>
                 </View>
-            </SwipeOut>
+            // </SwipeOut>
         )
     }
 }

@@ -82,8 +82,8 @@ export default class InfiniteList extends Component {
     }
 
     _search = (search) => {
-        if (search.length >= 4) {
-            this.setState({ offset: 0, search, searching: true }, () => {
+        if (search.length >= 2) {
+            this.setState({ offset: 0, search: search.toLowerCase(), searching: true }, () => {
                 this._requestData()
             })
             

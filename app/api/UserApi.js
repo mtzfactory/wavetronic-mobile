@@ -39,8 +39,10 @@ class UserApi {
         return this.fetcher.putWithAuth(`${API_URL_PROFILE}`, { pnToken })
     }
 // api/v1/user/friends
-    getFriends = (offset, limit) => {
-        return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}`)
+    getFriends = (offset, limit, query) => {
+        const search = query !== undefined && query !== null ? `&name=${query}`: ''
+        console.log(search)
+        return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}${search}`)
     }
     addFriend = (name) => {
         return this.fetcher.postWithAuth(API_URL_FRIENDS, { name })

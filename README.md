@@ -4,11 +4,8 @@
 
 ## WAVE MY BEAT ~ mobile app.
 
+Cocinandose actualmente...
+
 ### INSTALACION
 
 ### TEST
-
-### SPLASH SCREENS
-https://wall.alphacoders.com/big.php?i=646740
-
-$ convert -size 2208x2208 xc:"#444545" 646740.png -gravity center -composite splash-2208.png
