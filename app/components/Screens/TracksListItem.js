@@ -5,8 +5,8 @@ import { Text, Icon } from 'native-base'
 import { SCREEN_SONGS_COLOR } from '../../constants'
 
 export default class TracksListItem extends React.PureComponent {
-    _onPressItem = (index , listItem) => {
-        this.props.playSong(index , listItem)
+    _onPressItem = (index , item) => {
+        this.props.playSong(index , item)
     }
 
     _onRightPressItem = (listItemId) => {
@@ -14,26 +14,26 @@ export default class TracksListItem extends React.PureComponent {
     }
 
     render () {
-        const { listItem, index, size, selected } = this.props
+        const { item, index, size, style } = this.props
 
         return (
-            <View style={{ height: size, marginVertical: 5, paddingHorizontal: 10, flex: 1, flexDirection: 'row', alignItems: 'center' }} >
-                <TouchableWithoutFeedback onPress={ () => this._onPressItem(index , listItem) }>
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-                        <ImageBackground source={{ uri: listItem.image }} style={[ { width: size, height: size }, styles.background] }>
+            <View style={{ height: style.height, marginVertical: 5, paddingHorizontal: 10, flex: 1, flexDirection: 'row', alignItems: 'center' }} >
+                <TouchableWithoutFeedback onPress={ () => this._onPressItem(index , item) }>
+                    <View style={{ height: "100%", flex: 1, flexDirection: "row", justifyContent:"center", alignItems: "center" }}>
+                        <ImageBackground source={{ uri: item.image }} style={[ { width: size, height: size }, styles.background] }>
                             <View style={ styles.playButtonOverlay }>
                                 <Icon name="ios-play" style={{ color: "rgba(255, 255, 255, 0.7)", marginLeft: 4 }}/>
                             </View>
                         </ImageBackground>
-                        <View style={{ marginLeft: 10, paddingRight: 15, flex: 1, borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
-                            <Text numberOfLines={ 1 } >{ listItem.name }</Text>
-                            <Text numberOfLines={ 1 } note>{ listItem.album_name }</Text>
-                            <Text numberOfLines={ 1 } note>{ listItem.artist_name }</Text>
+                        <View style={{ height: "100%", marginLeft: 10, paddingRight: 15, flex: 1, borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
+                            <Text numberOfLines={ 1 } >{ item.name }</Text>
+                            <Text numberOfLines={ 1 } note>{ item.album_name }</Text>
+                            <Text numberOfLines={ 1 } note>{ item.artist_name }</Text>
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={ () => this._onRightPressItem(`${listItem.id}`) }>
-                    <View style={{ height: "100%", justifyContent:"center", borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
+                <TouchableWithoutFeedback onPress={ () => this._onRightPressItem(`${item.id}`) }>
+                    <View style={{ height: "100%", justifyContent:"center", alignItems:"center", borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
                         <Icon name="ios-paper-plane-outline" style={ styles.actionButtonText }/>
                     </View>
                 </TouchableWithoutFeedback>

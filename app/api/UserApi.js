@@ -41,7 +41,6 @@ class UserApi {
 // api/v1/user/friends
     getFriends = (offset, limit, query) => {
         const search = query !== undefined && query !== null ? `&name=${query}`: ''
-        console.log(search)
         return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}${search}`)
     }
     addFriend = (name) => {

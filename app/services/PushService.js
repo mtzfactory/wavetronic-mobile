@@ -9,24 +9,11 @@ export default class PushService extends Component {
         this.state = { notif: [] }
     }
 
-    showLocalNotification (notif) {
-        FCM.presentLocalNotification({
-            title: notif.fcm.title,
-            body: notif.fcm.body,
-            click_action: notif.click_action,
-            priority: 'high',
-            sound: 'default',
-            show_in_foreground: true,
-            local: true
-        })
-    }
-
     removeProcessedNotification (id) {
         FCM.removeDeliveredNotification(id)
         const remainigNotif = this.state.notif.filter(item => {
             return item.id !== id;
         })
-        console.log(remainigNotif)
         this.setState({ notif: remainigNotif })
     }
 
@@ -43,24 +30,26 @@ export default class PushService extends Component {
         })
 
         this.notificationListener = FCM.on(FCMEvent.Notification, async notif => {
-            // Process the notification
-            let track = {}, friend = null, id = null
-            if (notif.track) {
+            if (!notif.opened_from_tray && (notif.type === 'track' || notif.type === 'friendship-request')) {
                 this.setState(prevState => { return { notif: [ ...prevState.notif, notif ] } })
-                track = JSON.parse(notif.track)
-                friend = notif.friend
-                id = notif.id
             }
-            else if (this.state.notif.length > 0) {
+            else if (this.state.notif.length > 0) { // find the notif that comes from pressing the sys tray...
                 const previousNotif = _.find(this.state.notif, { id: notif.id })
                 if (previousNotif) {
-                    track = JSON.parse(previousNotif.track)
-                    friend = previousNotif.friend
-                    id = previousNotif.id
+                    if (previousNotif.type === 'track') {
+                        notif.track = previousNotif.track
+                    }
+                    if (previousNotif.type === 'friendship-request') {
+                        notif.userId = previousNotif.userId
+                    }
+                    notif.type = previousNotif.type
+                    notif.fromUser = previousNotif.fromUser
+                    notif.id = previousNotif.id
                 }
             }
 
-            if (Object.keys(track).length > 0) this.props.onNotificationReceived(friend, track, id)
+            if (notif.type === 'track') this.props.onReceivedTrack(notif)
+            if (notif.type === 'friendship-request') this.props.onReceivedFriendRequest(notif)
         })
 
         this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, pnToken => {

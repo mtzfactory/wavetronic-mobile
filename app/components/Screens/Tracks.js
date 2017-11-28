@@ -4,6 +4,7 @@ import { View, Thumbnail } from 'native-base'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 import { MAIN_THEME_COLOR, SCREEN_SONGS_COLOR, SCREEN_SONGS_DARK_COLOR } from '../../constants'
 
 import FabNavigator from '../FabNavigator'
@@ -14,9 +15,8 @@ import TracksListItem from './TracksListItem'
 import MusicApi from '../../api/MusicApi'
 const musicApi = new MusicApi()
 
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const THUMBNAIL_SIZE = 70
-const TRACKS_ROW_HEIGTH = THUMBNAIL_SIZE + 10 //17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
+const TRACKS_ROW_HEIGTH = THUMBNAIL_SIZE + 10
 const SCREEN = 'Tracks'
 
 export default class TracksScreen extends Component {
@@ -57,8 +57,8 @@ export default class TracksScreen extends Component {
     }
 
     _renderTrackItem = (item, index) => (
-        <TracksListItem 
-            listItem={ item }
+        <TracksListItem style={{ height: THUMBNAIL_SIZE }}
+            item={ item }
             size={ THUMBNAIL_SIZE }
             index={ index }
             playSong={ this._handleOnPlaySong.bind(this) }

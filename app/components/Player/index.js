@@ -7,19 +7,19 @@ import Slider from 'react-native-slider'
 import Modal from 'react-native-modalbox'
 import _ from 'lodash'
 
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 import { MAIN_THEME_COLOR, PRIMARY_COLOR, STATUSBAR_HEIGHT, HEADER_HEIGHT, PLAYER_HEIGHT } from '../../constants'
-import InfiniteList from '../InfiniteList'
 
+import InfiniteList from '../InfiniteList'
 import { getMMSSFromMillis } from '../../helpers/Functions'
 
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const TRACKS_ROW_HEIGHT = 63
 const PLAYLISTS_ROW_HEIGHT = 63
 
-export default class SongsScreen extends Component {
+export default class Player extends Component {
     constructor () {
         super()
 
@@ -143,7 +143,8 @@ export default class SongsScreen extends Component {
             <ListItem
                 title={ item.name }
                 subtitle={ item.description }
-                leftIcon={{ name: 'ios-list', type: 'ionicon', style: { color: PRIMARY_COLOR } }}
+                leftIcon={{ name: 'ios-infinite', type: 'ionicon', style: { color: PRIMARY_COLOR } }}
+                rightTitle={ `${item.amount} tracks` }
                 key={ item._id }
                 onPress={ () => this._addTrackToPlaylist(item._id) }/>
             </View>

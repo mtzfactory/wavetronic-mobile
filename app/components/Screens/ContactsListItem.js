@@ -3,47 +3,38 @@ import { StyleSheet, View } from 'react-native'
 import { ListItem } from 'react-native-elements'
 
 import { SCREEN_CONTACTS_COLOR } from '../../constants'
-import SwipeOut from '../SwipeOut'
 
 export default class ContactsListItem extends React.PureComponent {
     render () {
-        const { listItem, onPressItem, onRemovePressed } = this.props
+        const { item, onPressItem } = this.props
 
-        const RIGHT_ICON = listItem.confirmed ? 'check' : 'chevron-right'
-        const RIGHT_ICON_COLOR = listItem.confirmed ? SCREEN_CONTACTS_COLOR : '#c9c9c9'
-
-        const SWIPEOUT_RIGHT = [
-            {
-              autoClose: true,
-              icon: 'ios-trash-outline',
-              props: {
-                    onPress: () => onRemovePressed(listItem._id) ,
-                    style: {
-                        backgroundColor: SCREEN_CONTACTS_COLOR,
-                        width: 70,
-                    },
-                    underlayColor: SCREEN_CONTACTS_COLOR + 'A0',
-                }
-            }
-        ]
+        let SUBTITLE = null
+        let RIGHT_ICON = 'ios-checkmark'
+        let RIGHT_ICON_COLOR = SCREEN_CONTACTS_COLOR
+        switch(item.confirmed) {
+            case undefined: 
+                SUBTITLE = 'add friend'
+                RIGHT_ICON = 'ios-arrow-forward'
+                break;
+            case false:
+                SUBTITLE = 'hmm... not confirmed yet'
+                RIGHT_ICON = 'ios-alarm-outline'
+                RIGHT_ICON_COLOR = SCREEN_CONTACTS_COLOR + 'B0'
+                break;
+        }
 
         return (
-            // <SwipeOut
-            //     right={ SWIPEOUT_RIGHT }>
-                <View style={ styles.list }>
-                    <ListItem 
-                        title={ listItem.username }
-                        subtitle={ listItem.confirmed ? null : "hmm... not confirmed yet" }
-                        leftIcon={{ name: 'ios-person-outline', type: 'ionicon', style: { color: SCREEN_CONTACTS_COLOR } }}
-                        rightIcon={{ name: RIGHT_ICON, type: 'material', style: { color: RIGHT_ICON_COLOR } }}
-                        key={ listItem._id }
-                        onPress={ () => !listItem.confirmed && onPressItem(listItem._id, listItem.username) }/>
-                </View>
-            // </SwipeOut>
+            <ListItem containerStyle={[ styles.item, this.props.style ] }
+                title={ item.username }
+                subtitle={ SUBTITLE }
+                leftIcon={{ name: 'ios-person-outline', type: 'ionicon', style: { color: SCREEN_CONTACTS_COLOR } }}
+                rightIcon={{ name: RIGHT_ICON, type: 'ionicon', style: { color: RIGHT_ICON_COLOR } }}
+                key={ item._id }
+                onPress={ () => item.confirmed === false && onPressItem(item._id, item.username) }/>
         )
     }
 }
 
 const styles = StyleSheet.create({
-    list: { marginHorizontal: 10 },
+    item: { marginHorizontal: 10, justifyContent: 'center' }, 
 })

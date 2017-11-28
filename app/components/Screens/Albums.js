@@ -5,6 +5,7 @@ import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 import { MAIN_THEME_COLOR, SCREEN_ALBUMS_COLOR, SCREEN_ALBUMS_DARK_COLOR } from '../../constants'
 
 import FabNavigator from '../FabNavigator'
@@ -16,9 +17,8 @@ import { getMMSSFromMillis } from '../../helpers/Functions'
 import MusicApi from '../../api/MusicApi'
 const musicApi = new MusicApi()
 
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const THUMBNAIL_SIZE = 70
-const ALBUM_ROW_HEIGTH = THUMBNAIL_SIZE + 10 //17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
+const ALBUMS_ROW_HEIGTH = THUMBNAIL_SIZE + 10 //17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
 const TRACK_ROW_HEIGHT = 50
 const SCREEN = 'Albums'
 
@@ -111,7 +111,7 @@ export default class AlbumsScreen extends Component {
     }
 
     _renderAlbumsItem = (item, index) => (
-        <AlbumsListItem
+        <AlbumsListItem style={{ height: THUMBNAIL_SIZE }}
             listItem={ item }
             size={ THUMBNAIL_SIZE }
             onItemPressed={ this._handleOnAlbumItemPressed.bind(this) }
@@ -131,7 +131,7 @@ export default class AlbumsScreen extends Component {
                 <InfiniteList
                     getData={ musicApi.getAlbums }
                     renderItem={ this._renderAlbumsItem }
-                    rowHeight={ ALBUM_ROW_HEIGTH }
+                    rowHeight={ ALBUMS_ROW_HEIGTH }
                     searchHolder='Search for albums ...'
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />

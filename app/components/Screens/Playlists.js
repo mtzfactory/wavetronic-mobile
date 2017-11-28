@@ -5,18 +5,17 @@ import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 import { MAIN_THEME_COLOR, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR } from '../../constants'
 
 import FabNavigator from '../FabNavigator'
 import InfiniteList from '../InfiniteList'
 import PlaylistsListItem from './PlaylistsListItem'
-
 import { getMMSSFromMillis } from '../../helpers/Functions'
 
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const PLAYLISTS_ROW_HEIGTH = 63
 const TRACKS_ROW_HEIGHT = 63
 const SCREEN = 'Playlists'
@@ -65,6 +64,7 @@ export default class PlaylistsScreen extends Component {
                 .then(res => {
                     this.refs.newPlaylistModal.close()
                     this.setState({ newPlaylistName: null, newPlaylistDescription: null })
+                    this.playlists._handleRefresh()
                 })
                 .catch(error => { Alert.alert(error.message) })
     }
@@ -115,6 +115,7 @@ export default class PlaylistsScreen extends Component {
                     </TouchableHighlight>
                 </View>
                 <FlatList
+                    ref={ c => this.playlists = c }
                     data={ this.state.playlistTracks }
                     extraData={ this.state.currentTrackIndex }
                     renderItem={ ({item, index}) => this._renderPlaylistTracksItem(item, index) }
@@ -140,7 +141,7 @@ export default class PlaylistsScreen extends Component {
 
     _renderPlaylistsItem = (item, index) => (
         <PlaylistsListItem
-            listItem={ item }
+            item={ item }
             onItemPressed={ this._handleOnPlaylistsItemPressed.bind(this) }
         />
     )

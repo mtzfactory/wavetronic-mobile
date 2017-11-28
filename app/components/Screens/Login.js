@@ -4,12 +4,12 @@ import { View, TouchableOpacity, Text, TextInput, Image, ImageBackground, Activi
 import { Item, Input, Icon } from 'native-base'
 import { NavigationActions } from 'react-navigation'
 
-import TokenService from '../../services/TokenService'
-import UserApi from '../../api/UserApi'
-
-const userApi = new UserApi()
-
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
+
+import TokenService from '../../services/TokenService'
+
+import UserApi from '../../api/UserApi'
+const userApi = new UserApi()
 
 export default class LoginScreen extends Component {
     constructor () {

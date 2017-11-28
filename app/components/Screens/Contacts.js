@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, Dimensions, StatusBar, Easing, View, TouchableHighlight, TextInput, Alert } from 'react-native'
+import { StyleSheet, Platform, Dimensions, StatusBar, Easing, View, TouchableHighlight, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
+const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 import { MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR } from '../../constants'
 
 import FabNavigator from '../FabNavigator'
@@ -14,7 +15,6 @@ import ContactsListItem from './ContactsListItem'
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
-const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const CONTACTS_ROW_HEIGTH = 63
 const SCREEN = 'Contacts'
 
@@ -44,43 +44,68 @@ export default class ContactsScreen extends Component {
         this.state = { newContactName: null, friendId: null, friendName: null }
     }
 
-    _sendFriendship () {
-        this.setState({ friendId: null, friendName: null })
-        this.refs.sendFriendshipModal.close()
-        Alert.alert('Ups... Not implemented yet')
-    }
-
     _addContact () {
         const { newContactName } = this.state
 
         if (newContactName)
             userApi.addFriend(newContactName)
                 .then(res => {
-                    this.refs.newPlaylistModal.close()
+                    this.refs.newContactModal.close()
                     this.setState({ newContactName: null })
+                    this.contacts._handleRefresh()
                 })
                 .catch(error => { Alert.alert(error.message) })
-
     }
 
-    _removeFriend (friendId) {
-        userApi.removeFriend(friendId)
-            .then(
-                this.contacts._handleRefresh()
-            )
-            .catch(error => { Alert.alert(error.message) })
+    _handleOnRightSwipePressItem (item, index) {
+        let doSomething = null; let data = null
+        if (item.confirmed === undefined){
+            doSomething = userApi.addFriend
+            data = item.username
+        }
+        else {
+            doSomething = userApi.removeFriend
+            data = item._id
+        }
+
+        doSomething(data).then(
+            this.contacts._handleRefresh()
+        )
+        .catch(error => { Alert.alert(error.message) })
     }
 
-    _sendFriendship (friendId, friendName) {
+    _renderRightContactsItem = (item, index) => {
+        const ICON = item.confirmed === undefined ? 'ios-add' : 'ios-trash-outline'
+        return (
+            <TouchableOpacity style={{ height: CONTACTS_ROW_HEIGTH, width: CONTACTS_ROW_HEIGTH, }} onPress={ () => this._handleOnRightSwipePressItem(item, index) }>
+                <View style={{ backgroundColor: SCREEN_CONTACTS_COLOR + 'D0', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Icon name={ ICON } style={{ color: "#fff" }}/>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+
+    _sendFriendship () {
+        const { friendName } = this.state
+
+        if (friendName)
+            userApi.addFriend(friendName)
+                .then(res => {
+                    this.refs.sendFriendshipModal.close()
+                    this.setState({ friendId: null, friendName: null })
+                })
+                .catch(error => { Alert.alert(error.message) })
+    }
+
+    _handleOnPressItem (friendId, friendName) {
         this.setState({ friendId, friendName })
         this.refs.sendFriendshipModal.open()
     }
 
-    _rendeContactsItem = (item, index) => (
-        <ContactsListItem
-            listItem={ item }
-            onItemPressed={ this._sendFriendship.bind(this) }
-            onRemovePressed={ this._removeFriend.bind(this) }
+    _renderContactsItem = (item, index) => (
+        <ContactsListItem style={{ height: CONTACTS_ROW_HEIGTH }}
+            item={ item }
+            onPressItem={ this._handleOnPressItem.bind(this) }
         />
     )
 
@@ -103,9 +128,11 @@ export default class ContactsScreen extends Component {
                 <InfiniteList
                     ref={ c => this.contacts = c }
                     getData={ userApi.getFriends }
-                    renderItem={ this._rendeContactsItem }
+                    renderItem={ this._renderContactsItem }
+                    renderRight={ this._renderRightContactsItem }
                     rowHeight={ CONTACTS_ROW_HEIGTH }
                     searchHolder='Search for friends ...'
+                    enableSwipe={true}
                 />
                 <Modal ref={"newContactModal"}
                     style={ styles.modal }

@@ -10,23 +10,23 @@ export default class PureListItem extends React.PureComponent {
     }
 
     render () {
-        const { listItem, size } = this.props
+        const { listItem, size, style } = this.props
 
         return (
-            <View style={{ height: size, marginVertical: 5, marginHorizontal: 10, flex: 1, flexDirection: 'row', alignItems: 'center' }} >
+            <View style={{ height: style.height, marginVertical: 5, marginHorizontal: 10, flex: 1, flexDirection: 'row', alignItems: 'center' }} >
                 <TouchableWithoutFeedback onPress={ () => this._onPressItem(listItem.id, listItem.name) }>
-                    <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+                    <View style={{ height: "100%", flex: 1, flexDirection: 'row', justifyContent:"center", alignItems: 'center' }}>
                         <ImageBackground source={{ uri: listItem.image }} style={[ { width: size, height: size }, styles.background] }>
                             <View style={ styles.playButtonOverlay }>
                                 <Icon name="ios-play" style={{ color: "rgba(255, 255, 255, 0.7)", marginLeft: 4 }}/>
                             </View>
                         </ImageBackground>
-                        <View style={{ marginLeft: 10, paddingRight: 15, flex: 1, borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
+                        <View style={{ height: "100%", marginLeft: 10, paddingRight: 15, flex: 1, borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
                             <Text numberOfLines={ 1 } >{ listItem.name }</Text>
                             <Text numberOfLines={ 1 } note>{ listItem.artist_name }</Text>
                             <Text numberOfLines={ 1 } note>{ listItem.releasedate }</Text>
                         </View>
-                        <View style={{ borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
+                        <View style={{ height: "100%", justifyContent:"center", alignItems:"center", borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
                             <Icon name="ios-list-outline" style={ styles.actionButtonText }/>
                         </View>
                     </View>
@@ -51,8 +51,6 @@ const styles = StyleSheet.create({
     },
     actionButtonText: {
         marginRight: 10,
-        height: '100%',
-        textAlignVertical: 'center',
         color: SCREEN_ALBUMS_COLOR,
     }
 })

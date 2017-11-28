@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { StyleSheet, Alert, ActivityIndicator, View, Text, ImageBackground } from 'react-native'
 import { NavigationActions } from 'react-navigation'
 
+const BACKGROUND_IMAGE = require('../../assets/images/splash_screen_2.png')
 import { SPLASH_COLOR } from '../../constants'
 
 import TokenService from '../../services/TokenService'
-import UserApi from '../../api/UserApi'
 
-const BACKGROUND_IMAGE = require('../../assets/images/splash_screen_2.png')
+import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
 export default class SplashScreen extends Component {   

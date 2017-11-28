@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { StyleSheet, View, FlatList, ActivityIndicator, Text } from 'react-native'
+import { StyleSheet, Keyboard, View, FlatList, ActivityIndicator, Text } from 'react-native'
 import { List } from 'native-base'
 import { SearchBar } from 'react-native-elements'
 import uuidv4 from 'uuid/v4'
+
+import SwipeableListItem from './SwipeableListItem'
 
 export default class InfiniteList extends Component {
     constructor() {
@@ -19,6 +21,7 @@ export default class InfiniteList extends Component {
             searching: false
         }
 
+        _itemRef = undefined;
         this._requestData.bind(this)
     }
 
@@ -39,7 +42,7 @@ export default class InfiniteList extends Component {
                 this.results_count = res.headers.results_count
                 this.results_fullcount = res.headers.results_fullcount
 
-                console.log('_requestData', res.results.length)
+                //console.log('_requestData', res.results.length)
                 this.setState(prevState => {
                     return {
                         data: prevState.offset === 0 ? res.results : [ ...prevState.data, ...res.results ],
@@ -59,7 +62,7 @@ export default class InfiniteList extends Component {
 
     _handleLoadMore = () => {
         if (this.state.offset + this.results_count  < this.results_fullcount) {
-            console.log('_handleLoadMore')
+            //console.log('_handleLoadMore')
             this.setState(prevState => {
                 return {
                     offset: prevState.offset + this.results_count,
@@ -73,10 +76,10 @@ export default class InfiniteList extends Component {
     _handleRefresh = () => {
         this.setState(prevState => {
             return {
-                offset: 0,
-                refreshing: true
+                offset: 0, refreshing: true, search: null, searching: false,
             }
         }, () => {
+            this.searchBar.clearText()
             this._requestData()
         })
     }
@@ -92,15 +95,30 @@ export default class InfiniteList extends Component {
 
     _clearSearch = () => {
         this.setState({ offset: 0, search: null, searching: false }, () => {
+            Keyboard.dismiss()
             this._requestData()
         })
     }
 
+    _handleOpenChild = (ref) => {
+		this._itemRef && this._itemRef.close();
+		this._itemRef = ref;
+	}
+
+	_handleCloseChild = () => {
+		this._itemRef = undefined;
+	}
+
+	_handleScroll = () => {
+		this._itemRef && this._itemRef.close();
+	}
+
     _renderHeader = () => {
         return (
             <SearchBar
+                ref={ c => this.searchBar = c }
                 lightTheme round clearIcon
-                showLoadingIcon = { this.state.searching }
+                //showLoadingIcon = { this.state.searching }
                 onChangeText={ this._search }
                 onClearText={ this._clearSearch }
                 placeholder={ this.props.searchHolder } />
@@ -134,8 +152,23 @@ export default class InfiniteList extends Component {
             )
         }
 
-        console.log('_renderItem', index, item.name, this.state.data.length)
-        return this.props.renderItem(item, index)
+        //console.log('_renderItem', index, item.id || item._id, this.state.data.length)
+        const { enableSwipe, renderItem, renderLeft, renderRight, swipeBackgroundColor } = this.props
+
+        if (enableSwipe) {
+            return (
+                <SwipeableListItem
+                    item={ renderItem(item, index) }
+                    left={ renderLeft && renderLeft(item, index) }
+                    right={ renderRight && renderRight(item, index) }
+                    backgroundColor={ swipeBackgroundColor }
+                    onOpen={ this._handleOpenChild }
+                    onClose={ this._handleCloseChild }
+                />
+            )
+        }
+        else
+            return renderItem(item, index)
     }
 
     _getItemLayout = (data, index) => {
@@ -161,12 +194,13 @@ export default class InfiniteList extends Component {
                 renderItem={ this._renderItem }
                 keyExtractor={ this._keyExtractor }
                 getItemLayout={ this._getItemLayout }
-                ListHeaderComponent={ this._renderHeader }
+                ListHeaderComponent={ props.showSearchHeader && this._renderHeader }
                 ListFooterComponent={ this._renderFooter }
                 onRefresh={ this._handleRefresh }
                 refreshing={ this.state.refreshing }
                 onEndReached={ this._handleLoadMore }
                 onEndReachedThreshold={ 0.45 }
+                onScroll={ this._handleScroll }
                 numColumns={ props.columns }
                 removeClippedSubviews={ true }
                 initialNumToRender={ props.initialNumToRender }
@@ -181,6 +215,10 @@ export default class InfiniteList extends Component {
 }
 
 InfiniteList.propTypes = {
+    enableSwipe: PropTypes.bool,
+    renderLeft: PropTypes.func,
+    renderRight: PropTypes.func,
+    swipeBackgroundColor: PropTypes.string,
     listKey: PropTypes.oneOfType([ PropTypes.string, PropTypes.number ]),
     getData: PropTypes.func.isRequired,
     extraData: PropTypes.oneOfType([ PropTypes.string, PropTypes.number ]),
@@ -191,15 +229,20 @@ InfiniteList.propTypes = {
     initialNumToRender: PropTypes.number,
     maxToRenderPerBatch: PropTypes.number,
     windowSize: PropTypes.number,
+    showSearchHeader: PropTypes.bool,
     searchHolder: PropTypes.string.isRequired,
 }
 
 InfiniteList.defaultProps = {
+    enableSwipe: false,
+    swipeBackgroundColor: '#fff',
+
     listKey: uuidv4(),
     columns: 1,
     limit: 15,
     initialNumToRender: 10,
     maxToRenderPerBatch: 10,
     windowSize: 3,
+    showSearchHeader: true,
     searchHolder: 'Type here...',
 }
