@@ -375,8 +375,8 @@ const styles = StyleSheet.create({
     container: {
         backgroundColor: '#e1e8ee',
         overflow: 'hidden',
-        width: DEVICE_WIDTH,
-        maxWidth: DEVICE_WIDTH
+        width: '100%', //DEVICE_WIDTH,
+        maxWidth: '100%' //DEVICE_WIDTH
     },
     playlist: {
         flex: 1,
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     controls: {
         flex: 1,
         flexDirection: 'row',
-        maxWidth: DEVICE_WIDTH,
+        maxWidth: '100%' //DEVICE_WIDTH,
     },
     noRadius: {
         borderRadius: 0,
