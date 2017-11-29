@@ -293,7 +293,7 @@ export default class Player extends Component {
                 ?
                 <View style={ styles.opener }>
                     <TouchableHighlight underlayColor="#000F" style={ styles.openerButton } onPress={ () => this.setState({ isVisible: true }) }>
-                        <Icon name="ios-arrow-dropup" style={{ fontSize: 28, color: '#0008' }}/>
+                        <Icon name="ios-arrow-dropup" style={{ fontSize: 28, color: '#FFF8' }}/>
                     </TouchableHighlight>
                 </View>
                 :

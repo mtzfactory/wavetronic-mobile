@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, ImageBackground, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, View, ImageBackground, TouchableHighlight } from 'react-native'
 import { Text, Icon } from 'native-base'
 
 import { SCREEN_SONGS_COLOR } from '../../constants'
@@ -18,7 +18,7 @@ export default class TracksListItem extends React.PureComponent {
 
         return (
             <View style={{ height: style.height, marginVertical: 5, paddingHorizontal: 10, flex: 1, flexDirection: 'row', alignItems: 'center' }} >
-                <TouchableWithoutFeedback onPress={ () => this._onPressItem(index , item) }>
+                <TouchableHighlight underlayColor={ SCREEN_SONGS_COLOR + '10' } style={{ flex: 1 }} onPress={ () => this._onPressItem(index , item) }>
                     <View style={{ height: "100%", flex: 1, flexDirection: "row", justifyContent:"center", alignItems: "center" }}>
                         <ImageBackground source={{ uri: item.image }} style={[ { width: size, height: size }, styles.background] }>
                             <View style={ styles.playButtonOverlay }>
@@ -31,12 +31,12 @@ export default class TracksListItem extends React.PureComponent {
                             <Text numberOfLines={ 1 } note>{ item.artist_name }</Text>
                         </View>
                     </View>
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={ () => this._onRightPressItem(`${item.id}`) }>
+                </TouchableHighlight>
+                <TouchableHighlight underlayColor={ SCREEN_SONGS_COLOR + '10' } style={{ flex: -1 }} onPress={ () => this._onRightPressItem(`${item.id}`) }>
                     <View style={{ height: "100%", justifyContent:"center", alignItems:"center", borderBottomWidth: 1, borderBottomColor: "#c1c1c180" }}>
                         <Icon name="ios-paper-plane-outline" style={ styles.actionButtonText }/>
                     </View>
-                </TouchableWithoutFeedback>
+                </TouchableHighlight>
             </View>
         )
     }
@@ -56,7 +56,8 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(0, 0, 0, 0.4)"
     },
     actionButtonText: {
-        marginRight: 10,
+        //marginRight: 10,
+        paddingHorizontal: 10,
         color: SCREEN_SONGS_COLOR
     }
 })

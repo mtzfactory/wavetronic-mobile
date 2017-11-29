@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, View, ImageBackground, TouchableWithoutFeedback } from 'react-native'
+import { StyleSheet, View, ImageBackground, TouchableHighlight } from 'react-native'
 import { Text, Icon } from 'native-base'
 
 import { SCREEN_ALBUMS_COLOR } from '../../constants'
@@ -14,7 +14,7 @@ export default class PureListItem extends React.PureComponent {
 
         return (
             <View style={{ height: style.height, marginVertical: 5, marginHorizontal: 10, flex: 1, flexDirection: 'row', alignItems: 'center' }} >
-                <TouchableWithoutFeedback onPress={ () => this._onPressItem(listItem.id, listItem.name) }>
+                <TouchableHighlight underlayColor={ SCREEN_ALBUMS_COLOR + '10' } style={{ flex: 1 }} onPress={ () => this._onPressItem(listItem.id, listItem.name) }>
                     <View style={{ height: "100%", flex: 1, flexDirection: 'row', justifyContent:"center", alignItems: 'center' }}>
                         <ImageBackground source={{ uri: listItem.image }} style={[ { width: size, height: size }, styles.background] }>
                             <View style={ styles.playButtonOverlay }>
@@ -30,7 +30,7 @@ export default class PureListItem extends React.PureComponent {
                             <Icon name="ios-list-outline" style={ styles.actionButtonText }/>
                         </View>
                     </View>
-                </TouchableWithoutFeedback>
+                </TouchableHighlight>
             </View>
         )
     }
