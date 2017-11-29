@@ -25,7 +25,7 @@ export default class ContactsListItem extends React.PureComponent {
 
         return (
             <ListItem containerStyle={[ styles.item, this.props.style ] }
-                underlayColor={ SCREEN_ALBUMS_COLOR }
+                underlayColor={ SCREEN_CONTACTS_COLOR + '60' }
                 title={ item.username }
                 subtitle={ SUBTITLE }
                 leftIcon={{ name: 'ios-person-outline', type: 'ionicon', style: { color: SCREEN_CONTACTS_COLOR } }}

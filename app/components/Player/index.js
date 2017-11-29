@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Platform, Dimensions, StyleSheet, Easing, View, Animated, FlatList, TouchableHighlight, ActivityIndicator, Alert } from 'react-native'
+import { Platform, Dimensions, BackHandler, StyleSheet, Easing, View, Animated, FlatList, TouchableHighlight, ActivityIndicator, Alert } from 'react-native'
 import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import Video from 'react-native-video'
@@ -251,6 +251,12 @@ export default class Player extends Component {
 
     componentDidMount() {
         this.state.animation.setValue(PLAYER_HEIGHT)
+        BackHandler.addEventListener('hardwareBackPress', () => {
+            if (this.state.expanded) {
+                this._togglePlaylist()
+                return true
+            }
+        })
     }
 
     render () {

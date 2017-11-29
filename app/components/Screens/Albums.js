@@ -41,7 +41,7 @@ export default class AlbumsScreen extends Component {
             currentTrackIndex: -1
         }
     }
-
+// RENDER ALBUMS TRACKS
     _playAllTracksFromAlbum () {
         this.refs.albumTracksModal.close()
         this.setState({ currentTrackIndex: null })
@@ -65,6 +65,7 @@ export default class AlbumsScreen extends Component {
         const LEFT_ICON = this.state.currentTrackIndex === index ? 'ios-headset-outline' : 'ios-musical-notes-outline'
         
         return <ListItem
+            underlayColor={ SCREEN_ALBUMS_COLOR + '60' }
             title={ `${item.position} - ${item.name}` }
             leftIcon={{ name: LEFT_ICON, type: 'ionicon', style: { color: SCREEN_ALBUMS_COLOR } }}
             rightTitle={ getMMSSFromMillis(item.duration) }
@@ -96,7 +97,7 @@ export default class AlbumsScreen extends Component {
             </View>
         )
     }
-
+// RENDER ALBUMS
     _handleClosedAlbumTracksModal () {
         this.setState({ showAlbumTracksModal: false })
     }
@@ -117,7 +118,7 @@ export default class AlbumsScreen extends Component {
             onItemPressed={ this._handleOnAlbumItemPressed.bind(this) }
         />
     )
-
+// COMPONENT LIFE
     render () {
         const { navigate } = this.props.navigation
         const { orientation } = this.props.screenProps
