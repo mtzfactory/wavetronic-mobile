@@ -98,7 +98,7 @@ export default class Player extends Component {
     }
 
     _hideMe () {
-        if (!this.state.playing)
+        //if (!this.state.playing)
             this.state.animation.setValue(PLAYER_HEIGHT)
             setTimeout(() => {
                 this.setState({ expanded: false, isVisible: false })
@@ -260,95 +260,95 @@ export default class Player extends Component {
     }
 
     render () {
-        if(!this.state.showOpener) {
+        if (!this.state.showOpener) {
             return null
         }
 
-        if (!this.state.isVisible && !this.state.playing) {
-            return (
-                <View style={ styles.opener }>
-                    <TouchableHighlight underlayColor="#F1F1F1" onPress={ () => this.setState({ isVisible: true }) }>
-                        <Icon name="ios-arrow-dropup"/>
-                    </TouchableHighlight>
-                </View>
-            )
-        }
-
         let songPercentage = 0
-        if( this.state.songDuration !== undefined && this.state.songDuration !== 0 ){
+        if (this.state.songDuration !== undefined && this.state.songDuration !== 0) {
             songPercentage = this.state.currentTime / this.state.songDuration
         }
 
         const EN_BACKWARD = !this.state.shuffle || this.state.currentHistoryIndex !== 0
         const EN_FOREWARD = !this.state.shuffle || this.state.currentHistoryIndex < this.state.trackHistory.length
         const MUTE_ICON = this.state.muted ? 'ios-volume-off' : 'ios-volume-up'
-        const EN_SHOW_PLAYER = this.state.playing
-        const EN_SHOW_PLAYLIST = !this.state.expanded && this.state.track.name === undefined //(this.state.loading || this.state.track.name === undefined)
+        const EN_SHOW_PLAYLIST = !this.state.expanded && this.state.track.name === undefined
 
         return (
-            <Animated.View style={[ styles.container, { height: this.state.animation } ]}>
-                <View style={ styles.playlist }>
-                    { this.state.expanded && this._renderTrackHistory() }
+            <View>
+                <Video source={{ uri: this.state.track.audio }}
+                    ref="audio"
+                    volume={ this.state.muted ? 0 : 1.0 }
+                    muted={ false }
+                    paused={ !this.state.playing }
+                    onLoad={ this._onLoad.bind(this) }
+                    onProgress={ this._onProgress.bind(this) }
+                    onEnd={ this._onEnd.bind(this) }
+                    playInBackground={ true }
+                    playWhenInactive={ true }
+                    resizeMode="cover"
+                    repeat={ false }
+                />
+                { (!this.state.isVisible)
+                ?
+                <View style={ styles.opener }>
+                    <TouchableHighlight underlayColor="#000F" onPress={ () => this.setState({ isVisible: true }) }>
+                        <Icon name="ios-arrow-dropup" style={{ fontSize: 28 }}/>
+                    </TouchableHighlight>
                 </View>
-                <Modal ref={"modalWindow"} 
-                    style={ styles.modal }
-                    position={"bottom"} easing={Easing.ease}
-                    backButtonClose={true}>
-                    { this.state.expanded && this._renderPlaylists() }
-                </Modal>
-                <View style={ styles.player }>
-                    <Video source={{ uri: this.state.track.audio }}
-                        ref="audio"
-                        volume={ this.state.muted ? 0 : 1.0 }
-                        muted={ false }
-                        paused={ !this.state.playing }
-                        onLoad={ this._onLoad.bind(this) }
-                        onProgress={ this._onProgress.bind(this) }
-                        onEnd={ this._onEnd.bind(this) }
-                        playInBackground={ true }
-                        playWhenInactive={ true }
-                        resizeMode="cover"
-                        repeat={ false }
-                    />
-                    <View style={ styles.controls }>
-                        <Button transparent style={ styles.noRadius } disabled={ EN_BACKWARD } onPress={ this._goBackward.bind(this) }>
-                            <Icon name="ios-arrow-back" />
-                        </Button>
-                        <Button transparent style={ styles.noRadius } disabled={ this.state.track.name === undefined } onPress={ this._togglePlayer.bind(this) }>
-                            { this.state.loading
-                                ? <ActivityIndicator size={'small'} style={{ width: 44 }}/>
-                                : <Icon style={ styles.play } name={ this.state.playing ? 'ios-pause' : 'ios-play' } />
-                            }
-                        </Button>
-                        <Button transparent style={ styles.noRadius } disabled={ EN_FOREWARD } onPress={ this._goForward.bind(this) }>
-                            <Icon name="ios-arrow-forward" />
-                        </Button>
-                        <View style={ styles.sliderContainer }>
-                            <Text style={[ styles.track, styles.remaining ]}>{ getMMSSFromMillis(this.state.songDuration) }</Text>
-                            <Slider
-                                onSlidingStart={ this._onSlidingStart.bind(this) }
-                                onSlidingComplete={ this._onSlidingComplete.bind(this) }
-                                onValueChange={ this._onSlidingChange.bind(this) }
-                                minimumTrackTintColor="#851c44"
-                                style={ styles.slider }
-                                trackStyle={ styles.sliderTrack }
-                                thumbStyle={ styles.sliderThumb }
-                                value={ songPercentage || 0 }
-                            />
-                            <Text style={[ styles.track, styles.title ]} numberOfLines={1}>{ this.state.track.name }</Text>
-                        </View>
-                        <Button transparent style={ styles.noRadius } onPress={ this._toggleVolume.bind(this) }>
-                            <Icon name={ MUTE_ICON } />
-                        </Button>
-                        <Button transparent style={ styles.noRadius } disabled={ EN_SHOW_PLAYER } onPress={ this._hideMe.bind(this) }>
-                            <Icon name="ios-eye-off"/>
-                        </Button>
-                        <Button transparent style={ styles.noRadius } disabled={ EN_SHOW_PLAYLIST } onPress={ this._togglePlaylist.bind(this) }>
-                            <Icon name={ this.state.expanded ? 'ios-arrow-down' : 'ios-arrow-up' } />
-                        </Button>
+                :
+                <Animated.View style={[ styles.container, { height: this.state.animation } ]}>
+                    <View style={ styles.playlist }>
+                        { this.state.expanded && this._renderTrackHistory() }
                     </View>
-                </View>
-            </Animated.View>
+                    <Modal ref={"modalWindow"} 
+                        style={ styles.modal }
+                        position={"bottom"} easing={Easing.ease}
+                        backButtonClose={true}>
+                        { this.state.expanded && this._renderPlaylists() }
+                    </Modal>
+                    <View style={ styles.player }>
+                        <View style={ styles.controls }>
+                            <Button transparent style={ styles.noRadius } disabled={ EN_BACKWARD } onPress={ this._goBackward.bind(this) }>
+                                <Icon name="ios-arrow-back" />
+                            </Button>
+                            <Button transparent style={ styles.noRadius } disabled={ this.state.track.name === undefined } onPress={ this._togglePlayer.bind(this) }>
+                                { this.state.loading
+                                    ? <ActivityIndicator size={'small'} style={{ width: 44 }}/>
+                                    : <Icon style={ styles.play } name={ this.state.playing ? 'ios-pause' : 'ios-play' } />
+                                }
+                            </Button>
+                            <Button transparent style={ styles.noRadius } disabled={ EN_FOREWARD } onPress={ this._goForward.bind(this) }>
+                                <Icon name="ios-arrow-forward" />
+                            </Button>
+                            <View style={ styles.sliderContainer }>
+                                <Text style={[ styles.track, styles.remaining ]}>{ getMMSSFromMillis(this.state.songDuration) }</Text>
+                                <Slider
+                                    onSlidingStart={ this._onSlidingStart.bind(this) }
+                                    onSlidingComplete={ this._onSlidingComplete.bind(this) }
+                                    onValueChange={ this._onSlidingChange.bind(this) }
+                                    minimumTrackTintColor="#851c44"
+                                    style={ styles.slider }
+                                    trackStyle={ styles.sliderTrack }
+                                    thumbStyle={ styles.sliderThumb }
+                                    value={ songPercentage || 0 }
+                                />
+                                <Text style={[ styles.track, styles.title ]} numberOfLines={1}>{ this.state.track.name }</Text>
+                            </View>
+                            <Button transparent style={ styles.noRadius } onPress={ this._toggleVolume.bind(this) }>
+                                <Icon name={ MUTE_ICON } />
+                            </Button>
+                            <Button transparent style={ styles.noRadius } onPress={ this._hideMe.bind(this) }>
+                                <Icon name="ios-eye-off"/>
+                            </Button>
+                            <Button transparent style={ styles.noRadius } disabled={ EN_SHOW_PLAYLIST } onPress={ this._togglePlaylist.bind(this) }>
+                                <Icon name={ this.state.expanded ? 'ios-arrow-down' : 'ios-arrow-up' } />
+                            </Button>
+                        </View>
+                    </View>
+                </Animated.View>
+                }
+            </View>
         )
     }
 }
