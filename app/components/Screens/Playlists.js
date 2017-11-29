@@ -11,13 +11,13 @@ import { API_PAGE_LIMIT, MAIN_THEME_COLOR, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLI
 import FabNavigator from '../FabNavigator'
 import InfiniteList from '../InfiniteList'
 import PlaylistsListItem from './PlaylistsListItem'
+import PlaylistsTracksList from './PlaylistsTracksList'
 import { getMMSSFromMillis } from '../../helpers/Functions'
 
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
 
 const PLAYLISTS_ROW_HEIGTH = 63
-const TRACKS_ROW_HEIGHT = 63
 const SCREEN = 'Playlists'
 
 export default class PlaylistsScreen extends Component {
@@ -49,12 +49,10 @@ export default class PlaylistsScreen extends Component {
             showPlaylistTracksModal: false,
             playlistId: null,
             playlistName: null,
-            playlistTracks: [],
-            currentTrackIndex: -1
         }
     }
 // NEW PLAYLIST MODAL
-    _addPlaylist () {
+    _addPlaylist = () => {
         const { newPlaylistName, newPlaylistDescription } = this.state
 
         if (newPlaylistName && newPlaylistDescription)
@@ -67,65 +65,16 @@ export default class PlaylistsScreen extends Component {
                 .catch(error => { Alert.alert(error.message) })
     }
 // PLAYLISTS TRACKS MODAL
-    _handleClosedPlaylistTracksModal () {
+    _closePlaylistTracksModal = () => {
+        this.refs.playlistTracksModal.close()
+    }
+
+    _handleClosedPlaylistTracksModal = () => {
         this.setState({ showPlaylistTracksModal: false })
     }
 
-    _playAllTracksFromPlaylist () {
-        this.refs.playlistTracksModal.close()
-        this.setState({ currentTrackIndex: null })
-        Alert.alert('play all')
-    }
-
-    _playTrackFromPlaylist (index) {
-        this.setState({ currentTrackIndex: index })
-        this.props.screenProps.handlePlaySong(this.state.playlistTracks[index])
-    }
-
-    _getPlaylistTracksItemLayout = (data, index) => {
-        return {
-            offset: TRACKS_ROW_HEIGHT * index,
-            length: TRACKS_ROW_HEIGHT,
-            index
-        }
-    }
-
-    _renderPlaylistTracksItem (item, index) {
-        const LEFT_ICON = this.state.currentTrackIndex === index ? 'ios-headset-outline' : 'ios-musical-notes-outline'
-        
-        return <ListItem
-            title={ item.name }
-            subtitle={ `${item.album_name}, ${item.artist_name}` }
-            leftIcon={{ name: LEFT_ICON, type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR } }}
-            rightTitle={ getMMSSFromMillis(item.duration) }
-            rightIcon={{ name: 'ios-play-outline', type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR, marginLeft: 15 } }}
-            //onPressRightIcon={ () => this._selectPlaylistToAddTrack(index) }
-            key={ item.id }
-            onPress={ () => this._playTrackFromPlaylist(index) }/>
-    }
-
-    _renderPlaylistTracks () {
-        return (
-            <View style={{ flex: 1, padding: 10, backgroundColor: SCREEN_PLAYLISTS_COLOR + '40' }}>
-                <View style={ styles.headerModal }>
-                    <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ this._playAllTracksFromPlaylist.bind(this) }>
-                        <Text style={ styles.textHeader }>Play all</Text>
-                    </TouchableHighlight>
-                    <Text numberOfLines={ 1 } style={ styles.textPlaylist }>{ this.state.playlistName.toUpperCase() }</Text>
-                    <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.playlistTracksModal.close() }>
-                        <Text style={ styles.textHeader }>Close</Text>
-                    </TouchableHighlight>
-                </View>
-                <FlatList
-                    ref={ c => this.playlistTracksRef = c }
-                    data={ this.state.playlistTracks }
-                    extraData={ this.state.currentTrackIndex }
-                    renderItem={ ({item, index}) => this._renderPlaylistTracksItem(item, index) }
-                    getItemLayout={ this._getPlaylistTracksItemLayout }
-                    keyExtractor={ (item, index) => item.id }
-                />
-            </View>
-        )
+    _playTrackFromPlaylist = (track) => {
+        this.props.screenProps.handlePlaySong(track)
     }
 // SWIPE RIGHT
     _handleOnPlaylistsItemRightSwipe = (item, index) => {
@@ -146,19 +95,15 @@ export default class PlaylistsScreen extends Component {
         )
     }
 // RENDER PLAYLISTS
-    _handleOnPlaylistsItemPressed (playlistId, playlistName) {
-        userApi.getTracksFromPlaylist(playlistId)
-            .then(res => {
-                this.setState({ showPlaylistTracksModal: true, playlistId, playlistName, currentTrackIndex: -1, playlistTracks: res.results })
-                this.refs.playlistTracksModal.open()
-            })
-            .catch(error => { Alert.alert(error.message) })
+    _handleOnPlaylistsItemPressed = (playlistId, playlistName) => {
+        this.setState({ showPlaylistTracksModal: true, playlistId, playlistName })
+        this.refs.playlistTracksModal.open()
     }
 
     _renderPlaylistsItem = (item, index) => (
         <PlaylistsListItem style={{ height: PLAYLISTS_ROW_HEIGTH }}
             item={ item }
-            onItemPressed={ this._handleOnPlaylistsItemPressed.bind(this) }
+            onItemPressed={ this._handleOnPlaylistsItemPressed }
         />
     )
 // COMPONENT LIFE
@@ -185,21 +130,27 @@ export default class PlaylistsScreen extends Component {
                     renderItem={ this._renderPlaylistsItem }
                     rowHeight={ PLAYLISTS_ROW_HEIGTH }
                     searchHolder='Search for playlists ...'
-                    enableSwipe={true}
+                    enableSwipe={ true }
                     renderRight={ this._renderRightSwipePlaylistsItem }
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
                 <Modal ref={"playlistTracksModal"}
                     style={ styles.modal }
                     position={"top"} entry={"top"} easing={Easing.ease}
-                    backButtonClose={true}
-                    onClosed={ this._handleClosedPlaylistTracksModal.bind(this) }>
-                    { showPlaylistTracksModal && this._renderPlaylistTracks() }
+                    backButtonClose={ true }
+                    onClosed={ this._handleClosedPlaylistTracksModal }>
+                    { showPlaylistTracksModal && 
+                        <PlaylistsTracksList
+                            playlistId={ this.state.playlistId }
+                            playlistName={ this.state.playlistName }
+                            playTrack={ this._playTrackFromPlaylist }
+                            onClose={ this._closePlaylistTracksModal }/>
+                    }
                 </Modal>
                 <Modal ref={"newPlaylistModal"}
                     style={ styles.modal }
                     position={"center"} entry={"top"} easing={Easing.ease}
-                    backButtonClose={true}>
+                    backButtonClose={ true }>
                     <View style={ styles.formModal }>
                         <View style={ styles.headerModal }>
                             <Text style={ styles.titleHeader }>NEW PLAYLIST</Text>
@@ -223,7 +174,7 @@ export default class PlaylistsScreen extends Component {
                             placeholder="description"
                             onChangeText={ newPlaylistDescription => this.setState({ newPlaylistDescription }) }
                         />
-                        <Button block style={[ styles.submit, BUTTON_COLOR ]} disabled={ BUTTON_DISABLED } onPress={ this._addPlaylist.bind(this) }>
+                        <Button block style={[ styles.submit, BUTTON_COLOR ]} disabled={ BUTTON_DISABLED } onPress={ this._addPlaylist }>
                             <Text>Add</Text>
                         </Button>
                     </View>

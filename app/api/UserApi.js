@@ -83,8 +83,12 @@ class UserApi {
         return this.fetcher.putWithAuth(`${API_URL_PLAYLISTS}/${playlist}/track/${track}`)
     }
 // api/v1/user/playlists/:id
-    getTracksFromPlaylist = (playlistId) => {
+    getTracksFromPlaylist = (offset, limit, query, playlistId) => {
         return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}/${playlistId}`)
+    }
+// api/v1/user/playlists/:id/track/:id
+    removeTrackFromPlaylist = (playlistId, trackId) => {
+        return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}/${playlistId}/track/${trackId}`)
     }
 }
 

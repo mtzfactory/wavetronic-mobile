@@ -13,7 +13,7 @@ export default class PlaylistsListItem extends React.PureComponent {
         const { item } = this.props
 
         return (
-            <ListItem  containerStyle={[ styles.item, this.props.style ] }
+            <ListItem containerStyle={[ styles.item, this.props.style ] }
                 disabled={ item.amount === 0 }
                 title={ item.name.toUpperCase() }
                 subtitle={ item.description }

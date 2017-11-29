@@ -37,7 +37,7 @@ export default class InfiniteList extends Component {
         
         await this.setState({ loading: true })
 
-        this.props.getData(this.state.offset, this.props.limit, this.state.search)
+        this.props.getData(this.state.offset, this.props.limit, this.state.search, this.props.filterBy)
             .then( res => {
                 this.results_count = res.headers.results_count
                 this.results_fullcount = res.headers.results_fullcount
@@ -79,7 +79,7 @@ export default class InfiniteList extends Component {
                 offset: 0, refreshing: true, search: null, searching: false,
             }
         }, () => {
-            this.searchBar.clearText()
+            if (this.props.showSearchHeader) this.searchBar.clearText()
             this._requestData()
         })
     }
@@ -172,7 +172,7 @@ export default class InfiniteList extends Component {
     }
 
     _getItemLayout = (data, index) => {
-        const SEARCH_HEADER_HEIGHT = 50
+        const SEARCH_HEADER_HEIGHT = this.props.showSearchHeader ? 50 : 0
         const { rowHeight } = this.props
 
         return {
@@ -236,7 +236,6 @@ InfiniteList.propTypes = {
 InfiniteList.defaultProps = {
     enableSwipe: false,
     swipeBackgroundColor: '#fff',
-
     listKey: uuidv4(),
     columns: 1,
     limit: 25,
