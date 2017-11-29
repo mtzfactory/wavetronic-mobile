@@ -6,7 +6,7 @@ import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
-import { MAIN_THEME_COLOR, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR } from '../../constants'
+import { API_PAGE_LIMIT, MAIN_THEME_COLOR, SCREEN_PLAYLISTS_COLOR, SCREEN_PLAYLISTS_DARK_COLOR } from '../../constants'
 
 import FabNavigator from '../FabNavigator'
 import InfiniteList from '../InfiniteList'
@@ -164,6 +164,7 @@ export default class PlaylistsScreen extends Component {
                 }
                 <InfiniteList
                     getData={ userApi.getPlaylists }
+                    limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderPlaylistsItem }
                     rowHeight={ PLAYLISTS_ROW_HEIGTH }
                     searchHolder='Search for playlists ...'

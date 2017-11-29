@@ -27,7 +27,7 @@ export const API_URL_PROFILE = `${API_URL_BASE}/user`
 export const API_URL_PLAYLISTS = `${API_URL_BASE}/user/playlists`
 export const API_URL_FRIENDS = `${API_URL_BASE}/user/friends`
 
-export const API_PAGE_LIMIT = 15
+export const API_PAGE_LIMIT = 50
 
 // APP
 export const STATUSBAR_HEIGHT = 24

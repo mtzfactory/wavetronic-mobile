@@ -6,7 +6,7 @@ import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
-import { MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR } from '../../constants'
+import { API_PAGE_LIMIT, MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR } from '../../constants'
 
 import FabNavigator from '../FabNavigator'
 import InfiniteList from '../InfiniteList'
@@ -128,6 +128,7 @@ export default class ContactsScreen extends Component {
                 <InfiniteList
                     ref={ c => this.contacts = c }
                     getData={ userApi.getFriends }
+                    limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderContactsItem }
                     renderRight={ this._renderRightContactsItem }
                     rowHeight={ CONTACTS_ROW_HEIGTH }

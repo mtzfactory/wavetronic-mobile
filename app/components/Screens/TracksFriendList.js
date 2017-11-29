@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Alert, View } from 'react-native'
 import { ListItem } from 'react-native-elements'
 
-import { SCREEN_SONGS_COLOR } from '../../constants'
+import { API_PAGE_LIMIT, SCREEN_SONGS_COLOR } from '../../constants'
 
 import InfiniteList from '../InfiniteList'
 
@@ -32,7 +32,8 @@ export default class TracksFriendList extends Component {
     render () {
         return (
             <InfiniteList
-                getData={ userApi.getFriends }
+                getData={ userApi.getConfirmedFriends }
+                limit={ API_PAGE_LIMIT }
                 renderItem={ this._renderFriendItem }
                 rowHeight={ FRIENDS_ROW_HEIGTH }
                 searchHolder='Search for friends ...'

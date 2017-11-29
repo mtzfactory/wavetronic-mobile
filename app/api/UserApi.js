@@ -43,6 +43,10 @@ class UserApi {
         const search = query !== undefined && query !== null ? `&name=${query}`: ''
         return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}${search}`)
     }
+    getConfirmedFriends = (offset, limit, query) => {
+        const search = query !== undefined && query !== null ? `&name=${query}`: ''
+        return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}${search}&only_confirmed=1&only_friends=1`)
+    }
     addFriend = (name) => {
         return this.fetcher.postWithAuth(API_URL_FRIENDS, { name })
     }
