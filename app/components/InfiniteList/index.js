@@ -199,7 +199,7 @@ export default class InfiniteList extends Component {
                 onRefresh={ this._handleRefresh }
                 refreshing={ this.state.refreshing }
                 onEndReached={ this._handleLoadMore }
-                onEndReachedThreshold={ 0.45 }
+                onEndReachedThreshold={ 0.70 }
                 onScroll={ this._handleScroll }
                 numColumns={ props.columns }
                 removeClippedSubviews={ true }
@@ -239,10 +239,10 @@ InfiniteList.defaultProps = {
 
     listKey: uuidv4(),
     columns: 1,
-    limit: 15,
-    initialNumToRender: 10,
-    maxToRenderPerBatch: 10,
-    windowSize: 3,
+    limit: 25,
+    initialNumToRender: 25,
+    maxToRenderPerBatch: 25,
+    windowSize: 15,
     showSearchHeader: true,
     searchHolder: 'Type here...',
 }

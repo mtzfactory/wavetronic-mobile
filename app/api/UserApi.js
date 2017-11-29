@@ -35,6 +35,7 @@ class UserApi {
     getProfile = () => {
         return this.fetcher.getWithAuth(`${API_URL_PROFILE}`)
     }
+
     updatePushNotificationToken = (pnToken) => {
         return this.fetcher.putWithAuth(`${API_URL_PROFILE}`, { pnToken })
     }
@@ -43,10 +44,12 @@ class UserApi {
         const search = query !== undefined && query !== null ? `&name=${query}`: ''
         return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}${search}`)
     }
+
     getConfirmedFriends = (offset, limit, query) => {
         const search = query !== undefined && query !== null ? `&name=${query}`: ''
         return this.fetcher.getWithAuth(`${API_URL_FRIENDS}?offset=${offset}&limit=${limit}${search}&only_confirmed=1&only_friends=1`)
     }
+
     addFriend = (name) => {
         return this.fetcher.postWithAuth(API_URL_FRIENDS, { name })
     }
@@ -54,6 +57,7 @@ class UserApi {
     updateFriendship = (friendId) => {
         return this.fetcher.putWithAuth(`${API_URL_FRIENDS}/${friendId}`, {})
     }
+
     removeFriend = (friendId) => {
         return this.fetcher.delWithAuth(`${API_URL_FRIENDS}/${friendId}`)
     }
@@ -69,6 +73,10 @@ class UserApi {
 
     addPlaylist = (name, description) => {
         return this.fetcher.postWithAuth(`${API_URL_PLAYLISTS}`, { name, description })
+    }
+
+    removePlaylist = (playlistId) => {
+        return this.fetcher.delWithAuth(`${API_URL_PLAYLISTS}/${playlistId}`)
     }
 
     addTrackToPlaylist = (playlist, track) => {

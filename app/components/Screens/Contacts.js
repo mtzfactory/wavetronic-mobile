@@ -25,7 +25,7 @@ export default class ContactsScreen extends Component {
             headerLeft: null,
             headerRight: (
                 <TouchableHighlight 
-                    underlayColor="rgba(255,255,255,0.3)"
+                    underlayColor="rgba(255,255,255,0.4)"
                     style={ styles.rightHeaderButton}
                     onPress={ () => 
                         navigation.state.params.handleRightButtonPressed()
@@ -43,7 +43,7 @@ export default class ContactsScreen extends Component {
 
         this.state = { newContactName: null, friendId: null, friendName: null }
     }
-
+// NEW CONTACT MODAL
     _addContact () {
         const { newContactName } = this.state
 
@@ -52,12 +52,12 @@ export default class ContactsScreen extends Component {
                 .then(res => {
                     this.refs.newContactModal.close()
                     this.setState({ newContactName: null })
-                    this.contacts._handleRefresh()
+                    this.contactsRef._handleRefresh()
                 })
                 .catch(error => { Alert.alert(error.message) })
     }
-
-    _handleOnRightSwipePressItem (item, index) {
+// SWIPE RIGHT
+    _handleOnContactsItemRightSwipe (item, index) {
         let doSomething = null; let data = null
         if (item.confirmed === undefined){
             doSomething = userApi.addFriend
@@ -69,22 +69,22 @@ export default class ContactsScreen extends Component {
         }
 
         doSomething(data).then(
-            this.contacts._handleRefresh()
+            this.contactsRef._handleRefresh()
         )
         .catch(error => { Alert.alert(error.message) })
     }
 
-    _renderRightContactsItem = (item, index) => {
+    _renderRightSwipeContactsItem = (item, index) => {
         const ICON = item.confirmed === undefined ? 'ios-add' : 'ios-trash-outline'
         return (
-            <TouchableOpacity style={{ height: CONTACTS_ROW_HEIGTH, width: CONTACTS_ROW_HEIGTH, }} onPress={ () => this._handleOnRightSwipePressItem(item, index) }>
+            <TouchableOpacity style={{ height: CONTACTS_ROW_HEIGTH, width: CONTACTS_ROW_HEIGTH, }} onPress={ () => this._handleOnContactsItemRightSwipe(item, index) }>
                 <View style={{ backgroundColor: SCREEN_CONTACTS_COLOR + 'D0', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                     <Icon name={ ICON } style={{ color: "#fff" }}/>
                 </View>
             </TouchableOpacity>
         )
     }
-
+// RENDER CONTACTS ITEM
     _sendFriendship () {
         const { friendName } = this.state
 
@@ -97,7 +97,7 @@ export default class ContactsScreen extends Component {
                 .catch(error => { Alert.alert(error.message) })
     }
 
-    _handleOnPressItem (friendId, friendName) {
+    _handleOnContactsItemPressed (friendId, friendName) {
         this.setState({ friendId, friendName })
         this.refs.sendFriendshipModal.open()
     }
@@ -105,10 +105,10 @@ export default class ContactsScreen extends Component {
     _renderContactsItem = (item, index) => (
         <ContactsListItem style={{ height: CONTACTS_ROW_HEIGTH }}
             item={ item }
-            onPressItem={ this._handleOnPressItem.bind(this) }
+            onPressItem={ this._handleOnContactsItemPressed.bind(this) }
         />
     )
-
+// COMPONENT LIFE
     componentDidMount () {
         this.props.navigation.setParams({ handleRightButtonPressed: this.refs.newContactModal.open })
     }
@@ -126,14 +126,14 @@ export default class ContactsScreen extends Component {
                     Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_CONTACTS_DARK_COLOR } />
                 }
                 <InfiniteList
-                    ref={ c => this.contacts = c }
+                    ref={ c => this.contactsRef = c }
                     getData={ userApi.getFriends }
                     limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderContactsItem }
-                    renderRight={ this._renderRightContactsItem }
                     rowHeight={ CONTACTS_ROW_HEIGTH }
                     searchHolder='Search for friends ...'
                     enableSwipe={true}
+                    renderRight={ this._renderRightSwipeContactsItem }
                 />
                 <Modal ref={"newContactModal"}
                     style={ styles.modal }

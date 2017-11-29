@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { StyleSheet, Platform, Keyboard, Dimensions, StatusBar, Easing, View, FlatList, TouchableHighlight, TextInput, Alert } from 'react-native'
+import { StyleSheet, Platform, Dimensions, StatusBar, Easing, View, FlatList, TouchableHighlight, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
 import ActionButton from 'react-native-action-button'
@@ -27,7 +27,7 @@ export default class PlaylistsScreen extends Component {
             headerLeft: null,
             headerRight: (
                     <TouchableHighlight 
-                        underlayColor="rgba(255,255,255,0.3)"
+                        underlayColor="rgba(255,255,255,0.4)"
                         style={ styles.rightHeaderButton }
                         onPress={ () => 
                             navigation.state.params.handleRightButtonPressed()
@@ -53,20 +53,22 @@ export default class PlaylistsScreen extends Component {
             currentTrackIndex: -1
         }
     }
-
+// NEW PLAYLIST MODAL
     _addPlaylist () {
         const { newPlaylistName, newPlaylistDescription } = this.state
-
-        Keyboard.dismiss()
 
         if (newPlaylistName && newPlaylistDescription)
             userApi.addPlaylist(newPlaylistName, newPlaylistDescription)
                 .then(res => {
                     this.refs.newPlaylistModal.close()
                     this.setState({ newPlaylistName: null, newPlaylistDescription: null })
-                    this.playlists._handleRefresh()
+                    this.playlistsRef._handleRefresh()
                 })
                 .catch(error => { Alert.alert(error.message) })
+    }
+// PLAYLISTS TRACKS MODAL
+    _handleClosedPlaylistTracksModal () {
+        this.setState({ showPlaylistTracksModal: false })
     }
 
     _playAllTracksFromPlaylist () {
@@ -115,7 +117,7 @@ export default class PlaylistsScreen extends Component {
                     </TouchableHighlight>
                 </View>
                 <FlatList
-                    ref={ c => this.playlists = c }
+                    ref={ c => this.playlistTracksRef = c }
                     data={ this.state.playlistTracks }
                     extraData={ this.state.currentTrackIndex }
                     renderItem={ ({item, index}) => this._renderPlaylistTracksItem(item, index) }
@@ -125,11 +127,25 @@ export default class PlaylistsScreen extends Component {
             </View>
         )
     }
-
-    _handleClosedPlaylistTracksModal () {
-        this.setState({ showPlaylistTracksModal: false })
+// SWIPE RIGHT
+    _handleOnPlaylistsItemRightSwipe = (item, index) => {
+        userApi.removePlaylist(item._id)
+            .then(
+                this.playlistsRef._handleRefresh()
+            )
+            .catch(error => { Alert.alert(error.message) })
     }
 
+    _renderRightSwipePlaylistsItem = (item, index) => {
+        return (
+            <TouchableOpacity style={{ height: PLAYLISTS_ROW_HEIGTH, width: PLAYLISTS_ROW_HEIGTH, }} onPress={ () => this._handleOnPlaylistsItemRightSwipe(item, index) }>
+                <View style={{ backgroundColor: SCREEN_PLAYLISTS_COLOR + 'D0', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                    <Icon name="ios-trash-outline" style={{ color: "#fff" }}/>
+                </View>
+            </TouchableOpacity>
+        )
+    }
+// RENDER PLAYLISTS
     _handleOnPlaylistsItemPressed (playlistId, playlistName) {
         userApi.getTracksFromPlaylist(playlistId)
             .then(res => {
@@ -140,12 +156,12 @@ export default class PlaylistsScreen extends Component {
     }
 
     _renderPlaylistsItem = (item, index) => (
-        <PlaylistsListItem
+        <PlaylistsListItem style={{ height: PLAYLISTS_ROW_HEIGTH }}
             item={ item }
             onItemPressed={ this._handleOnPlaylistsItemPressed.bind(this) }
         />
     )
-
+// COMPONENT LIFE
     componentDidMount () {
         this.props.navigation.setParams({ handleRightButtonPressed: this.refs.newPlaylistModal.open })
     }
@@ -163,11 +179,14 @@ export default class PlaylistsScreen extends Component {
                     Platform.OS === 'android' && <StatusBar barStyle="light-content" backgroundColor={ SCREEN_PLAYLISTS_DARK_COLOR } />
                 }
                 <InfiniteList
+                    ref={ c => this.playlistsRef = c }
                     getData={ userApi.getPlaylists }
                     limit={ API_PAGE_LIMIT }
                     renderItem={ this._renderPlaylistsItem }
                     rowHeight={ PLAYLISTS_ROW_HEIGTH }
                     searchHolder='Search for playlists ...'
+                    enableSwipe={true}
+                    renderRight={ this._renderRightSwipePlaylistsItem }
                 />
                 <FabNavigator current={ SCREEN } navigate={ navigate } />
                 <Modal ref={"playlistTracksModal"}
@@ -200,9 +219,9 @@ export default class PlaylistsScreen extends Component {
                         <TextInput style={ styles.inputForm }
                             ref={ c => this.description = c}
                             autoCapitalize="sentences"
+                            blurOnSubmit={ true }
                             placeholder="description"
                             onChangeText={ newPlaylistDescription => this.setState({ newPlaylistDescription }) }
-                            onSubmitEditing={ () => Keyboard.dismiss() }
                         />
                         <Button block style={[ styles.submit, BUTTON_COLOR ]} disabled={ BUTTON_DISABLED } onPress={ this._addPlaylist.bind(this) }>
                             <Text>Add</Text>
