@@ -292,8 +292,8 @@ export default class Player extends Component {
                 { (!this.state.isVisible)
                 ?
                 <View style={ styles.opener }>
-                    <TouchableHighlight underlayColor="#000F" onPress={ () => this.setState({ isVisible: true }) }>
-                        <Icon name="ios-arrow-dropup" style={{ fontSize: 28 }}/>
+                    <TouchableHighlight underlayColor="#000F" style={ styles.openerButton } onPress={ () => this.setState({ isVisible: true }) }>
+                        <Icon name="ios-arrow-dropup" style={{ fontSize: 28, color: '#0008' }}/>
                     </TouchableHighlight>
                 </View>
                 :
@@ -362,7 +362,15 @@ const styles = StyleSheet.create({
         right:0,
         left:0,
         width: '100%',
-        marginBottom: 3 
+        marginBottom: 5,
+    },
+    openerButton: {
+        width: 30,
+        height: 30,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 50,
+        backgroundColor: PRIMARY_COLOR + '60'
     },
     container: {
         backgroundColor: '#e1e8ee',

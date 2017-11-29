@@ -88,7 +88,7 @@ class UserApi {
     }
 // api/v1/user/playlists/:id/track/:id
     removeTrackFromPlaylist = (playlistId, trackId) => {
-        return this.fetcher.getWithAuth(`${API_URL_PLAYLISTS}/${playlistId}/track/${trackId}`)
+        return this.fetcher.delWithAuth(`${API_URL_PLAYLISTS}/${playlistId}/track/${trackId}`)
     }
 }
 
