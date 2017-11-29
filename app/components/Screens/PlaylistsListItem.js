@@ -14,6 +14,7 @@ export default class PlaylistsListItem extends React.PureComponent {
 
         return (
             <ListItem containerStyle={[ styles.item, this.props.style ] }
+                underlayColor={ SCREEN_PLAYLISTS_COLOR + '40' }
                 disabled={ item.amount === 0 }
                 title={ item.name.toUpperCase() }
                 subtitle={ item.description }

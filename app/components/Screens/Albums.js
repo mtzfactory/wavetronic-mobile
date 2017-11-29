@@ -65,12 +65,11 @@ export default class AlbumsScreen extends Component {
         const LEFT_ICON = this.state.currentTrackIndex === index ? 'ios-headset-outline' : 'ios-musical-notes-outline'
         
         return <ListItem
-            underlayColor={ SCREEN_ALBUMS_COLOR + '60' }
+            underlayColor={ SCREEN_ALBUMS_COLOR + '50' }
             title={ `${item.position} - ${item.name}` }
             leftIcon={{ name: LEFT_ICON, type: 'ionicon', style: { color: SCREEN_ALBUMS_COLOR } }}
             rightTitle={ getMMSSFromMillis(item.duration) }
             rightIcon={{ name: 'ios-play-outline', type: 'ionicon', style: { color: SCREEN_ALBUMS_COLOR, marginLeft: 15 } }}
-            //onPressRightIcon={ () => this._selectPlaylistToAddTrack(index) }
             key={ item.id }
             onPress={ () => this._playTrackFromAlbum(index) }/>
     }

@@ -55,7 +55,7 @@ export default class PlaylistsTracksList extends Component {
         return (
             <View style={{ height: TRACKS_ROW_HEIGHT, backgroundColor: '#fff' }}>
             <ListItem containerStyle={ styles.item }
-                underlayColor={ SCREEN_PLAYLISTS_COLOR + '60' }
+                underlayColor={ SCREEN_PLAYLISTS_COLOR + '50' }
                 title={ item.name }
                 subtitle={ `${item.album_name}, ${item.artist_name}` }
                 leftIcon={{ name: LEFT_ICON, type: 'ionicon', style: { color: SCREEN_PLAYLISTS_COLOR } }}
