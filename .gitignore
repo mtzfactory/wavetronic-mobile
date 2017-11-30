@@ -1,6 +1,7 @@
 #mtz
 README-private*.md
 *.env
+keystore/
 ios/
 android/
 .sass-cache
