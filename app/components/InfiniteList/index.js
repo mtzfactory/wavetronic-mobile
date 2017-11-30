@@ -21,20 +21,16 @@ export default class InfiniteList extends Component {
             searching: false
         }
 
-        _itemRef = undefined;
-        this._requestData.bind(this)
+        _itemRef = undefined
     }
 
-    componentDidMount() {
+    componentWillMount() {
         this.results_count = 0
         this.results_fullcount = 0
         this._requestData()
     }
 
-    _requestData = async function () {
-        // if (this.state.loading)
-        //     return null
-        
+    _requestData = async () => {
         await this.setState({ loading: true })
 
         this.props.getData(this.state.offset, this.props.limit, this.state.search, this.props.filterBy)
@@ -101,16 +97,16 @@ export default class InfiniteList extends Component {
     }
 
     _handleOpenChild = (ref) => {
-		this._itemRef && this._itemRef.close();
-		this._itemRef = ref;
+		this._itemRef && this._itemRef.close()
+		this._itemRef = ref
 	}
 
 	_handleCloseChild = () => {
-		this._itemRef = undefined;
+		this._itemRef = undefined
 	}
 
 	_handleScroll = () => {
-		this._itemRef && this._itemRef.close();
+		this._itemRef && this._itemRef.close()
 	}
 
     _renderHeader = () => {
@@ -199,7 +195,7 @@ export default class InfiniteList extends Component {
                 onRefresh={ this._handleRefresh }
                 refreshing={ this.state.refreshing }
                 onEndReached={ this._handleLoadMore }
-                onEndReachedThreshold={ 0.70 }
+                onEndReachedThreshold={ 0.60 }
                 onScroll={ this._handleScroll }
                 numColumns={ props.columns }
                 removeClippedSubviews={ true }
@@ -207,7 +203,7 @@ export default class InfiniteList extends Component {
                 maxToRenderPerBatch={ props.initialNumToRender }
                 windowSize={ props.windowSize }
                 //updateCellsBatchingPeriod={40}
-                keyboardShouldPersistTaps="always"
+                //keyboardShouldPersistTaps="always"
                 //debug={true}
             />
         )

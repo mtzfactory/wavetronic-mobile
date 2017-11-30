@@ -1,10 +1,13 @@
 import React, { Component } from 'react'
-import { StyleSheet, Dimensions, Keyboard, KeyboardAvoidingView, Alert } from 'react-native'
-import { View, TouchableOpacity, Text, TextInput, Image, ImageBackground, ActivityIndicator  } from 'react-native'
+import { StyleSheet, Dimensions, Keyboard, Alert } from 'react-native'
+import { View, TouchableOpacity, TouchableHighlight, Text, TextInput, Image, ImageBackground, ActivityIndicator  } from 'react-native'
 import { Item, Input, Icon } from 'native-base'
 import { NavigationActions } from 'react-navigation'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
+const BACKGROUND_PORTRAIT_IMAGE = require('../../assets/images/Default-Portrait.png')
+const BACKGROUND_LANDSCAPE_IMAGE = require('../../assets/images/Default-Landscape.png')
+import { LANDSCAPE, PORTRAIT, POSITIVE, SPLASH_COLOR } from '../../constants'
 
 import TokenService from '../../services/TokenService'
 
@@ -16,6 +19,7 @@ export default class LoginScreen extends Component {
         super()
 
         this.state = {
+            orientation: PORTRAIT,
             username: '',
             email: '',
             password: '',
@@ -24,7 +28,7 @@ export default class LoginScreen extends Component {
         }
     }
 
-    _navigate (page, params) {
+    _navigate = (page, params) => {
         // Route with disabled back functionality
         const resetAction = NavigationActions.reset({
             index: 0,
@@ -38,7 +42,7 @@ export default class LoginScreen extends Component {
         this.props.navigation.dispatch(resetAction)
     }
 
-    _submit () {
+    _submit = () => {
         const { navigate, state: { params } } = this.props.navigation
         const { username, password, email } = this.state
 
@@ -106,7 +110,7 @@ export default class LoginScreen extends Component {
         }
     }
 
-    _changeScreen () {
+    _changeScreen = () => {
         const { navigate, state: { params }, setParams } = this.props.navigation
 
         if (params.type === 'Login') 
@@ -115,7 +119,7 @@ export default class LoginScreen extends Component {
             setParams({ type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
     }
 
-    _renderEmailInput () {
+    _renderEmailInput = () => {
         if (this.props.navigation.state.params.type === 'Login')
             return null
 
@@ -134,7 +138,7 @@ export default class LoginScreen extends Component {
         )
     }
 
-    _renderErrorMessage () {
+    _renderErrorMessage = () => {
         if (!this.state.error)
             return null
 
@@ -145,13 +149,33 @@ export default class LoginScreen extends Component {
         )
     }
 
+    _handleOnLayout = (event) => {
+        const {x, y, width, height} = event.nativeEvent.layout
+        if (width > height)
+          this.setState({ orientation: LANDSCAPE })
+        else
+          this.setState({ orientation: PORTRAIT })
+    }
+
     render () {
         const { params } = this.props.navigation.state
         const loginButtonOrActivity = this.state.requesting ? <ActivityIndicator  size={25} color={'white'} /> : <Text style={ styles.submitText }>{ params.type }</Text>
 
+        const BACKGROUND_IMAGE = this.state.orientation === PORTRAIT 
+            ? BACKGROUND_PORTRAIT_IMAGE 
+            : BACKGROUND_LANDSCAPE_IMAGE
+
+        const FORM_POSITION = this.state.orientation === PORTRAIT ? null : null//'flex-end'
+        const FORM_MARGINTOP = this.state.orientation === PORTRAIT ? '8%' : '10%'
+        const FORM_MARGINRIGHT = this.state.orientation === PORTRAIT ? null : '3%'
+        const CONTAINER_DIR = this.state.orientation === PORTRAIT ? 'column' : 'row'
+        const JUSTI = this.state.orientation === PORTRAIT ? 'flex-start' : 'center'
+        const ALIGN = this.state.orientation === PORTRAIT ? 'center' : 'flex-end'
+
         return (
-            <ImageBackground style={ styles.container } source={require('../../assets/images/splash_screen_2.png')}>
-                <View style={ styles.form }>
+            <View style={{ flex: 1 }} onLayout={ this._handleOnLayout }>
+            <ImageBackground style={ styles.container } source={ BACKGROUND_IMAGE }>
+                <View style={[ styles.form, { flex: 2, justifyContent: JUSTI, alignItems: ALIGN, alignSelf: FORM_POSITION, marginTop: FORM_MARGINTOP, marginRight: FORM_MARGINRIGHT } ]}>
                     <TextInput style={ styles.inputBox } 
                         underlineColorAndroid="rgba(0,0,0,0)"
                         autoCapitalize="none"
@@ -169,23 +193,25 @@ export default class LoginScreen extends Component {
                         ref={ input => this.password = input }
                         underlineColorAndroid="rgba(0,0,0,0)"
                         autoCapitalize="none"
+                        blurOnSubmit={ true }
                         placeholder="password"
                         secureTextEntry
                         placeholderTextColor = "#fff"
                         onChangeText={ password => this.setState({ password }) }
                     />
-                    <TouchableOpacity style={ styles.submit } onPress={ this._submit.bind(this) }>
+                    <TouchableHighlight underlayColor={ POSITIVE + '40' } style={ styles.submit } onPress={ this._submit }>
                         { loginButtonOrActivity }
-                    </TouchableOpacity>
+                    </TouchableHighlight>
+                    { this._renderErrorMessage() }
                 </View>
-                { this._renderErrorMessage() }
                 <View style={ styles.footerContainer }>
                     <Text style={ styles.footerText }>{ params.text + ' ' }</Text>
-				    <TouchableOpacity onPress={ this._changeScreen.bind(this) }>
+				    <TouchableOpacity onPress={ this._changeScreen }>
                         <Text style={ styles.footerLink }>{ params.next }</Text>
                     </TouchableOpacity>
                 </View>
             </ImageBackground>
+            </View>
         )
     }
 }
@@ -193,28 +219,28 @@ export default class LoginScreen extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center'
+        // justifyContent: 'center',
+        // alignItems: 'center'
     },
     form : {
-        alignItems: 'center',
-        marginTop: '14%'
+
     },
     inputBox: {
-        width: DEVICE_WIDTH - 60,
-        backgroundColor:'rgba(255, 255, 255, 0.2)',
-        borderRadius: 25,
+        width: DEVICE_WIDTH > DEVICE_HEIGHT ? DEVICE_HEIGHT - 100 : DEVICE_WIDTH - 80,
+        marginVertical: 8,
         paddingHorizontal: 16,
         fontSize: 16,
+        textAlign: 'center',
         color: 'white',
-        marginVertical: 10
+        borderRadius: 25,
+        backgroundColor:'rgba(255, 255, 255, 0.2)',
     },
     submit: {
-        width: DEVICE_WIDTH - 60,
-        backgroundColor: '#1c313a',
+        width: DEVICE_WIDTH > DEVICE_HEIGHT ? DEVICE_HEIGHT -100 : DEVICE_WIDTH - 80,
+        marginVertical: 8,
+        paddingVertical: 13,
         borderRadius: 25,
-        marginVertical: 10,
-        paddingVertical: 13
+        backgroundColor: POSITIVE + '80', //'#1c313a',
     },
     submitText: {
         fontSize: 16,
@@ -234,7 +260,7 @@ const styles = StyleSheet.create({
         paddingVertical: 10
     },
     footerContainer: {
-        flexGrow: 1,
+        flex: -1,
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'flex-end',

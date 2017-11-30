@@ -38,17 +38,17 @@ export const LANDSCAPE = 'LANDSCAPE'
 export const PORTRAIT = 'PORTRAIT'
 
 // APP COLORS
-export const PRIMARY_COLOR = '#E91E63'
-export const DARK_PRIMARY_COLOR = '#C2185B'
+export const PRIMARY_COLOR = '#009688'
+export const DARK_PRIMARY_COLOR = '#00796B'
 
-export const FABNAVIGATOR_COLOR = PRIMARY_COLOR //'#CE3175'
+export const FABNAVIGATOR_COLOR = '#E91E63' //'#CE3175'
 export const MAIN_THEME_COLOR = '#E1E8EE'
 export const MAIN_DARK_THEME_COLOR = '#AFB6BC'
 
 export const SPLASH_COLOR = PRIMARY_COLOR //'#FF1744'
 
-export const SCREEN_SONGS_COLOR = PRIMARY_COLOR //'#673AB7' //'#9b59b6'
-export const SCREEN_SONGS_DARK_COLOR = DARK_PRIMARY_COLOR //'#512DA8'
+export const SCREEN_SONGS_COLOR = '#E91E63' //'#673AB7' //'#9b59b6'
+export const SCREEN_SONGS_DARK_COLOR = '#C2185B' //'#512DA8'
 export const SCREEN_ALBUMS_COLOR = '#2196F3' //'#3498db'
 export const SCREEN_ALBUMS_DARK_COLOR = '#1976D2'
 export const SCREEN_PLAYLISTS_COLOR = '#009688' //'#1abc9c'
