@@ -55,3 +55,6 @@ export const SCREEN_PLAYLISTS_COLOR = '#009688' //'#1abc9c'
 export const SCREEN_PLAYLISTS_DARK_COLOR = '#00796B'
 export const SCREEN_CONTACTS_COLOR = '#AB47BC' //'#FFD700' //'#F1C40F'
 export const SCREEN_CONTACTS_DARK_COLOR = '#790e8b' //'#C7A600' //'#FBC02D'
+
+export const POSITIVE = '#009688'
+export const NEGATIVE = '#E91E63'
