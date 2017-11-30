@@ -11,6 +11,7 @@ import { API_PAGE_LIMIT, MAIN_THEME_COLOR, SCREEN_ALBUMS_COLOR, SCREEN_ALBUMS_DA
 import FabNavigator from '../FabNavigator'
 import InfiniteList from '../InfiniteList'
 import AlbumsListItem from './AlbumsListItem'
+import AlbumsTracksItem from './AlbumsTracksList'
 
 import { getMMSSFromMillis } from '../../helpers/Functions'
 
@@ -19,7 +20,7 @@ const musicApi = new MusicApi()
 
 const THUMBNAIL_SIZE = 70
 const ALBUMS_ROW_HEIGTH = THUMBNAIL_SIZE + 10 //17 + 17 // 70 por image + 2 * (17) ListItem paddingVertical
-const TRACK_ROW_HEIGHT = 50
+const TRACKS_ROW_HEIGHT = 50
 const SCREEN = 'Albums'
 
 export default class AlbumsScreen extends Component {
@@ -37,77 +38,24 @@ export default class AlbumsScreen extends Component {
             showAlbumTracksModal: false,
             albumId: null,
             albumName: null,
-            albumsTracks: [],
-            currentTrackIndex: -1
         }
     }
-// RENDER ALBUMS TRACKS
-    _playAllTracksFromAlbum () {
+// ALBUMS TRACKS MODAL
+    _closeAlbumTracksModal = () => {
         this.refs.albumTracksModal.close()
-        this.setState({ currentTrackIndex: null })
-        Alert.alert('play all')
     }
 
-    _playTrackFromAlbum (index) {
-        this.setState({ currentTrackIndex: index })
-        this.props.screenProps.handlePlaySong(this.state.albumsTracks.tracks[index])
-    }
-
-    _getAlbumTracksItemLayout = (data, index) => {
-        return {
-            offset: TRACK_ROW_HEIGHT * index,
-            length: TRACK_ROW_HEIGHT,
-            index
-        }
-    }
-
-    _renderAlbumTracksItem(item, index) {
-        const LEFT_ICON = this.state.currentTrackIndex === index ? 'ios-headset-outline' : 'ios-musical-notes-outline'
-        
-        return <ListItem
-            underlayColor={ SCREEN_ALBUMS_COLOR + '50' }
-            title={ `${item.position} - ${item.name}` }
-            leftIcon={{ name: LEFT_ICON, type: 'ionicon', style: { color: SCREEN_ALBUMS_COLOR } }}
-            rightTitle={ getMMSSFromMillis(item.duration) }
-            rightIcon={{ name: 'ios-play-outline', type: 'ionicon', style: { color: SCREEN_ALBUMS_COLOR, marginLeft: 15 } }}
-            key={ item.id }
-            onPress={ () => this._playTrackFromAlbum(index) }/>
-    }
-
-    _renderAlbumTracks () {
-        return (
-            <View style={{ flex: 1,  padding: 10, backgroundColor: SCREEN_ALBUMS_COLOR + '40' }}>
-                <View style={ styles.headerModal }>
-                    <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ this._playAllTracksFromAlbum.bind(this) }>
-                        <Text style={ styles.textHeader }>Play all</Text>
-                    </TouchableHighlight>
-                    <Text numberOfLines={ 1 } style={ styles.textAlbum }>{ this.state.albumName.toUpperCase() }</Text>
-                    <TouchableHighlight style={ styles.buttonHeader } underlayColor="rgba(255,255,255,0.3)" onPress={ () => this.refs.albumTracksModal.close() }>
-                        <Text style={ styles.textHeader }>Close</Text>
-                    </TouchableHighlight>
-                </View>
-                <FlatList
-                    data={ this.state.albumsTracks.tracks }
-                    extraData={ this.state.currentTrackIndex }
-                    renderItem={ ({item, index}) => this._renderAlbumTracksItem(item, index) }
-                    getItemLayout={ this._getAlbumTracksItemLayout }
-                    keyExtractor={ (item, index) => item.id }
-                />
-            </View>
-        )
-    }
-// RENDER ALBUMS
     _handleClosedAlbumTracksModal () {
         this.setState({ showAlbumTracksModal: false })
     }
 
+    _playTrackFromAlbum = (track) => {
+        this.props.screenProps.handlePlaySong(track)
+    }
+// RENDER ALBUMS
     _handleOnAlbumItemPressed (albumId, albumName) {
-        musicApi.getTracksFromAlbum(albumId)
-            .then(res => {
-                this.setState({ showAlbumTracksModal: true, albumId, albumName, currentTrackIndex: -1, albumsTracks: res.results[0] })
-                this.refs.albumTracksModal.open()
-            })
-            .catch(error => { Alert.alert(error.message) })
+        this.setState({ showAlbumTracksModal: true, albumId, albumName })
+        this.refs.albumTracksModal.open()
     }
 
     _renderAlbumsItem = (item, index) => (
@@ -141,7 +89,13 @@ export default class AlbumsScreen extends Component {
                     position={"top"} entry={"top"} easing={Easing.ease}
                     backButtonClose={true}
                     onClosed={ this._handleClosedAlbumTracksModal.bind(this) }>
-                    { showAlbumTracksModal && this._renderAlbumTracks() }
+                    { showAlbumTracksModal && 
+                        <AlbumsTracksItem
+                            albumId={ this.state.albumId }
+                            albumName={ this.state.albumName }
+                            playTrack={ this._playTrackFromAlbum }
+                            onClose={ this._closeAlbumTracksModal }/>
+                    }
                 </Modal>
             </View>
         )
@@ -151,9 +105,4 @@ export default class AlbumsScreen extends Component {
 const styles = StyleSheet.create({
     container: { flex: 1, backgroundColor: '#fff' },
     modal: { height: DEVICE_HEIGHT / 2 },
-    headerModal: { marginBottom: 2, flexDirection: "row", justifyContent: "space-between", alignItems: 'center' },
-    buttonHeader: { height: 20 },
-    titleHeader: { textAlign: 'center' },
-    textHeader: { fontSize: 12, color: SCREEN_ALBUMS_COLOR + '80' },
-    textAlbum: { flex: -1, paddingHorizontal: 15, color: '#43484d' },
 })

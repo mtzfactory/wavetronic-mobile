@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-
 import { StyleSheet, View, TouchableHighlight, TouchableOpacity, Alert } from 'react-native'
 import { Text, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
@@ -21,7 +20,9 @@ export default class PlaylistsTracksList extends Component {
     }
 
     _playAllTracksFromPlaylist () {
-        this.setState({ currentTrackIndex: null })
+        this.setState({ currentTrackIndex: null }, () => {
+            this.props.onClose()
+        })
         Alert.alert('play all')
     }
 // SWIPE RIGHT
