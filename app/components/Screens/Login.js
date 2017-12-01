@@ -157,6 +157,10 @@ export default class LoginScreen extends Component {
           this.setState({ orientation: PORTRAIT })
     }
 
+    componentDidMount () {
+        this.props.screenProps.handlePlaySong(null)
+    }
+
     render () {
         const { params } = this.props.navigation.state
         const loginButtonOrActivity = this.state.requesting ? <ActivityIndicator  size={25} color={'white'} /> : <Text style={ styles.submitText }>{ params.type }</Text>

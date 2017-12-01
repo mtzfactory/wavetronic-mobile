@@ -213,7 +213,17 @@ export default class Player extends Component {
     }
 // COMPONENT LIFE
     componentWillReceiveProps (nextProps) {
-        if (nextProps.track.id !== this.state.track.id) {
+        if (nextProps.track === undefined || nextProps.track === null) {
+            this.setState({
+                track: {},
+                showOpener: false, 
+                expanded: false, 
+                playing: false, 
+                loading: false,
+                isVisible: false
+            })
+        }
+        else if (nextProps.track.id !== this.state.track.id) {
             if (this.state.playing)
                 this._togglePlayer()
 

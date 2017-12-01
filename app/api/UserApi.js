@@ -24,7 +24,8 @@ class UserApi {
     doLogout(username) {
         return this.fetcher.getWithAuth(`${API_URL_LOGOUT}/${username}`)
             .then(res => {
-                TokenService.get().saveToken(null)
+                TokenService.get().removeToken()
+                TokenService.get().removeUsername()
                 return res
             })
     }

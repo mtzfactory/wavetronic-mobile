@@ -25,6 +25,10 @@ class TokenService {
         return AsyncStorage.setItem('@mtzfactory:token', token)
     }
 
+    removeToken (token) {
+        return AsyncStorage.removeItem('@mtzfactory:token')
+    }
+
     getUsername () {
         if (this.username)
             return this.username
@@ -39,6 +43,10 @@ class TokenService {
     saveUsername (username) {
         this.username = username
         return AsyncStorage.setItem('@mtzfactory:username', username)
+    }
+
+    removeUsername () {
+        return AsyncStorage.removeItem('@mtzfactory:username')
     }
 }
 
