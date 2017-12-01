@@ -43,7 +43,7 @@ export default class LoginScreen extends Component {
     }
 
     _submit = () => {
-        const { navigate, state: { params } } = this.props.navigation
+        const { navigate, state: { params }, setParams } = this.props.navigation
         const { username, password, email } = this.state
 
         Keyboard.dismiss()

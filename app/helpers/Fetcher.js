@@ -43,6 +43,16 @@ class Fetcher {
         return this.HEADERS
     }
 
+    post (url, data) {
+        return this.timeoutFetch(url, {
+            method: 'POST',
+            headers: this.getHeaders(),
+            body: JSON.stringify(data)
+        })
+        .then(checkStatus)
+        .then(parseJSON)
+    }
+
     postWithAuth(url, data) {
         return this.timeoutFetch(url, {
                 method: 'POST',
