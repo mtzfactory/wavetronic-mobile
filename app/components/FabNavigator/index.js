@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { StyleSheet } from 'react-native'
 import { Icon } from 'native-base'
-import ActionButton from 'react-native-action-button'
+import ActionButton from '../ActionButton'
 import uuidv4 from 'uuid/v4'
 
 import {

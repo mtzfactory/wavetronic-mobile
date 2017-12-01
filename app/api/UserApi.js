@@ -16,12 +16,13 @@ class UserApi {
         return this.fetcher.postWithAuth(API_URL_LOGIN, loginData)
             .then( res => {
                 TokenService.get().saveToken(res.data)
+                TokenService.get().saveUsername(loginData.username)
                 return res.data
             })
     }
 
     doLogout(username) {
-        return this.fetcher.postWithAuth(API_URL_LOGOUT, username)
+        return this.fetcher.getWithAuth(`${API_URL_LOGOUT}/${username}`)
             .then(res => {
                 TokenService.get().saveToken(null)
                 return res

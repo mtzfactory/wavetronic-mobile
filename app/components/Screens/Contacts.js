@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { StyleSheet, Platform, Dimensions, StatusBar, Easing, View, TouchableHighlight, TouchableOpacity, TextInput, Alert } from 'react-native'
 import { Text, Button, Icon } from 'native-base'
 import { ListItem } from 'react-native-elements'
-import ActionButton from 'react-native-action-button'
 import Modal from 'react-native-modalbox'
+import { NavigationActions } from 'react-navigation'
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 import { API_PAGE_LIMIT, MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR } from '../../constants'
@@ -11,6 +11,7 @@ import { API_PAGE_LIMIT, MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACT
 import FabNavigator from '../FabNavigator'
 import InfiniteList from '../InfiniteList'
 import ContactsListItem from './ContactsListItem'
+import TokenService from '../../services/TokenService'
 
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
@@ -22,7 +23,16 @@ export default class ContactsScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: SCREEN,
-            headerLeft: null,
+            headerLeft: (
+                <TouchableHighlight 
+                    underlayColor="rgba(255,255,255,0.4)"
+                    style={ styles.rightHeaderButton}
+                    onPress={ () => 
+                        navigation.state.params.handleLeftButtonPressed()
+                    }>
+                        <Icon name="ios-sad-outline" style={{ color: SCREEN_CONTACTS_COLOR }}/>
+                </TouchableHighlight>
+            ),
             headerRight: (
                 <TouchableHighlight 
                     underlayColor="rgba(255,255,255,0.4)"
@@ -33,7 +43,7 @@ export default class ContactsScreen extends Component {
                         <Icon name="md-add" style={{ color: SCREEN_CONTACTS_COLOR }}/>
                 </TouchableHighlight>
             ),
-            headerTitleStyle : { marginLeft: 80, alignSelf: 'center', color: SCREEN_CONTACTS_COLOR },
+            headerTitleStyle : { alignSelf: 'center', color: SCREEN_CONTACTS_COLOR },
             headerStyle: { backgroundColor: MAIN_THEME_COLOR }
         }
     }
@@ -43,6 +53,28 @@ export default class ContactsScreen extends Component {
 
         this.state = { newContactName: null, friendId: null, friendName: null }
     }
+// LOG OUT
+    _navigate = (page, params) => {
+        // Route with disabled back functionality
+        const resetAction = NavigationActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ 
+                    routeName: page,
+                    params
+                }),
+            ],
+        })
+        this.props.navigation.dispatch(resetAction)
+    }
+
+    _doLogout = () => {
+        const username = TokenService.get().getUsername()
+        userApi.doLogout(username)
+            .then( this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' }) )
+            .catch(error => Alert.alert(error.message))
+    }
+
 // NEW CONTACT MODAL
     _addContact () {
         const { newContactName } = this.state
@@ -111,6 +143,7 @@ export default class ContactsScreen extends Component {
 // COMPONENT LIFE
     componentDidMount () {
         this.props.navigation.setParams({ handleRightButtonPressed: this.refs.newContactModal.open })
+        this.props.navigation.setParams({ handleLeftButtonPressed: this._doLogout })
     }
 
     render() {

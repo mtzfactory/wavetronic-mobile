@@ -2,27 +2,43 @@ import { AsyncStorage } from 'react-native'
 import SingletonManager from '../helpers/Singletons'
 
 class TokenService {
-    static get() {
+    static get () {
         const instance = SingletonManager.get('TOKEN_SERVICE')
 
         return instance ? instance : SingletonManager.create('TOKEN_SERVICE', new TokenService())
     }
 
-    setToken(token) {
+    setToken (token) {
          this.token = token
     }
 
-    getToken() {
+    getToken () {
         return this.token
     }
 
-    readToken() {
+    readToken () {
         return AsyncStorage.getItem('@mtzfactory:token')
     }
 
-    saveToken(token) {
+    saveToken (token) {
         this.token = token
         return AsyncStorage.setItem('@mtzfactory:token', token)
+    }
+
+    getUsername () {
+        if (this.username)
+            return this.username
+        else
+            return this.readUsername()
+    }
+
+    readUsername () {
+        return AsyncStorage.getItem('@mtzfactory:username')
+    }
+
+    saveUsername (username) {
+        this.username = username
+        return AsyncStorage.setItem('@mtzfactory:username', username)
     }
 }
 
