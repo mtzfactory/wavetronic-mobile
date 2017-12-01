@@ -7,7 +7,7 @@ import { NavigationActions } from 'react-navigation'
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const BACKGROUND_PORTRAIT_IMAGE = require('../../assets/images/Default-Portrait.png')
 const BACKGROUND_LANDSCAPE_IMAGE = require('../../assets/images/Default-Landscape.png')
-import { LANDSCAPE, PORTRAIT, POSITIVE, SPLASH_COLOR } from '../../constants'
+import { LANDSCAPE, PORTRAIT, POSITIVE, SPLASH_COLOR, PRIMARY_COLOR } from '../../constants'
 
 import TokenService from '../../services/TokenService'
 
@@ -129,7 +129,7 @@ export default class LoginScreen extends Component {
                 underlineColorAndroid="rgba(0,0,0,0)"
                 autoCapitalize="none"
                 blurOnSubmit={ false }
-                placeholder="email address"
+                placeholder="email"
                 keyboardType="email-address"
                 placeholderTextColor = "#fff"
                 onChangeText={ email => this.setState({ email }) }
@@ -139,12 +139,16 @@ export default class LoginScreen extends Component {
     }
 
     _renderErrorMessage = () => {
-        if (!this.state.error)
-            return null
+        // if (!this.state.error)
+        //     return null
+
+        const BACKGROUNDCOLOR = this.state.error !== null ? PRIMARY_COLOR + '80' : 'transparent'
 
         return (
-            <View style={ styles.errorArea }>
-                    <Text style={ styles.errorText }>{ this.state.error }</Text>
+            <View style={[ styles.errorArea, { backgroundColor: BACKGROUNDCOLOR } ]}>
+            { this.state.error !== null &&
+                <Text style={ styles.errorText }>{ this.state.error }</Text>
+            }
             </View>
         )
     }
@@ -170,7 +174,7 @@ export default class LoginScreen extends Component {
             : BACKGROUND_LANDSCAPE_IMAGE
 
         const FORM_POSITION = this.state.orientation === PORTRAIT ? null : null//'flex-end'
-        const FORM_MARGINTOP = this.state.orientation === PORTRAIT ? '8%' : '10%'
+        const FORM_MARGINTOP = this.state.orientation === PORTRAIT ? '6%' : '4%'
         const FORM_MARGINRIGHT = this.state.orientation === PORTRAIT ? null : '3%'
         const CONTAINER_DIR = this.state.orientation === PORTRAIT ? 'column' : 'row'
         const JUSTI = this.state.orientation === PORTRAIT ? 'flex-start' : 'center'
@@ -179,7 +183,9 @@ export default class LoginScreen extends Component {
         return (
             <View style={{ flex: 1 }} onLayout={ this._handleOnLayout }>
             <ImageBackground style={ styles.container } source={ BACKGROUND_IMAGE }>
+            { this._renderErrorMessage() }
                 <View style={[ styles.form, { flex: 2, justifyContent: JUSTI, alignItems: ALIGN, alignSelf: FORM_POSITION, marginTop: FORM_MARGINTOP, marginRight: FORM_MARGINRIGHT } ]}>
+                    
                     <TextInput style={ styles.inputBox } 
                         underlineColorAndroid="rgba(0,0,0,0)"
                         autoCapitalize="none"
@@ -206,7 +212,7 @@ export default class LoginScreen extends Component {
                     <TouchableHighlight underlayColor={ POSITIVE + '40' } style={ styles.submit } onPress={ this._submit }>
                         { loginButtonOrActivity }
                     </TouchableHighlight>
-                    { this._renderErrorMessage() }
+                    
                 </View>
                 <View style={ styles.footerContainer }>
                     <Text style={ styles.footerText }>{ params.text + ' ' }</Text>
@@ -255,13 +261,14 @@ const styles = StyleSheet.create({
     errorArea: {
         alignSelf: 'stretch',
         alignItems: 'center',
-        marginVertical: 10,
-        backgroundColor:'rgba(0, 0, 255, 0.4)',
+        marginVertical: 0,
+        height: 32,
+        //backgroundColor: PRIMARY_COLOR + '80' //'rgba(0, 0, 255, 0.4)',
     },
     errorText: {
         color: 'white',
         fontSize: 14,
-        paddingVertical: 10
+        paddingVertical: 5
     },
     footerContainer: {
         flex: -1,
