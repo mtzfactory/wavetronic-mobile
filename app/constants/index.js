@@ -47,12 +47,15 @@ export const MAIN_DARK_THEME_COLOR = '#AFB6BC'
 
 export const SPLASH_COLOR = PRIMARY_COLOR //'#FF1744'
 
-export const SCREEN_SONGS_COLOR = '#E91E63' //'#673AB7' //'#9b59b6'
-export const SCREEN_SONGS_DARK_COLOR = '#C2185B' //'#512DA8'
+export const SCREEN_PLAYLISTS_COLOR = '#E91E63' //'#673AB7' //'#9b59b6'
+export const SCREEN_PLAYLISTS_DARK_COLOR = '#C2185B' //'#512DA8'
+
 export const SCREEN_ALBUMS_COLOR = '#2196F3' //'#3498db'
 export const SCREEN_ALBUMS_DARK_COLOR = '#1976D2'
-export const SCREEN_PLAYLISTS_COLOR = '#009688' //'#1abc9c'
-export const SCREEN_PLAYLISTS_DARK_COLOR = '#00796B'
+
+export const SCREEN_SONGS_COLOR = '#009688' //'#1abc9c'
+export const SCREEN_SONGS_DARK_COLOR = '#00796B'
+
 export const SCREEN_CONTACTS_COLOR = '#AB47BC' //'#FFD700' //'#F1C40F'
 export const SCREEN_CONTACTS_DARK_COLOR = '#790e8b' //'#C7A600' //'#FBC02D'
 
