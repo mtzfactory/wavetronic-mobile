@@ -3,6 +3,7 @@ import { StyleSheet, Dimensions, Keyboard, Alert } from 'react-native'
 import { View, TouchableOpacity, TouchableHighlight, Text, TextInput, Image, ImageBackground, ActivityIndicator  } from 'react-native'
 import { Item, Input, Icon } from 'native-base'
 import { NavigationActions } from 'react-navigation'
+import FCM from "react-native-fcm"
 
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 const BACKGROUND_PORTRAIT_IMAGE = require('../../assets/images/Default-Portrait.png')
@@ -20,9 +21,9 @@ export default class LoginScreen extends Component {
 
         this.state = {
             orientation: PORTRAIT,
-            username: '',
-            email: '',
-            password: '',
+            username: null,
+            email: null,
+            password: null,
             requesting: false,
             error: null
         }
@@ -80,33 +81,31 @@ export default class LoginScreen extends Component {
                 })
         }
         else {
+            console.log('LoginScreen data:', data)
             userApi.doLogin(data)
                 .then( token => {
-                    //console.log('Login token:', token)
-                    this.setState({
-                        error: `${username} login successfully`,
-                        requesting: false
-                    }, () => {
-                        TokenService.get().saveToken(token)
-                            .then( () => {
-                                userApi.updatePushNotificationToken(this.props.screenProps.pnToken)
-                                    .catch(error => Alert.alert(error.message))
-                                this._navigate('Tracks')
-                            })
-                            .catch( error => {
-                                this.setState({
-                                    error: error.message,
-                                    requesting: false
+                    console.log('LoginScreen token:', token)
+                    TokenService.get().saveToken(token)
+                        .then(() => {
+                            TokenService.setToken(token)
+                            FCM.getFCMToken()
+                                .then(pnToken => {
+                                    console.log('LoginScreen pnToken:', pnToken)
+                                    userApi.updatePushNotificationToken(pnToken)
+                                        .then(() => {
+                                            this.setState({
+                                                error: `${username} login successfully`,
+                                                requesting: false
+                                            }, () => {
+                                                this._navigate('Tracks')
+                                            })
+                                        })
+                                        .catch(error => this.setState({ error: error.message, requesting: false }) )
                                 })
-                            })
-                    })
+                        })
+                        .catch( error => { this.setState({ error: error.message, requesting: false }) })
                 })
-                .catch( error => {
-                    this.setState({
-                        error: error.message,
-                        requesting: false
-                    })
-                })
+                .catch( error => { this.setState({ error: error.message, requesting: false }) })
         }
     }
 
@@ -128,10 +127,12 @@ export default class LoginScreen extends Component {
                 ref={ input => this.email = input }
                 underlineColorAndroid="rgba(0,0,0,0)"
                 autoCapitalize="none"
+                autocorrect={false}
                 blurOnSubmit={ false }
-                placeholder="email"
+                clearButtonMode={"always"}
                 keyboardType="email-address"
-                placeholderTextColor = "#fff"
+                placeholder="email"
+                placeholderTextColor = "#fff8"
                 onChangeText={ email => this.setState({ email }) }
                 onSubmitEditing={ () => this.password.focus() }
             />
@@ -189,10 +190,12 @@ export default class LoginScreen extends Component {
                     <TextInput style={ styles.inputBox } 
                         underlineColorAndroid="rgba(0,0,0,0)"
                         autoCapitalize="none"
+                        autocorrect={false}
                         blurOnSubmit={ false }
+                        clearButtonMode={"always"}
+                        keyboardType="email-address"
                         placeholder="username"
-                        placeholderTextColor = "#fff"
-                        selectionColor="#fff"
+                        placeholderTextColor = "#fff8"
                         onChangeText={ username => this.setState({ username }) }
                         onSubmitEditing={ ()=> {
                             params.type === 'Login' ? this.password.focus() : this.email.focus() 
@@ -203,10 +206,12 @@ export default class LoginScreen extends Component {
                         ref={ input => this.password = input }
                         underlineColorAndroid="rgba(0,0,0,0)"
                         autoCapitalize="none"
+                        autocorrect={false}
                         blurOnSubmit={ true }
-                        placeholder="password"
+                        clearButtonMode={"always"}
                         secureTextEntry
-                        placeholderTextColor = "#fff"
+                        placeholder="password"
+                        placeholderTextColor = "#fff8"
                         onChangeText={ password => this.setState({ password }) }
                     />
                     <TouchableHighlight underlayColor={ POSITIVE + '40' } style={ styles.submit } onPress={ this._submit }>

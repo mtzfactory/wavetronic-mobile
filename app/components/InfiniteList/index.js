@@ -5,6 +5,7 @@ import { List } from 'native-base'
 import { SearchBar } from 'react-native-elements'
 import uuidv4 from 'uuid/v4'
 
+import TokenService from '../../services/TokenService'
 import SwipeableListItem from './SwipeableListItem'
 
 export default class InfiniteList extends Component {

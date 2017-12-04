@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, Alert, ActivityIndicator, View, Text, ImageBackground } from 'react-native'
 import { NavigationActions } from 'react-navigation'
+import FCM from "react-native-fcm"
 
 const BACKGROUND_PORTRAIT_IMAGE = require('../../assets/images/Default-Portrait.png')
 const BACKGROUND_LANDSCAPE_IMAGE = require('../../assets/images/Default-Landscape.png')
@@ -38,28 +39,42 @@ export default class SplashScreen extends Component {
     _handleOnLoad = () => {
         TokenService.get().readToken()
             .then(token => {
+                console.log('SplashScreen token:', token)
                 if (token) {
-                    TokenService.get().setToken(token)
-                    userApi.amIAuthorized()
-                        .then( () => {
-                            userApi.updatePushNotificationToken(this.props.screenProps.pnToken)
-                                .catch(error => Alert.alert(error.message))
-                            this._navigate('Tracks')
+                    userApi.amIAuthorized(token)
+                        .then(res => {
+                            console.log('SplashScreen amIAuthorized:', res.message)
+                            if (res.status === 'success') {
+                                //TokenService.get().setToken(token)
+                                TokenService.setToken(token)
+                                FCM.getFCMToken()
+                                    .then(pnToken => {
+                                        console.log('SplashScreen pnToken:', pnToken)
+                                        userApi.updatePushNotificationToken(pnToken)
+                                            .then(() => this._navigate('Tracks'))
+                                            .catch(error => Alert.alert(error.message))
+                                    })
+                            }
+                            else {
+                                TokenService.get().deleteToken()
+                                this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
+                            }
                         })
-                        .catch( error => {
+                        .catch(error => {
                             this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                         })
                 }
                 else {
+                    TokenService.get().deleteToken()
                     this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
                 }
             })
-            .catch( (error) =>  {
+            .catch(error =>  {
                 this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
             })
     }
 
-    _handleOnLayout = (event) => {
+    _handleOnLayout = event => {
         const {x, y, width, height} = event.nativeEvent.layout
         if (width > height)
           this.setState({ orientation: LANDSCAPE })

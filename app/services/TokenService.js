@@ -5,48 +5,31 @@ class TokenService {
     static get () {
         const instance = SingletonManager.get('TOKEN_SERVICE')
 
-        return instance ? instance : SingletonManager.create('TOKEN_SERVICE', new TokenService())
+        return (instance !== null && instance !== undefined) ? instance : SingletonManager.create('TOKEN_SERVICE', new TokenService())
     }
 
-    setToken (token) {
+    static setToken = (token) => {
          this.token = token
     }
 
-    getToken () {
+    static getToken = () => {
         return this.token
     }
 
-    readToken () {
-        return AsyncStorage.getItem('@mtzfactory:token')
+    static removeToken = () => {
+        this.token = null
     }
 
-    saveToken (token) {
-        this.token = token
+    saveToken = (token) => {
         return AsyncStorage.setItem('@mtzfactory:token', token)
     }
 
-    removeToken (token) {
+    readToken = () => {
+        return AsyncStorage.getItem('@mtzfactory:token')
+    }
+
+    deleteToken = () => {
         return AsyncStorage.removeItem('@mtzfactory:token')
-    }
-
-    getUsername () {
-        if (this.username)
-            return this.username
-        else
-            return this.readUsername()
-    }
-
-    readUsername () {
-        return AsyncStorage.getItem('@mtzfactory:username')
-    }
-
-    saveUsername (username) {
-        this.username = username
-        return AsyncStorage.setItem('@mtzfactory:username', username)
-    }
-
-    removeUsername () {
-        return AsyncStorage.removeItem('@mtzfactory:username')
     }
 }
 

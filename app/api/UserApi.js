@@ -1,5 +1,6 @@
 import Fetcher from '../helpers/Fetcher'
 import TokenService from '../services/TokenService'
+
 import { API_URL_WELCOME, API_URL_REGISTER, API_URL_LOGIN, API_URL_LOGOUT } from '../constants'
 import {API_URL_PROFILE, API_URL_PLAYLISTS, API_URL_FRIENDS, API_URL_FAKE_FRIENDS } from '../constants'
 
@@ -13,25 +14,22 @@ class UserApi {
     }
 
     doLogin(loginData) {
-        return this.fetcher.postWithAuth(API_URL_LOGIN, loginData)
-            .then( res => {
-                TokenService.get().saveToken(res.data)
-                TokenService.get().saveUsername(loginData.username)
-                return res.data
-            })
+        return this.fetcher.post(API_URL_LOGIN, loginData)
+            .then( res => res.data)
     }
 
-    doLogout(username) {
-        return this.fetcher.getWithAuth(`${API_URL_LOGOUT}/${username}`)
-            .then(res => {
-                TokenService.get().removeToken()
-                TokenService.get().removeUsername()
-                return res
-            })
+    doLogout() {
+        //const username = TokenService.get().getUsername()
+        return this.fetcher.getWithAuth(`${API_URL_LOGOUT}`)
     }
 
     amIAuthorized(token) {
-        return this.fetcher.getWithAuth(`${API_URL_WELCOME}`)
+        const HEADERS = {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        }
+        return this.fetcher.get(`${API_URL_WELCOME}`, HEADERS)
     }
 // api/v1/user
     getProfile = () => {

@@ -6,7 +6,7 @@ function checkStatus(res) {
     }
     else {
         //const errorMessage = res.statusText === undefined ? res._bodyText : res.statusText
-        console.log(res._bodyText)
+        console.log('Fetcher checkStatus:', res._bodyText)
         err = JSON.parse(res._bodyText)
         throw new Error(err.message)
     }
@@ -22,7 +22,6 @@ class Fetcher {
             'Accept': 'application/json',
             'Content-Type': 'application/json'
         }
-        this.token = null
     }
 
     timeoutFetch(input, init = {}) {
@@ -35,25 +34,40 @@ class Fetcher {
     }
 
     getHeaders() {
-        if (!this.token) {
-            this.token = TokenService.get().getToken()
-            this.HEADERS['Authorization'] = `Bearer ${this.token}`
-        }
+        const token = TokenService.getToken() //TokenService.get().getToken()
+        this.HEADERS['Authorization'] = `Bearer ${token}`
+
+        console.log('Fetcher token:', token)
         
         return this.HEADERS
     }
 
-    post (url, data) {
+    get (url, headers) {
+        console.log('Fetcher get', url)
         return this.timeoutFetch(url, {
-            method: 'POST',
-            headers: this.getHeaders(),
-            body: JSON.stringify(data)
-        })
-        .then(checkStatus)
-        .then(parseJSON)
+                method: 'GET',
+                headers
+            })
+            .then(checkStatus)
+            .then(parseJSON)
+    }
+
+    post (url, data) {
+        console.log('Fetcher post', url)
+        return this.timeoutFetch(url, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(checkStatus)
+            .then(parseJSON)
     }
 
     postWithAuth(url, data) {
+        console.log('Fetcher postWithAuth', url)
         return this.timeoutFetch(url, {
                 method: 'POST',
                 headers: this.getHeaders(),
@@ -64,6 +78,7 @@ class Fetcher {
     }
 
     putWithAuth(url, data) {
+        console.log('Fetcher putWithAuth', url)
         return this.timeoutFetch(url, {
                 method: 'PUT',
                 headers: this.getHeaders(),
@@ -74,6 +89,7 @@ class Fetcher {
     }
 
    delWithAuth(url) {
+    console.log('Fetcher delWithAuth', url)
         return this.timeoutFetch(url, {
                 method: 'DELETE',
                 headers: this.getHeaders(),
@@ -83,6 +99,7 @@ class Fetcher {
     }
 
     getWithAuth(url) {
+        console.log('Fetcher getWithAuth', url)
         return this.timeoutFetch(url, {
                 method: 'GET',
                 headers: this.getHeaders()

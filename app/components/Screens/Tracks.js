@@ -51,7 +51,6 @@ export default class TracksScreen extends Component {
     }
 
     _handleOnPlaySong (trackIndex, track) {
-        console.log('_handleOnPlaySong', track.name)
         this.setState({ trackIndex })
         this.props.screenProps.handlePlaySong(track)
     }

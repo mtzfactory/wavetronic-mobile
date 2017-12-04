@@ -7,6 +7,7 @@ import Modal from 'react-native-modalbox'
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 import { SPLASH_COLOR, POSITIVE, NEGATIVE, PRIMARY_COLOR, DARK_PRIMARY_COLOR } from './constants'
 
+import TokenService from './services/TokenService'
 import RootNavigation from './components/RootNavigation'
 import PushService from './services/PushService'
 import Player from './components/Player'
@@ -19,7 +20,6 @@ export default class App extends Component {
         super()
 
         this.state = {
-            pnToken: null,
             track : {},
             showTrackNotificationModal: false,
             showFriendRequestNotificationModal: false
@@ -33,6 +33,12 @@ export default class App extends Component {
     _handleCloseNotificationModal = () => {
         this.setState({ showTrackNotificationModal: false, showFriendRequestNotificationModal: false })
         this.pushService.removeProcessedNotification(this.notificationId)
+    }
+// PN TOKEN CHANGED
+    _handleOnChangePnToken (pnToken) {
+        if (pnToken !== null && pnToken !== undefined)
+            userApi.updatePushNotificationToken(pnToken)
+                .catch(error => Alert.alert(error.message) )
     }
 // FRIEND REQUEST NOTIFICATION
     _handleAcceptFriendRequestNotification = () => {
@@ -129,11 +135,10 @@ export default class App extends Component {
                 }
                 <RootNavigation 
                     orientation={ this.state.orientation }
-                    pnToken={ this.state.pnToken } 
                     handlePlaySong={ this._handlePlayTrack } />
                 <Player track={ this.state.track } />
                 <PushService ref={c => this.pushService = c }
-                    onChangeToken={ pnToken => this.setState({ pnToken }) }
+                    onChangePnToken={ pnToken => this._handleOnChangePnToken(pnToken) }
                     onReceivedTrack={ this._handleReceivedTrack }
                     onReceivedFriendRequest={ this._handleReceivedFriendRequest }/>
                 <Modal ref={ c => this.notificationModal = c}

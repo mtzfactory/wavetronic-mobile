@@ -8,10 +8,10 @@ import { NavigationActions } from 'react-navigation'
 const { width: DEVICE_WIDTH, height: DEVICE_HEIGHT } = Dimensions.get('window')
 import { API_PAGE_LIMIT, MAIN_THEME_COLOR, SCREEN_CONTACTS_COLOR, SCREEN_CONTACTS_DARK_COLOR } from '../../constants'
 
+import TokenService from '../../services/TokenService'
 import FabNavigator from '../FabNavigator'
 import InfiniteList from '../InfiniteList'
 import ContactsListItem from './ContactsListItem'
-import TokenService from '../../services/TokenService'
 
 import UserApi from '../../api/UserApi'
 const userApi = new UserApi()
@@ -69,9 +69,12 @@ export default class ContactsScreen extends Component {
     }
 
     _doLogout = () => {
-        const username = TokenService.get().getUsername()
-        userApi.doLogout(username)
-            .then( this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' }) )
+        userApi.doLogout()
+            .then(() =>{
+                TokenService.removeToken()
+                TokenService.get().deleteToken()
+                this._navigate('Login', { type: 'Login', next:'Sign up', text: 'Don\'t have an account yet?' })
+            })
             .catch(error => Alert.alert(error.message))
     }
 
@@ -92,11 +95,13 @@ export default class ContactsScreen extends Component {
     _handleOnContactsItemRightSwipe (item, index) {
         let doSomething = null; let data = null
         if (item.confirmed === undefined){
+            console.log('ContactsScreen addFriend:', item.username)
             doSomething = userApi.addFriend
             data = item.username
         }
         else {
             doSomething = userApi.removeFriend
+            console.log('ContactsScreen removeFriend:', item._id)
             data = item._id
         }
 

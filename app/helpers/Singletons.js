@@ -1,7 +1,7 @@
 class SingletonManager {
     static get(name) {
         if (global._singletons) {
-            const instance = global._singletons['TOKEN_SERVICE']
+            const instance = global._singletons[name]
             
             if (instance) return instance
             //else return global._singletons['TOKEN_SERVICE'] = new TokenService()

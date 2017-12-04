@@ -11,23 +11,32 @@ export default class PushService extends Component {
 
     removeProcessedNotification (id) {
         FCM.removeDeliveredNotification(id)
+
         const remainigNotif = this.state.notif.filter(item => {
             return item.id !== id;
         })
+
         this.setState({ notif: remainigNotif })
     }
 
     componentDidMount () {
         FCM.requestPermissions()
-        FCM.getFCMToken().then(pnToken => {
-            this.props.onChangeToken(pnToken)
-        })
+
+        // FCM.getFCMToken().then(pnToken => {
+        //     this.props.onChangeToken(pnToken)
+        // })
 
         FCM.getInitialNotification().then(notif => {
             if (notif) {
                 if (notif.title) Alert.alert(notif.title)
             }
         })
+
+        this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, pnToken => {
+            this.props.onChangePnToken(pnToken)
+        })
+
+        FCM.subscribeToTopic('mtzFactory_wavetronic')
 
         this.notificationListener = FCM.on(FCMEvent.Notification, async notif => {
             if (!notif.opened_from_tray && (notif.type === 'track' || notif.type === 'friendship-request')) {
@@ -51,16 +60,10 @@ export default class PushService extends Component {
             if (notif.type === 'track') this.props.onReceivedTrack(notif)
             if (notif.type === 'friendship-request') this.props.onReceivedFriendRequest(notif)
         })
-
-        this.refreshTokenListener = FCM.on(FCMEvent.RefreshToken, pnToken => {
-            this.props.onChangeToken(pnToken)
-        })
-
-        FCM.subscribeToTopic('mtzFactory_WaveMyBeat')
     }
 
     componentWillUnmount () {
-        FCM.unsubscribeFromTopic('mtzFactory_WaveMyBeat')
+        FCM.unsubscribeFromTopic('mtzFactory_wavetronic')
         FCM.removeAllDeliveredNotifications()
         this.notificationListener.remove()
         this.refreshTokenListener.remove()

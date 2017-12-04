@@ -16,7 +16,7 @@ const API_URL_BASE = `${SRV_URL_BASE}/api/v1`
 
 export const API_URL_REGISTER = `${SRV_URL_BASE}/auth/register`
 export const API_URL_LOGIN = `${SRV_URL_BASE}/auth/login`
-export const API_URL_LOGOUT = `${SRV_URL_BASE}/auth/revoke`
+
 export const API_URL_WELCOME = `${API_URL_BASE}`
 
 export const API_URL_JMO_TRACKS = `${API_URL_BASE}/tracks`
@@ -26,6 +26,8 @@ export const API_URL_JMO_PLAYLISTS = `${API_URL_BASE}/playlists`
 export const API_URL_PROFILE = `${API_URL_BASE}/user`
 export const API_URL_PLAYLISTS = `${API_URL_BASE}/user/playlists`
 export const API_URL_FRIENDS = `${API_URL_BASE}/user/friends`
+
+export const API_URL_LOGOUT = `${API_URL_BASE}/user/logout`
 
 export const API_PAGE_LIMIT = 50
 
