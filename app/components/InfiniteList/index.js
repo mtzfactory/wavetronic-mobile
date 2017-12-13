@@ -31,8 +31,8 @@ export default class InfiniteList extends Component {
         this._requestData()
     }
 
-    _requestData = async () => {
-        await this.setState({ loading: true })
+    _requestData = () => {
+        this.setState({ loading: true })
 
         this.props.getData(this.state.offset, this.props.limit, this.state.search, this.props.filterBy)
             .then( res => {

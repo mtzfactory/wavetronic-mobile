@@ -2,7 +2,7 @@
 //const HOST = '192.168.1.129'  // CREMOSA
 //const HOST = '192.168.1.100'    // HOME
 //const HOST = '192.168.0.39'   // SKYLAB
-const HOST = 'wavemybeat-api.herokuapp.com'
+const HOST = 'wavetronic-api.herokuapp.com'
 
 // API
 //const PORT = 3001
