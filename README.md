@@ -6,9 +6,13 @@
 
 Cocinandose actualmente...
 
-### INSTALACION
+### INSTALACION DEL PROYECTO
 
 https://github.com/evollu/react-native-fcm
+
+### GENERANDO APK FIRMADO
+
+https://facebook.github.io/react-native/docs/signed-apk-android.html
 
 ### ICON
 

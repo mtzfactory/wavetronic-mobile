@@ -4,6 +4,7 @@ README-private*.md
 keystore/
 ios/
 google-services.json
+wavetronic-key.keystore
 .sass-cache
 .sass-cache/*
 
