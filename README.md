@@ -4,11 +4,13 @@
 
 ## WAVE MY BEAT ~ mobile app.
 
-Te gusta la música, te gusta compartir? Bienvenido, esta es una app ti, con la que puedes descubrir nuevos talentos a través de [Jamendo][jamendo], un servicio gratuito de música, y compartirlo con tus contactos a través de la misma app.
+Te gusta la música, te gusta compartir?
+
+Bienvenido, **esta es tu app**, con la que puedes descubrir nuevos talentos a través de [Jamendo][jamendo], un servicio gratuito de música, y compartirlo con tus contactos a través de la **wavetronic**.
 
 La app se ha realizado usando React Native, con un [back-end en node.js y mongoDb][wavetronic-api] como base de datos.
 
-La app nos permite inspeccionar las canciones y albumes de Jamendo, crear/borrar playlist propias, añadir/borrar canciones a nuestras playlist, contactar con amigos registrados y finalmente enviar canciones a nuestros contactos verificados.
+Wavetronic nos permite inspeccionar las canciones y albumes de Jamendo, crear/borrar playlist propias, añadir/borrar canciones a nuestras playlist, contactar con amigos registrados y finalmente enviar canciones a nuestros contactos verificados.
 
 ### INSTALACION DEL PROYECTO
 
