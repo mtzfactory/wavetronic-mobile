@@ -41,10 +41,10 @@ https://medium.com/bam-tech/generate-your-react-native-app-icons-in-a-single-com
 
 ### CAPTURAS
 
-![s2](screenshots/Screenshot_2.png)
-![s3](screenshots/Screenshot_3.png)
-![s7](screenshots/Screenshot_7.png)
-![s8](screenshots/Screenshot_8.png)
+<img src="screenshots/Screenshot_2.png" heigth="50px">
+<img src="screenshots/Screenshot_3.png" heigth="50px">
+<img src="screenshots/Screenshot_7.png" heigth="50px">
+<img src="screenshots/Screenshot_8.png" heigth="150px">
 
 [jamendo]: http://wwww.jamendo.com
 [wavetronic-api]: https://github.com/mtzfactory/wavetronic-api
