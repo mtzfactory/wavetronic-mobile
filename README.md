@@ -39,6 +39,12 @@ Para generar los iconos de la app, tanto Android como iOs, se ha utilizado la si
 
 https://medium.com/bam-tech/generate-your-react-native-app-icons-in-a-single-command-line-145af2e329b2
 
+### CAPTURAS
+
+![s2](screenshots/Screenshot_2.png)
+![s3](screenshots/Screenshot_3.png)
+![s7](screenshots/Screenshot_7.png)
+![s8](screenshots/Screenshot_8.png)
 
 [jamendo]: http://wwww.jamendo.com
 [wavetronic-api]: https://github.com/mtzfactory/wavetronic-api
