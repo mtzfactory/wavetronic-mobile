@@ -1,6 +1,6 @@
 
 //const HOST = '192.168.1.129'  // CREMOSA
-//const HOST = '192.168.1.100'    // HOME
+//const HOST = '192.168.1.100'  // HOME
 //const HOST = '192.168.0.39'   // SKYLAB
 const HOST = 'wavetronic-api.herokuapp.com'
 

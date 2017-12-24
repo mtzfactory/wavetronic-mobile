@@ -8,4 +8,8 @@ Cocinandose actualmente...
 
 ### INSTALACION
 
-### TEST
+https://github.com/evollu/react-native-fcm
+
+### ICON
+
+https://medium.com/bam-tech/generate-your-react-native-app-icons-in-a-single-command-line-145af2e329b2

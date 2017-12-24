@@ -3,7 +3,7 @@ README-private*.md
 *.env
 keystore/
 ios/
-android/
+google-services.json
 .sass-cache
 .sass-cache/*
 
