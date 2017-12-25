@@ -2,7 +2,7 @@
 ![javascript](https://mtzfactory.github.io/logos/png-2/javascript.png)
 ![react](https://mtzfactory.github.io/logos/png-2/react.png)
 
-## WAVE MY BEAT ~ mobile app.
+## WAVETRONIC.
 
 Te gusta la música, te gusta compartir?
 
